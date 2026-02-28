@@ -1,0 +1,88 @@
+{
+  "users": [
+    {
+      "email": "admin@itsupport.com",
+      "password": "admin123",
+      "user": {
+        "id": 1,
+        "email": "admin@itsupport.com",
+        "nombre": "Joel",
+        "apellido": "De Coz",
+        "rol": "admin",
+        "sucursal": "Central",
+        "area": "TI",
+        "estado": "Activo"
+      }
+    },
+    {
+      "email": "soporte@itsupport.com",
+      "password": "soporte123",
+      "user": {
+        "id": 2,
+        "email": "soporte@itsupport.com",
+        "nombre": "Carlos Andres",
+        "apellido": "González",
+        "rol": "soporte",
+        "sucursal": "Norte",
+        "area": "Soporte Técnico",
+        "estado": "Activo"
+      }
+    },
+    {
+      "email": "responsable@itsupport.com",
+      "password": "responsable123",
+      "user": {
+        "id": 3,
+        "email": "responsable@itsupport.com",
+        "nombre": "Juan Pedro",
+        "apellido": "López",
+        "rol": "responsable",
+        "sucursal": "Central",
+        "area": "Administración",
+        "estado": "Activo"
+      }
+    },
+    {
+      "email": "test@test.com",
+      "password": "test123",
+      "user": {
+        "id": 4,
+        "email": "test@test.com",
+        "nombre": "Ana",
+        "apellido": "Martínez",
+        "rol": "soporte",
+        "sucursal": "Sur",
+        "area": "Soporte Técnico",
+        "estado": "Inactivo"
+      }
+    },
+    {
+      "email": "soporte2@itsupport.com",
+      "password": "soporte2123",
+      "user": {
+        "id": 5,
+        "email": "soporte2@itsupport.com",
+        "nombre": "Roberto",
+        "apellido": "Sánchez",
+        "rol": "soporte",
+        "sucursal": "Este",
+        "area": "Redes",
+        "estado": "Activo"
+      }
+    },
+    {
+      "email": "responsable2@itsupport.com",
+      "password": "responsable2123",
+      "user": {
+        "id": 6,
+        "email": "responsable2@itsupport.com",
+        "nombre": "María Elena",
+        "apellido": "García",
+        "rol": "responsable",
+        "sucursal": "Oeste",
+        "area": "Recursos Humanos",
+        "estado": "Activo"
+      }
+    }
+  ]
+}

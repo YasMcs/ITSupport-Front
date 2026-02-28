@@ -1,0 +1,27 @@
+---
+description: Consultar archivos en /contextos antes de generar código para respetar diseño y estructura
+alwaysApply: true
+---
+
+# Consultar Contextos Antes de Generar Código
+
+Antes de generar cualquier código, **siempre** consulta los archivos dentro de la carpeta `/contextos` para respetar el diseño y la estructura establecidos en el proyecto.
+
+## Proceso Obligatorio
+
+1. **Antes de escribir código**: Lee los archivos relevantes en `contextos/`
+2. **Respeta el diseño**: Sigue los patrones, colores, layouts y estructuras definidos
+3. **Mantén consistencia**: Asegúrate de que el código generado se alinee con las especificaciones encontradas
+
+## Archivos de Contexto Disponibles
+
+- `contextos/skills.md` - Habilidades y patrones del proyecto
+- `contextos/layout-pages.md` - Estructura y diseño de páginas
+- `contextos/colors.md` - Esquema de colores y temas
+
+## Ejemplo
+
+```markdown
+❌ INCORRECTO: Generar código sin consultar contextos
+✅ CORRECTO: Leer contextos/layout-pages.md y contextos/colors.md antes de crear componentes
+```
