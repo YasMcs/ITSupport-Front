@@ -6,6 +6,7 @@ import { getEnrichedMockTickets } from "../utils/mockTickets";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { Modal } from "../components/ui/Modal";
+import { getUserDisplayName } from "../utils/userDisplay";
 
 export function TicketDetailPage() {
   const { id } = useParams();
@@ -46,7 +47,7 @@ export function TicketDetailPage() {
 
     setComentarios((prev) => [
       {
-        autor: user?.nombre_usuario || "sistema",
+        autor: getUserDisplayName(user),
         fecha: new Date().toISOString().split("T")[0],
         texto: nuevoComentario.trim(),
       },

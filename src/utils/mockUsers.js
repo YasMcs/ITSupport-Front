@@ -3,6 +3,8 @@ import { mockAreas } from "./mocks/areas.mock";
 export const mockUsers = [
   {
     id: 1,
+    nombre: "Joel",
+    apellido: "Decoz",
     nombre_usuario: "joel.decoz",
     email: "admin@itsupport.com",
     contrasena_hash: "hash_admin_123",
@@ -12,6 +14,8 @@ export const mockUsers = [
   },
   {
     id: 2,
+    nombre: "Juan",
+    apellido: "Lopez",
     nombre_usuario: "juan.lopez",
     email: "encargado@itsupport.com",
     contrasena_hash: "hash_encargado_123",
@@ -21,6 +25,8 @@ export const mockUsers = [
   },
   {
     id: 3,
+    nombre: "Carlos",
+    apellido: "Ruiz",
     nombre_usuario: "carlos.ruiz",
     email: "tecnico@itsupport.com",
     contrasena_hash: "hash_tecnico_123",
@@ -30,6 +36,8 @@ export const mockUsers = [
   },
   {
     id: 4,
+    nombre: "Ana",
+    apellido: "Martinez",
     nombre_usuario: "ana.martinez",
     email: "tecnico2@itsupport.com",
     contrasena_hash: "hash_tecnico2_123",
@@ -39,6 +47,8 @@ export const mockUsers = [
   },
   {
     id: 5,
+    nombre: "Maria",
+    apellido: "Garcia",
     nombre_usuario: "maria.garcia",
     email: "encargado2@itsupport.com",
     contrasena_hash: "hash_encargado2_123",
@@ -75,7 +85,9 @@ export function getSucursalDisplayByAreaId(areaId) {
 }
 
 export function getUserDisplayName(user) {
-  return user?.nombre_usuario ?? "Sin nombre";
+  if (!user) return "Sin nombre";
+  if (user.nombre && user.apellido) return `${user.nombre} ${user.apellido}`;
+  return user.nombre_usuario ?? "Sin nombre";
 }
 
 export function enrichMockUser(user) {

@@ -10,6 +10,10 @@ export function getUserDisplayName(user) {
     return `${user.nombre} ${user.apellido}`.trim();
   }
 
+  if (user.nombre) {
+    return user.nombre;
+  }
+
   if (user.nombre_usuario) {
     return user.nombre_usuario
       .split(".")

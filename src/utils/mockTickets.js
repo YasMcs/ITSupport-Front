@@ -3,6 +3,7 @@ import { PRIORIDAD } from "../constants/ticketPrioridad";
 import {
   enrichMockUser,
   getAreaById,
+  getUserDisplayName,
   getMockUserById,
 } from "./mockUsers";
 
@@ -136,20 +137,20 @@ export function enrichTicket(ticket) {
     ...ticket,
     area: area?.nombreArea ?? "Sin area",
     sucursal: area?.nombreSucursal ?? "Sin sucursal",
-    encargado: encargado?.nombre_usuario ?? "Sin encargado",
-    tecnico: tecnico?.nombre_usuario ?? "Sin tecnico",
+    encargado: getUserDisplayName(encargado) ?? "Sin encargado",
+    tecnico: ticket.tecnico_id ? getUserDisplayName(tecnico) : "Sin tecnico",
     fechaCreacion: ticket.fecha_creacion,
-    tecnicoAsignado: tecnico?.nombre_usuario ?? null,
-    responsable: encargado?.nombre_usuario ?? null,
+    tecnicoAsignado: ticket.tecnico_id ? getUserDisplayName(tecnico) : null,
+    responsable: getUserDisplayName(encargado),
     contacto: encargado?.email ?? "",
     comentarios: (ticket.comentarios ?? []).map((comentario) => ({
       ...comentario,
-      autor: getComentarioAutor(comentario)?.nombre_usuario ?? "Sistema",
+      autor: getUserDisplayName(getComentarioAutor(comentario)) ?? "Sistema",
       texto: comentario.contenido,
     })),
     historial: (ticket.historial ?? []).map((item) => ({
       ...item,
-      tecnico: enrichMockUser(getMockUserById(item.tecnico_id))?.nombre_usuario ?? null,
+      tecnico: item.tecnico_id ? getUserDisplayName(enrichMockUser(getMockUserById(item.tecnico_id))) : null,
     })),
   };
 }
@@ -171,6 +172,6 @@ export const TECNICOS = Array.from(
     mockTickets
       .map((ticket) => getTecnico(ticket))
       .filter(Boolean)
-      .map((user) => [user.id, { id: user.id, nombre: user.nombre_usuario }])
+      .map((user) => [user.id, { id: user.id, nombre: getUserDisplayName(user) }])
   ).values()
 );

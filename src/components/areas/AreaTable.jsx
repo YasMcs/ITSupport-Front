@@ -1,16 +1,9 @@
+import { Ban, CheckCircle2, Pencil } from "lucide-react";
 import { Table } from "../ui/Table";
 import { Badge } from "../ui/Badge";
 
 const EstadoToggleIcon = ({ isActive }) =>
-  isActive ? (
-    <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12l5 5L20 7" />
-    </svg>
-  ) : (
-    <svg className="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636L5.636 18.364M5.636 5.636l12.728 12.728" />
-    </svg>
-  );
+  isActive ? <CheckCircle2 className="h-5 w-5 text-emerald-400" strokeWidth={2.2} /> : <Ban className="h-5 w-5 text-rose-400" strokeWidth={2.2} />;
 
 export function AreaTable({ areas, onEditar, onToggleEstado }) {
   const COLUMNS = [
@@ -41,9 +34,7 @@ export function AreaTable({ areas, onEditar, onToggleEstado }) {
               className="p-2 text-text-secondary hover:text-purple-electric hover:bg-dark-purple-700 rounded-lg transition-colors"
               title="Editar"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-              </svg>
+              <Pencil className="h-4 w-4" strokeWidth={2} />
             </button>
             <button
               onClick={() => onToggleEstado && onToggleEstado(row.id)}

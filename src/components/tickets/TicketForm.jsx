@@ -3,6 +3,7 @@ import { Button } from "../ui/Button";
 import { FormField } from "../ui/FormField";
 import { getAreaDisplay, getSucursalDisplayByAreaId } from "../../utils/mockUsers";
 import { PRIORIDAD, PRIORIDAD_OPTIONS, getPriorityConfig } from "../../constants/ticketPrioridad";
+import { getUserDisplayName } from "../../utils/userDisplay";
 
 export function TicketForm({ initialValues, onSubmit, user, layout = "default" }) {
   const [form, setForm] = useState({
@@ -61,7 +62,7 @@ export function TicketForm({ initialValues, onSubmit, user, layout = "default" }
     <>
       <FormField label="Encargado" required>
         <ReadOnlyField
-          value={user?.nombre_usuario}
+          value={getUserDisplayName(user)}
           icon={
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -198,7 +199,7 @@ export function TicketForm({ initialValues, onSubmit, user, layout = "default" }
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField label="Encargado" required>
-          <ReadOnlyField value={user?.nombre_usuario} />
+          <ReadOnlyField value={getUserDisplayName(user)} />
         </FormField>
         <FormField label="Area">
           <ReadOnlyField value={getAreaDisplay(form.area_id)} />

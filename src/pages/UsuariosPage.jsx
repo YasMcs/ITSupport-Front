@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Pencil, UserCheck, UserMinus } from "lucide-react";
 import { Table } from "../components/ui/Table";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
@@ -65,16 +66,7 @@ const RolBadge = ({ rol }) => {
 };
 
 const EstadoToggleIcon = ({ isActive }) =>
-  isActive ? (
-    <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11c1.657 0 3-1.79 3-4s-1.343-4-3-4-3 1.79-3 4 1.343 4 3 4zm-8 0c1.657 0 3-1.79 3-4S9.657 3 8 3 5 4.79 5 7s1.343 4 3 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.96 1.97 3.45v2H24v-2c0-2.66-5.33-4-8-4z" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l2 2 4-4" />
-    </svg>
-  ) : (
-    <svg className="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-4.6-2.54M9 20H4a2 2 0 01-2-2v-1a5 5 0 015-5h4a5 5 0 015 5v1a2 2 0 01-2 2H9zm7-9a3 3 0 100-6 3 3 0 000 6zM8 10a3 3 0 100-6 3 3 0 000 6zm10 1l4 4m0-4l-4 4" />
-    </svg>
-  );
+  isActive ? <UserCheck className="h-5 w-5 text-emerald-400" strokeWidth={2.1} /> : <UserMinus className="h-5 w-5 text-rose-400" strokeWidth={2.1} />;
 
 export function UsuariosPage() {
   const navigate = useNavigate();
@@ -153,9 +145,7 @@ export function UsuariosPage() {
               className="p-2 text-text-secondary hover:text-purple-electric hover:bg-dark-purple-700 rounded-lg transition-colors duration-200"
               title="Editar"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-              </svg>
+              <Pencil className="h-4 w-4" strokeWidth={2} />
             </button>
             <button
               onClick={() => toggleSuspension(row)}
