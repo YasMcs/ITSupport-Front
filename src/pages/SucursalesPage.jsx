@@ -1,15 +1,17 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "../components/ui/Button";
+import { Modal } from "../components/ui/Modal";
 import { SucursalTable } from "../components/sucursales/SucursalTable";
 import { mockSucursales, ESTADO_OPTIONS } from "../utils/mocks/sucursales.mock";
 
 export function SucursalesPage() {
   const navigate = useNavigate();
-  // Simular datos de API con useState
   const [sucursales, setSucursales] = useState(mockSucursales);
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
   const [filters, setFilters] = useState({
     estado: "",
   });
@@ -17,7 +19,6 @@ export function SucursalesPage() {
   const filteredSucursales = useMemo(() => {
     let filtered = [...sucursales];
 
-    // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -28,11 +29,8 @@ export function SucursalesPage() {
       );
     }
 
-    // Apply estado filter
     if (filters.estado) {
-      filtered = filtered.filter(
-        (sucursal) => sucursal.estado === filters.estado
-      );
+      filtered = filtered.filter((sucursal) => sucursal.estado === filters.estado);
     }
 
     return filtered;
@@ -57,40 +55,42 @@ export function SucursalesPage() {
   };
 
   const handleToggleEstado = (id) => {
-    console.log("Cambiar estado sucursal:", id);
+    const sucursal = sucursales.find((item) => item.id === id);
+    if (!sucursal) return;
+
+    const nextEstado = sucursal.estado === "Activa" ? "Desactivada" : "Activa";
+    const actionLabel = nextEstado === "Desactivada" ? "desactivar" : "activar";
+
+    setConfirmAction({
+      title: nextEstado === "Desactivada" ? "Confirmar desactivacion" : "Confirmar activacion",
+      actionLabel,
+      targetName: sucursal.nombre,
+      confirmText: nextEstado === "Desactivada" ? "Desactivar sede" : "Activar sede",
+      onConfirm: () => {
+        setSucursales((prev) =>
+          prev.map((item) => (item.id === id ? { ...item, estado: nextEstado } : item))
+        );
+        setConfirmAction(null);
+        toast.success(nextEstado === "Desactivada" ? "Sede desactivada" : "Sede activada", {
+          description: sucursal.nombre,
+        });
+      },
+    });
   };
 
   return (
     <div className="space-y-6">
-      {/* Contenedor Principal: flex flex-col gap-6 */}
-      
-      {/* Fila Superior: flex justify-between items-start */}
       <div className="flex justify-between items-start">
-        {/* Lado Izquierdo: Título y Subtítulo */}
         <div>
           <h1 className="text-3xl font-bold text-text-primary">Sucursales</h1>
-          <p className="text-text-secondary mt-1">
-            Administra las sedes operativas de la empresa
-          </p>
+          <p className="text-text-secondary mt-1">Administra las sedes operativas de la empresa</p>
         </div>
 
-        {/* Lado Derecho: flex items-center gap-4 */}
         <div className="flex items-center gap-4">
-          {/* Input Buscador */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg
-                className="w-5 h-5 text-text-muted"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
+              <svg className="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
             <input
@@ -102,16 +102,11 @@ export function SucursalesPage() {
             />
           </div>
 
-          {/* Botón Principal "+ Nueva Sucursal" */}
-          <Button onClick={handleNuevaSucursal}>
-            + Nueva Sucursal
-          </Button>
+          <Button onClick={handleNuevaSucursal}>+ Nueva Sucursal</Button>
         </div>
       </div>
 
-      {/* Fila Inferior: flex items-center gap-4 */}
       <div className="flex items-center gap-4">
-        {/* Botón de Filtros */}
         <button
           onClick={() => setShowFilters(!showFilters)}
           className={`flex items-center gap-2 px-3 py-2 rounded-xl border ${
@@ -126,12 +121,11 @@ export function SucursalesPage() {
           <span className="text-sm text-text-secondary">Filtros</span>
           {hasActiveFilters && (
             <span className="bg-purple-electric text-white text-xs px-1.5 py-0.5 rounded-full">
-              {Object.values(filters).filter(v => v !== "").length}
+              {Object.values(filters).filter((v) => v !== "").length}
             </span>
           )}
         </button>
 
-        {/* Select de Estado - Ancho fijo, mismo estilo que Tickets */}
         {showFilters && (
           <>
             <select
@@ -147,10 +141,7 @@ export function SucursalesPage() {
             </select>
 
             {hasActiveFilters && (
-              <button
-                onClick={clearFilters}
-                className="text-sm text-accent-pink"
-              >
+              <button onClick={clearFilters} className="text-sm text-accent-pink">
                 Limpiar
               </button>
             )}
@@ -158,26 +149,13 @@ export function SucursalesPage() {
         )}
       </div>
 
-      {/* Tabla */}
       {filteredSucursales.length === 0 ? (
         <div className="glass-card rounded-2xl p-12 text-center">
           <div className="flex flex-col items-center gap-3">
-            <svg
-              className="w-16 h-16 text-text-muted"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-              />
+            <svg className="w-16 h-16 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
-            <p className="text-text-secondary text-lg">
-              No hay sucursales registradas
-            </p>
+            <p className="text-text-secondary text-lg">No hay sucursales registradas</p>
           </div>
         </div>
       ) : (
@@ -189,6 +167,22 @@ export function SucursalesPage() {
           />
         </div>
       )}
+
+      <Modal isOpen={Boolean(confirmAction)} onClose={() => setConfirmAction(null)} title={confirmAction?.title || "Confirmar accion"}>
+        <p className="text-text-secondary text-sm mb-6">
+          {confirmAction
+            ? `Estas seguro de que deseas ${confirmAction.actionLabel} a ${confirmAction.targetName}? Esta accion no se puede deshacer.`
+            : ""}
+        </p>
+        <div className="flex justify-end gap-3">
+          <Button type="button" variant="secondary" onClick={() => setConfirmAction(null)} className="w-auto px-5">
+            Cancelar
+          </Button>
+          <Button type="button" onClick={() => confirmAction?.onConfirm?.()} className="w-auto px-5 bg-accent-pink hover:bg-accent-pink/90">
+            {confirmAction?.confirmText || "Confirmar"}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

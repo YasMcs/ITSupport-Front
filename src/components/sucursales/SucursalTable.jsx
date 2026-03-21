@@ -49,6 +49,7 @@ export function SucursalTable({ sucursales, onEditar, onToggleEstado }) {
               </svg>
             </button>
             <button
+              onClick={() => onToggleEstado && onToggleEstado(row.id)}
               className={`p-2 rounded-lg transition-colors duration-200 ${
                 row.estado === "Activa" 
                   ? "text-text-secondary hover:text-accent-pink hover:bg-dark-purple-700" 

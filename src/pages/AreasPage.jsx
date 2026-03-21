@@ -1,15 +1,17 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "../components/ui/Button";
+import { Modal } from "../components/ui/Modal";
 import { AreaTable } from "../components/areas/AreaTable";
 import { mockAreas, ESTADO_OPTIONS } from "../utils/mocks/areas.mock";
 
 export function AreasPage() {
   const navigate = useNavigate();
-  
-  const [areas] = useState(mockAreas);
+  const [areas, setAreas] = useState(mockAreas);
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
   const [filters, setFilters] = useState({
     estado: "",
   });
@@ -17,7 +19,6 @@ export function AreasPage() {
   const filteredAreas = useMemo(() => {
     let filtered = [...areas];
 
-    // Buscar por nombre del área o nombre de sucursal
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -27,11 +28,8 @@ export function AreasPage() {
       );
     }
 
-    // Filtro por estado
     if (filters.estado) {
-      filtered = filtered.filter(
-        (area) => area.estado === filters.estado
-      );
+      filtered = filtered.filter((area) => area.estado === filters.estado);
     }
 
     return filtered;
@@ -56,22 +54,38 @@ export function AreasPage() {
   };
 
   const handleToggleEstado = (id) => {
-    console.log("Cambiar estado área:", id);
+    const area = areas.find((item) => item.id === id);
+    if (!area) return;
+
+    const nextEstado = area.estado === "Activa" ? "Inactiva" : "Activa";
+    const actionLabel = nextEstado === "Inactiva" ? "desactivar" : "activar";
+
+    setConfirmAction({
+      title: nextEstado === "Inactiva" ? "Confirmar desactivacion" : "Confirmar activacion",
+      actionLabel,
+      targetName: area.nombreArea,
+      confirmText: nextEstado === "Inactiva" ? "Desactivar area" : "Activar area",
+      onConfirm: () => {
+        setAreas((prev) =>
+          prev.map((item) => (item.id === id ? { ...item, estado: nextEstado } : item))
+        );
+        setConfirmAction(null);
+        toast.success(nextEstado === "Inactiva" ? "Area desactivada" : "Area activada", {
+          description: area.nombreArea,
+        });
+      },
+    });
   };
 
   return (
     <div className="space-y-6">
-      {/* Fila Superior */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-text-primary">Áreas</h1>
-          <p className="text-text-secondary mt-1">
-            Administra las áreas operativas de cada sucursal
-          </p>
+          <h1 className="text-3xl font-bold text-text-primary">Areas</h1>
+          <p className="text-text-secondary mt-1">Administra las areas operativas de cada sucursal</p>
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Buscador */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg className="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,18 +96,15 @@ export function AreasPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar área o sucursal..."
+              placeholder="Buscar area o sucursal..."
               className="w-64 bg-dark-purple-800 border border-dark-purple-700 text-text-primary rounded-xl pl-10 pr-4 py-2.5 text-sm placeholder:text-text-muted/50 focus:outline-none focus:ring-1 focus:ring-purple-electric focus:border-purple-electric transition-all"
             />
           </div>
 
-          <Button onClick={handleNuevaArea}>
-            + Nueva Área
-          </Button>
+          <Button onClick={handleNuevaArea}>+ Nueva Area</Button>
         </div>
       </div>
 
-      {/* Filtros */}
       <div className="flex items-center gap-4">
         <button
           onClick={() => setShowFilters(!showFilters)}
@@ -109,7 +120,7 @@ export function AreasPage() {
           <span className="text-sm text-text-secondary">Filtros</span>
           {hasActiveFilters && (
             <span className="bg-purple-electric text-white text-xs px-1.5 py-0.5 rounded-full">
-              {Object.values(filters).filter(v => v !== "").length}
+              {Object.values(filters).filter((v) => v !== "").length}
             </span>
           )}
         </button>
@@ -137,14 +148,13 @@ export function AreasPage() {
         )}
       </div>
 
-      {/* Tabla */}
       {filteredAreas.length === 0 ? (
         <div className="glass-card rounded-2xl p-12 text-center">
           <div className="flex flex-col items-center gap-3">
             <svg className="w-16 h-16 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
-            <p className="text-text-secondary text-lg">No hay áreas registradas</p>
+            <p className="text-text-secondary text-lg">No hay areas registradas</p>
           </div>
         </div>
       ) : (
@@ -156,6 +166,22 @@ export function AreasPage() {
           />
         </div>
       )}
+
+      <Modal isOpen={Boolean(confirmAction)} onClose={() => setConfirmAction(null)} title={confirmAction?.title || "Confirmar accion"}>
+        <p className="text-text-secondary text-sm mb-6">
+          {confirmAction
+            ? `Estas seguro de que deseas ${confirmAction.actionLabel} a ${confirmAction.targetName}? Esta accion no se puede deshacer.`
+            : ""}
+        </p>
+        <div className="flex justify-end gap-3">
+          <Button type="button" variant="secondary" onClick={() => setConfirmAction(null)} className="w-auto px-5">
+            Cancelar
+          </Button>
+          <Button type="button" onClick={() => confirmAction?.onConfirm?.()} className="w-auto px-5 bg-accent-pink hover:bg-accent-pink/90">
+            {confirmAction?.confirmText || "Confirmar"}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

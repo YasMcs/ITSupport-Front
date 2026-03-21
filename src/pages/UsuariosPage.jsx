@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Table } from "../components/ui/Table";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
+import { Modal } from "../components/ui/Modal";
 import { enrichMockUser, mockUsers } from "../utils/mockUsers";
 
 const avatarColors = [
@@ -64,6 +65,7 @@ export function UsuariosPage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [usuariosState, setUsuariosState] = useState(() => mockUsers.map(enrichMockUser));
+  const [confirmAction, setConfirmAction] = useState(null);
 
   const usuarios = useMemo(() => {
     if (!searchQuery) return usuariosState;
@@ -76,23 +78,28 @@ export function UsuariosPage() {
   }, [searchQuery, usuariosState]);
 
   const toggleSuspension = (row) => {
-    toast("Confirmar suspension de cuenta", {
-      description: row.nombre_usuario,
-      action: {
-        label: row.estado_cuenta === "suspendido" ? "Reactivar" : "Suspender",
-        onClick: () => {
-          setUsuariosState((prev) =>
-            prev.map((user) =>
-              user.id === row.id
-                ? {
-                    ...user,
-                    estado_cuenta: user.estado_cuenta === "suspendido" ? "activo" : "suspendido",
-                  }
-                : user
-            )
-          );
-          toast.success(row.estado_cuenta === "suspendido" ? "Cuenta reactivada" : "Cuenta suspendida");
-        },
+    const isSuspended = row.estado_cuenta === "suspendido";
+
+    setConfirmAction({
+      title: isSuspended ? "Confirmar reactivacion" : "Confirmar suspension",
+      actionLabel: isSuspended ? "reactivar" : "suspender",
+      targetName: row.nombre_usuario,
+      confirmText: isSuspended ? "Reactivar cuenta" : "Suspender cuenta",
+      onConfirm: () => {
+        setUsuariosState((prev) =>
+          prev.map((user) =>
+            user.id === row.id
+              ? {
+                  ...user,
+                  estado_cuenta: user.estado_cuenta === "suspendido" ? "activo" : "suspendido",
+                }
+              : user
+          )
+        );
+        setConfirmAction(null);
+        toast.success(isSuspended ? "Cuenta reactivada" : "Cuenta suspendida", {
+          description: row.nombre_usuario,
+        });
       },
     });
   };
@@ -132,7 +139,7 @@ export function UsuariosPage() {
           <button
             onClick={() => toggleSuspension(row)}
             className="p-2 text-text-secondary hover:text-accent-pink hover:bg-dark-purple-700 rounded-lg transition-colors duration-200"
-            title="Suspender cuenta"
+            title={row.estado_cuenta === "suspendido" ? "Reactivar cuenta" : "Suspender cuenta"}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-12.728 12.728M6.343 6.343l11.314 11.314" />
@@ -183,6 +190,22 @@ export function UsuariosPage() {
           <Table columns={columns} data={usuarios} />
         </div>
       )}
+
+      <Modal isOpen={Boolean(confirmAction)} onClose={() => setConfirmAction(null)} title={confirmAction?.title || "Confirmar accion"}>
+        <p className="text-text-secondary text-sm mb-6">
+          {confirmAction
+            ? `Estas seguro de que deseas ${confirmAction.actionLabel} a ${confirmAction.targetName}? Esta accion no se puede deshacer.`
+            : ""}
+        </p>
+        <div className="flex justify-end gap-3">
+          <Button type="button" variant="secondary" onClick={() => setConfirmAction(null)} className="w-auto px-5">
+            Cancelar
+          </Button>
+          <Button type="button" onClick={() => confirmAction?.onConfirm?.()} className="w-auto px-5 bg-accent-pink hover:bg-accent-pink/90">
+            {confirmAction?.confirmText || "Confirmar"}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }
