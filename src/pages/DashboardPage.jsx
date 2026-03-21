@@ -4,6 +4,7 @@ import { Badge } from "../components/ui/Badge";
 import { MOCK_STATS, MOCK_RECENT_TICKETS, SUBTITLE_BY_ROLE } from "../utils/mockDashboard";
 import { ROLES } from "../constants/roles";
 import { PRIORIDAD } from "../constants/ticketPrioridad";
+import { getUserDisplayName } from "../utils/userDisplay";
 
 export function DashboardPage() {
   const { user, role } = useAuth();
@@ -66,7 +67,7 @@ export function DashboardPage() {
     <div className="space-y-8">
       {/* Header Minimalista */}
       <div className="flex flex-col gap-1 mb-8">
-        <span className="text-sm font-medium text-purple-electric">Hola, {user?.nombre_usuario || "Usuario"}</span>
+        <span className="text-sm font-medium text-purple-electric">Hola, {getUserDisplayName(user)}</span>
         <h1 className="text-3xl font-bold text-white">Dashboard</h1>
       </div>
 

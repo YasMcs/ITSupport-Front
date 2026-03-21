@@ -6,6 +6,7 @@ import { Button } from "../../components/ui/Button";
 import { useAuth } from "../../hooks/useAuth";
 import { authService } from "../../services/authService";
 import { ROLES } from "../../constants/roles";
+import { getUserDisplayName } from "../../utils/userDisplay";
 import "../../styles/LoginPage.css";
 import logoIcono from "../../assets/logo_icono.png";
 import logo from "../../assets/logo.png";
@@ -27,7 +28,7 @@ export function LoginPage() {
       const data = await authService.login({ email, password });
       const nextUser = data.user ?? { email, rol: ROLES.TECNICO, nombre_usuario: "tecnico.demo" };
       login(nextUser);
-      toast.success(`¡Bienvenido de nuevo, ${nextUser.nombre_usuario}!`);
+      toast.success(`¡Bienvenido de nuevo, ${getUserDisplayName(nextUser)}!`);
       navigate("/dashboard");
     } catch (err) {
       const message = err.response?.data?.message ?? err.message ?? "Credenciales incorrectas";

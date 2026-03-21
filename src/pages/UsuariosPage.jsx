@@ -5,7 +5,9 @@ import { Table } from "../components/ui/Table";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { Modal } from "../components/ui/Modal";
+import { useAuth } from "../hooks/useAuth";
 import { enrichMockUser, mockUsers } from "../utils/mockUsers";
+import { getUserDisplayName } from "../utils/userDisplay";
 
 const avatarColors = [
   "bg-purple-electric",
@@ -24,10 +26,11 @@ const getAvatarColor = (name) => {
   return avatarColors[Math.abs(hash) % avatarColors.length];
 };
 
-const AvatarIniciales = ({ nombreUsuario }) => {
-  const parts = nombreUsuario.split(".");
+const AvatarIniciales = ({ user }) => {
+  const displayName = getUserDisplayName(user);
+  const parts = displayName.split(" ").filter(Boolean);
   const initials = `${parts[0]?.[0] ?? ""}${parts[1]?.[0] ?? parts[0]?.[1] ?? ""}`.toUpperCase();
-  const colorClass = getAvatarColor(nombreUsuario);
+  const colorClass = getAvatarColor(displayName);
   return (
     <div className={`${colorClass} w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-lg`}>
       {initials}
@@ -35,12 +38,12 @@ const AvatarIniciales = ({ nombreUsuario }) => {
   );
 };
 
-const UsuarioCell = ({ nombre_usuario, email }) => (
+const UsuarioCell = ({ user }) => (
   <div className="flex items-center gap-3">
-    <AvatarIniciales nombreUsuario={nombre_usuario} />
+    <AvatarIniciales user={user} />
     <div className="flex flex-col">
-      <span className="text-text-primary font-medium">{nombre_usuario}</span>
-      <span className="text-text-secondary text-xs">{email}</span>
+      <span className="text-text-primary font-medium">{getUserDisplayName(user)}</span>
+      <span className="text-text-secondary text-xs">{user.email}</span>
     </div>
   </div>
 );
@@ -61,21 +64,37 @@ const RolBadge = ({ rol }) => {
   return <span className={`px-3 py-1 rounded-full text-xs font-semibold ${styles[rol]}`}>{labels[rol] || rol}</span>;
 };
 
+const EstadoToggleIcon = ({ isActive }) =>
+  isActive ? (
+    <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11c1.657 0 3-1.79 3-4s-1.343-4-3-4-3 1.79-3 4 1.343 4 3 4zm-8 0c1.657 0 3-1.79 3-4S9.657 3 8 3 5 4.79 5 7s1.343 4 3 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.96 1.97 3.45v2H24v-2c0-2.66-5.33-4-8-4z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l2 2 4-4" />
+    </svg>
+  ) : (
+    <svg className="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-4.6-2.54M9 20H4a2 2 0 01-2-2v-1a5 5 0 015-5h4a5 5 0 015 5v1a2 2 0 01-2 2H9zm7-9a3 3 0 100-6 3 3 0 000 6zM8 10a3 3 0 100-6 3 3 0 000 6zm10 1l4 4m0-4l-4 4" />
+    </svg>
+  );
+
 export function UsuariosPage() {
   const navigate = useNavigate();
+  const { user: currentUser } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [usuariosState, setUsuariosState] = useState(() => mockUsers.map(enrichMockUser));
   const [confirmAction, setConfirmAction] = useState(null);
 
   const usuarios = useMemo(() => {
-    if (!searchQuery) return usuariosState;
+    const usersWithoutCurrentAdmin = usuariosState.filter((row) => row.id !== currentUser?.id);
+
+    if (!searchQuery) return usersWithoutCurrentAdmin;
+
     const query = searchQuery.toLowerCase();
-    return usuariosState.filter((user) =>
-      [user.nombre_usuario, user.email, user.sucursal, user.area]
+    return usersWithoutCurrentAdmin.filter((row) =>
+      [getUserDisplayName(row), row.nombre_usuario, row.email, row.sucursal, row.area]
         .filter(Boolean)
         .some((value) => value.toLowerCase().includes(query))
     );
-  }, [searchQuery, usuariosState]);
+  }, [currentUser?.id, searchQuery, usuariosState]);
 
   const toggleSuspension = (row) => {
     const isSuspended = row.estado_cuenta === "suspendido";
@@ -83,7 +102,7 @@ export function UsuariosPage() {
     setConfirmAction({
       title: isSuspended ? "Confirmar reactivacion" : "Confirmar suspension",
       actionLabel: isSuspended ? "reactivar" : "suspender",
-      targetName: row.nombre_usuario,
+      targetName: getUserDisplayName(row),
       confirmText: isSuspended ? "Reactivar cuenta" : "Suspender cuenta",
       onConfirm: () => {
         setUsuariosState((prev) =>
@@ -98,7 +117,7 @@ export function UsuariosPage() {
         );
         setConfirmAction(null);
         toast.success(isSuspended ? "Cuenta reactivada" : "Cuenta suspendida", {
-          description: row.nombre_usuario,
+          description: getUserDisplayName(row),
         });
       },
     });
@@ -108,7 +127,7 @@ export function UsuariosPage() {
     {
       key: "usuario",
       label: "Usuario",
-      render: (val, row) => <UsuarioCell nombre_usuario={row.nombre_usuario} email={row.email} />,
+      render: (val, row) => <UsuarioCell user={row} />,
     },
     { key: "rol", label: "Rol", render: (val) => <RolBadge rol={val} /> },
     {
@@ -125,28 +144,33 @@ export function UsuariosPage() {
     {
       key: "acciones",
       label: "Acciones",
-      render: (val, row) => (
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => navigate(`/usuarios/editar/${row.id}`)}
-            className="p-2 text-text-secondary hover:text-purple-electric hover:bg-dark-purple-700 rounded-lg transition-colors duration-200"
-            title="Editar"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
-          </button>
-          <button
-            onClick={() => toggleSuspension(row)}
-            className="p-2 text-text-secondary hover:text-accent-pink hover:bg-dark-purple-700 rounded-lg transition-colors duration-200"
-            title={row.estado_cuenta === "suspendido" ? "Reactivar cuenta" : "Suspender cuenta"}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-12.728 12.728M6.343 6.343l11.314 11.314" />
-            </svg>
-          </button>
-        </div>
-      ),
+      render: (val, row) => {
+        const isActive = row.estado_cuenta === "activo";
+        return (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate(`/usuarios/editar/${row.id}`)}
+              className="p-2 text-text-secondary hover:text-purple-electric hover:bg-dark-purple-700 rounded-lg transition-colors duration-200"
+              title="Editar"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </button>
+            <button
+              onClick={() => toggleSuspension(row)}
+              className={`p-2 rounded-lg transition-colors duration-200 ${
+                isActive
+                  ? "text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10"
+                  : "text-rose-400 hover:text-rose-300 hover:bg-rose-500/10"
+              }`}
+              title={isActive ? "Suspender cuenta" : "Reactivar cuenta"}
+            >
+              <EstadoToggleIcon isActive={isActive} />
+            </button>
+          </div>
+        );
+      },
     },
   ];
 

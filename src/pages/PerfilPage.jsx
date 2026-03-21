@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { ROLES } from "../constants/roles";
+import { getUserDisplayName, getUserInitial } from "../utils/userDisplay";
 
 export function PerfilPage() {
   const { user, role } = useAuth();
@@ -22,11 +23,11 @@ export function PerfilPage() {
         <div className="flex items-center gap-6">
           {/* Avatar */}
           <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-electric to-purple-electric-hover flex items-center justify-center text-white text-3xl font-bold shadow-lg shadow-purple-electric/30">
-            {user?.nombre_usuario?.[0]}
+            {getUserInitial(user)}
           </div>
           <div>
             <h2 className="text-2xl font-bold text-text-primary">
-              {user?.nombre_usuario}
+              {getUserDisplayName(user)}
             </h2>
             <p className="text-text-secondary mt-1">{user?.email}</p>
             <span className="inline-flex items-center px-3 py-1 mt-2 rounded-full text-sm font-medium bg-purple-electric/20 text-purple-electric">
@@ -40,7 +41,7 @@ export function PerfilPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="p-4 bg-dark-purple-700/50 rounded-xl">
               <p className="text-sm text-text-muted mb-1">Nombre completo</p>
-              <p className="text-text-primary font-medium">{user?.nombre_usuario}</p>
+              <p className="text-text-primary font-medium">{getUserDisplayName(user)}</p>
             </div>
             <div className="p-4 bg-dark-purple-700/50 rounded-xl">
               <p className="text-sm text-text-muted mb-1">Correo electrónico</p>
