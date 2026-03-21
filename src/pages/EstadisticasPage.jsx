@@ -42,9 +42,24 @@ function getTicketsByPriority(tickets) {
 
   const max = Math.max(counts.alta, counts.media, counts.baja) || 1;
   return [
-    { label: "Alta", count: counts.alta, percentage: (counts.alta / max) * 100, color: "bg-accent-pink" },
-    { label: "Media", count: counts.media, percentage: (counts.media / max) * 100, color: "bg-accent-orange" },
-    { label: "Baja", count: counts.baja, percentage: (counts.baja / max) * 100, color: "bg-accent-blue" },
+    {
+      label: "Alta",
+      count: counts.alta,
+      percentage: (counts.alta / max) * 100,
+      barClass: "bg-gradient-to-r from-accent-pink via-purple-electric to-accent-blue",
+    },
+    {
+      label: "Media",
+      count: counts.media,
+      percentage: (counts.media / max) * 100,
+      barClass: "bg-gradient-to-r from-purple-electric via-indigo-400 to-accent-blue",
+    },
+    {
+      label: "Baja",
+      count: counts.baja,
+      percentage: (counts.baja / max) * 100,
+      barClass: "bg-gradient-to-r from-accent-blue via-sky-400 to-cyan-300",
+    },
   ];
 }
 
@@ -72,10 +87,10 @@ function getStagnantTickets(tickets) {
 
 function KPICard({ title, value, subtitle }) {
   return (
-    <div className="glass-card rounded-2xl border border-white/5 bg-[#0b0f1a] p-5 shadow-none">
-      <p className="text-text-secondary text-xs font-medium uppercase tracking-wider mb-1">{title}</p>
+    <div className="glass-card rounded-xl border border-white/10 bg-[#0b0f1a] p-4">
+      <p className="mb-1 text-xs font-medium uppercase tracking-wider text-text-secondary">{title}</p>
       <p className="text-3xl font-bold text-text-primary">{value}</p>
-      {subtitle && <p className="text-text-muted text-xs mt-1">{subtitle}</p>}
+      {subtitle && <p className="mt-1 text-xs text-text-muted">{subtitle}</p>}
     </div>
   );
 }
@@ -86,10 +101,10 @@ function BarChart({ data }) {
       {data.map((item) => (
         <div key={item.label} className="flex items-center gap-3">
           <span className="w-12 text-xs text-text-secondary">{item.label}</span>
-          <div className="flex-1 h-6 bg-white/5 rounded-xl overflow-hidden">
-            <div className={`h-full ${item.color} rounded-xl`} style={{ width: `${item.percentage}%` }} />
+          <div className="h-6 flex-1 overflow-hidden rounded-xl border border-white/5 bg-white/5">
+            <div className={`h-full rounded-xl ${item.barClass}`} style={{ width: `${item.percentage}%` }} />
           </div>
-          <span className="w-8 text-xs text-text-primary text-right font-medium">{item.count}</span>
+          <span className="w-8 text-right text-xs font-medium text-text-primary">{item.count}</span>
         </div>
       ))}
     </div>
@@ -110,32 +125,32 @@ export function EstadisticasPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold text-text-primary">Estadisticas</h1>
-        <p className="text-text-secondary mt-1">Resumen claro del comportamiento de tickets y equipos de soporte</p>
+        <p className="mt-1 text-text-secondary">Resumen claro del comportamiento de tickets y equipos de soporte</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <KPICard title="Tickets Pendientes" value={pendientes} subtitle={`${kpis.enProceso} en proceso`} />
         <KPICard title="Tiempo de Respuesta" value={kpis.avgResponse ? `${kpis.avgResponse}h` : "N/A"} subtitle="Promedio hasta primer comentario" />
         <KPICard title="SLA de Resolucion" value={`${slaPercentage}%`} subtitle={`${kpis.resueltos} cerrados`} />
         <KPICard title="Anulados" value={kpis.anulado} subtitle={`${kpis.total} tickets totales`} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="glass-card rounded-2xl border border-white/5 bg-[#0b0f1a] p-6 shadow-none">
-          <h2 className="text-text-secondary text-xs font-medium uppercase tracking-wider mb-4">Tickets por Prioridad</h2>
+          <h2 className="mb-4 text-xs font-medium uppercase tracking-wider text-text-secondary">Tickets por Prioridad</h2>
           <BarChart data={priorityData} />
         </div>
 
         <div className="glass-card rounded-2xl border border-white/5 bg-[#0b0f1a] p-6 shadow-none">
-          <h2 className="text-text-secondary text-xs font-medium uppercase tracking-wider mb-4">Areas con Mas Incidencias</h2>
+          <h2 className="mb-4 text-xs font-medium uppercase tracking-wider text-text-secondary">Areas con Mas Incidencias</h2>
           <div className="space-y-2">
             {topAreas.map((item, index) => (
-              <div key={item.area} className="flex items-center justify-between py-2 border-b border-white/10 last:border-0">
+              <div key={item.area} className="flex items-center justify-between border-b border-white/10 py-2 last:border-0">
                 <div className="flex items-center gap-3">
-                  <span className="text-text-muted text-xs">0{index + 1}</span>
-                  <span className="text-text-primary text-sm">{item.area}</span>
+                  <span className="text-xs text-text-muted">0{index + 1}</span>
+                  <span className="text-sm text-text-primary">{item.area}</span>
                 </div>
-                <span className="text-text-primary text-sm font-medium">{item.count}</span>
+                <span className="text-sm font-medium text-text-primary">{item.count}</span>
               </div>
             ))}
           </div>
@@ -143,10 +158,10 @@ export function EstadisticasPage() {
       </div>
 
       <div className="glass-card rounded-2xl border border-white/5 bg-[#0b0f1a] p-6 shadow-none">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-text-secondary text-xs font-medium uppercase tracking-wider">Atencion Requerida</h2>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-xs font-medium uppercase tracking-wider text-text-secondary">Atencion Requerida</h2>
           {stagnantTickets.length > 0 && (
-            <span className="px-3 py-1 bg-accent-orange/20 text-accent-orange text-xs font-medium rounded-full">
+            <span className="rounded-full bg-accent-orange/20 px-3 py-1 text-xs font-medium text-accent-orange">
               {stagnantTickets.length} tickets
             </span>
           )}
@@ -162,12 +177,12 @@ export function EstadisticasPage() {
                 className="flex items-center justify-between rounded-xl border border-white/5 bg-white/5 p-3 transition-colors hover:bg-white/10"
               >
                 <div>
-                  <p className="text-text-primary text-sm">#{ticket.id}</p>
-                  <p className="text-text-muted text-xs truncate max-w-[200px]">{ticket.titulo}</p>
+                  <p className="text-sm text-text-primary">#{ticket.id}</p>
+                  <p className="max-w-[200px] truncate text-xs text-text-muted">{ticket.titulo}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge priority={ticket.prioridad} />
-                  <span className="text-accent-orange text-xs font-medium">48h+</span>
+                  <span className="text-xs font-medium text-accent-orange">48h+</span>
                 </div>
               </Link>
             ))
