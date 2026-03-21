@@ -25,6 +25,9 @@ const AREA_OPTIONS = mockAreas
 
 export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) {
   const [formData, setFormData] = useState({
+    nombre: usuario?.nombre || "",
+    apellido_paterno: usuario?.apellido_paterno || "",
+    apellido_materno: usuario?.apellido_materno || "",
     nombre_usuario: usuario?.nombre_usuario || "",
     email: usuario?.email || "",
     contrasena_hash: "",
@@ -51,6 +54,30 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
   };
 
   const validate = () => {
+    if (!formData.nombre.trim()) {
+      setError("El nombre es requerido");
+      toast.warning("Informacion incompleta", {
+        description: "Agrega el nombre real del usuario.",
+      });
+      return false;
+    }
+
+    if (!formData.apellido_paterno.trim()) {
+      setError("El apellido_paterno es requerido");
+      toast.warning("Informacion incompleta", {
+        description: "Agrega el apellido paterno para continuar.",
+      });
+      return false;
+    }
+
+    if (!formData.apellido_materno.trim()) {
+      setError("El apellido_materno es requerido");
+      toast.warning("Informacion incompleta", {
+        description: "Agrega el apellido materno para continuar.",
+      });
+      return false;
+    }
+
     if (!formData.nombre_usuario.trim()) {
       setError("El nombre_usuario es requerido");
       toast.warning("Informacion incompleta", {
@@ -109,6 +136,9 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
     if (!validate()) return;
 
     onSubmit({
+      nombre: formData.nombre.trim(),
+      apellido_paterno: formData.apellido_paterno.trim(),
+      apellido_materno: formData.apellido_materno.trim(),
       nombre_usuario: formData.nombre_usuario.trim(),
       email: formData.email.trim().toLowerCase(),
       contrasena_hash: formData.contrasena_hash.trim() || undefined,
@@ -137,6 +167,39 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <div className="glass-card rounded-2xl p-6 space-y-5">
+              <FormField label="nombre" required>
+                <input
+                  type="text"
+                  className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
+                  value={formData.nombre}
+                  onChange={(e) => handleChange("nombre", e.target.value)}
+                  placeholder="Joel"
+                  required
+                />
+              </FormField>
+
+              <FormField label="apellido_paterno" required>
+                <input
+                  type="text"
+                  className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
+                  value={formData.apellido_paterno}
+                  onChange={(e) => handleChange("apellido_paterno", e.target.value)}
+                  placeholder="De Coz"
+                  required
+                />
+              </FormField>
+
+              <FormField label="apellido_materno" required>
+                <input
+                  type="text"
+                  className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
+                  value={formData.apellido_materno}
+                  onChange={(e) => handleChange("apellido_materno", e.target.value)}
+                  placeholder="Fernandez"
+                  required
+                />
+              </FormField>
+
               <FormField label="nombre_usuario" required>
                 <input
                   type="text"

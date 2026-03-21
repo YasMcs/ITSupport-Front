@@ -72,7 +72,7 @@ function getStagnantTickets(tickets) {
 
 function KPICard({ title, value, subtitle }) {
   return (
-    <div className="glass-card rounded-2xl border border-white/5 bg-[#0b0f1a] p-5 shadow-[0_0_18px_rgba(124,77,255,0.10)]">
+    <div className="glass-card rounded-2xl border border-white/5 bg-[#0b0f1a] p-5 shadow-none">
       <p className="text-text-secondary text-xs font-medium uppercase tracking-wider mb-1">{title}</p>
       <p className="text-3xl font-bold text-text-primary">{value}</p>
       {subtitle && <p className="text-text-muted text-xs mt-1">{subtitle}</p>}
@@ -121,12 +121,12 @@ export function EstadisticasPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="glass-card rounded-2xl border border-white/5 bg-[#0b0f1a] p-6 shadow-[0_0_18px_rgba(124,77,255,0.10)]">
+        <div className="glass-card rounded-2xl border border-white/5 bg-[#0b0f1a] p-6 shadow-none">
           <h2 className="text-text-secondary text-xs font-medium uppercase tracking-wider mb-4">Tickets por Prioridad</h2>
           <BarChart data={priorityData} />
         </div>
 
-        <div className="glass-card rounded-2xl border border-white/5 bg-[#0b0f1a] p-6 shadow-[0_0_18px_rgba(124,77,255,0.10)]">
+        <div className="glass-card rounded-2xl border border-white/5 bg-[#0b0f1a] p-6 shadow-none">
           <h2 className="text-text-secondary text-xs font-medium uppercase tracking-wider mb-4">Areas con Mas Incidencias</h2>
           <div className="space-y-2">
             {topAreas.map((item, index) => (
@@ -142,7 +142,7 @@ export function EstadisticasPage() {
         </div>
       </div>
 
-      <div className="glass-card rounded-2xl border border-white/5 bg-[#0b0f1a] p-6 shadow-[0_0_18px_rgba(124,77,255,0.10)]">
+      <div className="glass-card rounded-2xl border border-white/5 bg-[#0b0f1a] p-6 shadow-none">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-text-secondary text-xs font-medium uppercase tracking-wider">Atencion Requerida</h2>
           {stagnantTickets.length > 0 && (

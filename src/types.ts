@@ -3,6 +3,9 @@
 export type RolUsuario = 'admin' | 'encargado' | 'tecnico';
 
 export interface CreateUsuario {
+  nombre: string;
+  apellido_paterno: string;
+  apellido_materno: string;
   nombre_usuario: string;
   email: string;
   contrasena_hash: string;
@@ -12,6 +15,9 @@ export interface CreateUsuario {
 }
 
 export interface UpdateUsuario {
+  nombre?: string;
+  apellido_paterno?: string;
+  apellido_materno?: string;
   nombre_usuario?: string;
   email?: string;
   contrasena_hash?: string;
@@ -49,6 +55,9 @@ export interface Ticket {
 
 export interface Usuario {
   id: number;
+  nombre: string;
+  apellido_paterno: string;
+  apellido_materno: string;
   nombre_usuario: string;
   email: string;
   contrasena_hash: string;

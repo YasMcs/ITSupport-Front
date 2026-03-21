@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Pencil, UserCheck, UserMinus } from "lucide-react";
+import { CheckCircle2, Pencil, XCircle } from "lucide-react";
 import { Table } from "../components/ui/Table";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
@@ -66,7 +66,7 @@ const RolBadge = ({ rol }) => {
 };
 
 const EstadoToggleIcon = ({ isActive }) =>
-  isActive ? <UserCheck className="h-5 w-5 text-emerald-400" strokeWidth={2.1} /> : <UserMinus className="h-5 w-5 text-rose-400" strokeWidth={2.1} />;
+  isActive ? <CheckCircle2 className="h-5 w-5 text-emerald-400" strokeWidth={2.1} /> : <XCircle className="h-5 w-5 text-slate-400" strokeWidth={2.1} />;
 
 export function UsuariosPage() {
   const navigate = useNavigate();

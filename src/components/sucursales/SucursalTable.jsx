@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { Ban, CheckCircle2, Pencil } from "lucide-react";
+import { CheckCircle2, Pencil, XCircle } from "lucide-react";
 import { Table } from "../ui/Table";
 import { Badge } from "../ui/Badge";
 
 const EstadoToggleIcon = ({ isActive }) =>
-  isActive ? <CheckCircle2 className="h-5 w-5 text-emerald-400" strokeWidth={2.2} /> : <Ban className="h-5 w-5 text-rose-400" strokeWidth={2.2} />;
+  isActive ? <CheckCircle2 className="h-5 w-5 text-emerald-400" strokeWidth={2.2} /> : <XCircle className="h-5 w-5 text-slate-400" strokeWidth={2.2} />;
 
 export function SucursalTable({ sucursales, onEditar, onToggleEstado }) {
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ export function SucursalTable({ sucursales, onEditar, onToggleEstado }) {
               className={`p-2 rounded-lg transition-colors duration-200 ${
                 isActive
                   ? "text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10"
-                  : "text-rose-400 hover:text-rose-300 hover:bg-rose-500/10"
+                  : "text-slate-400 hover:text-slate-300 hover:bg-slate-500/10"
               }`}
               title={isActive ? "Desactivar" : "Activar"}
             >

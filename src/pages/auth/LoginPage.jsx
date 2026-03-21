@@ -26,7 +26,14 @@ export function LoginPage() {
 
     try {
       const data = await authService.login({ email, password });
-      const nextUser = data.user ?? { email, rol: ROLES.TECNICO, nombre: "Tecnico", apellido: "Demo", nombre_usuario: "tecnico.demo" };
+      const nextUser = data.user ?? {
+        email,
+        rol: ROLES.TECNICO,
+        nombre: "Tecnico",
+        apellido_paterno: "Demo",
+        apellido_materno: "Temporal",
+        nombre_usuario: "tecnico.demo",
+      };
       login(nextUser);
       toast.success(`¡Bienvenido de nuevo, ${getUserDisplayName(nextUser)}!`);
       navigate("/dashboard");

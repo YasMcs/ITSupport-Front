@@ -9,6 +9,9 @@ export function NuevoUsuarioPage() {
   const handleSubmit = (payload) => {
     mockUsers.push({
       id: mockUsers.length + 1,
+      nombre: payload.nombre,
+      apellido_paterno: payload.apellido_paterno,
+      apellido_materno: payload.apellido_materno,
       nombre_usuario: payload.nombre_usuario,
       email: payload.email,
       contrasena_hash: payload.contrasena_hash ?? "hash_demo_temporal",

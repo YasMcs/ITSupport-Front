@@ -59,6 +59,9 @@ export function NuevoTicketPage() {
         layout="split"
         user={{
           id: user?.id,
+          nombre: user?.nombre,
+          apellido_paterno: user?.apellido_paterno,
+          apellido_materno: user?.apellido_materno,
           nombre_usuario: user?.nombre_usuario || "",
           area_id: user?.area_id,
         }}

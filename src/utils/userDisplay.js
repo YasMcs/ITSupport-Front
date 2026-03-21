@@ -6,8 +6,12 @@ function capitalizeWord(word) {
 export function getUserDisplayName(user) {
   if (!user) return "Usuario";
 
-  if (user.nombre && user.apellido) {
-    return `${user.nombre} ${user.apellido}`.trim();
+  if (user.nombre && user.apellido_paterno && user.apellido_materno) {
+    return `${user.nombre} ${user.apellido_paterno} ${user.apellido_materno}`.trim();
+  }
+
+  if (user.nombre && user.apellido_paterno) {
+    return `${user.nombre} ${user.apellido_paterno}`.trim();
   }
 
   if (user.nombre) {
