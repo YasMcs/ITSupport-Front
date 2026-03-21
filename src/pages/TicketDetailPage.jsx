@@ -23,7 +23,7 @@ export function TicketDetailPage() {
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-text-primary mb-2">Ticket no encontrado</h1>
-          <p className="text-text-secondary">El ticket con ID {id} no existe.</p>
+          <p className="text-text-secondary">No encontramos el ticket numero {id}.</p>
         </div>
         <Button onClick={() => navigate("/tickets")}>Volver a Tickets</Button>
       </div>

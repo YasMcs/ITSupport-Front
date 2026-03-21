@@ -30,7 +30,7 @@ export function TicketForm({ initialValues, onSubmit, user, layout = "default" }
     }
 
     if (!form.area_id) {
-      setError("El area_id es obligatorio para generar el ticket");
+      setError("Debes seleccionar un area para generar el ticket");
       return;
     }
 

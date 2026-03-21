@@ -20,7 +20,7 @@ const AREA_OPTIONS = mockAreas
   .filter((area) => area.estado === "Activa")
   .map((area) => ({
     value: String(area.id),
-    label: `${area.nombreArea} · ${area.nombreSucursal}`,
+    label: `${area.nombreArea} - ${area.nombreSucursal}`,
   }));
 
 export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) {
@@ -55,7 +55,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
 
   const validate = () => {
     if (!formData.nombre.trim()) {
-      setError("El nombre es requerido");
+      setError("El nombre es obligatorio");
       toast.warning("Informacion incompleta", {
         description: "Agrega el nombre real del usuario.",
       });
@@ -63,7 +63,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
     }
 
     if (!formData.apellido_paterno.trim()) {
-      setError("El apellido_paterno es requerido");
+      setError("El apellido paterno es obligatorio");
       toast.warning("Informacion incompleta", {
         description: "Agrega el apellido paterno para continuar.",
       });
@@ -71,7 +71,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
     }
 
     if (!formData.apellido_materno.trim()) {
-      setError("El apellido_materno es requerido");
+      setError("El apellido materno es obligatorio");
       toast.warning("Informacion incompleta", {
         description: "Agrega el apellido materno para continuar.",
       });
@@ -79,7 +79,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
     }
 
     if (!formData.nombre_usuario.trim()) {
-      setError("El nombre_usuario es requerido");
+      setError("El nombre de usuario es obligatorio");
       toast.warning("Informacion incompleta", {
         description: "Necesitamos un nombre de usuario para continuar.",
       });
@@ -87,31 +87,31 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
     }
 
     if (!formData.email.trim()) {
-      setError("El email es requerido");
+      setError("El correo electronico es obligatorio");
       toast.warning("Informacion incompleta", {
-        description: "Agrega un email valido antes de guardar.",
+        description: "Agrega un correo electronico valido antes de guardar.",
       });
       return false;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      setError("El email no es valido");
+      setError("El correo electronico no es valido");
       toast.warning("Informacion incompleta", {
-        description: "El formato del email no es valido.",
+        description: "El formato del correo electronico no es valido.",
       });
       return false;
     }
 
     if (!isEditing && !formData.contrasena_hash.trim()) {
-      setError("La contrasena_hash es requerida");
+      setError("La contrasena es obligatoria");
       toast.warning("Informacion incompleta", {
-        description: "Define una contrasena_hash para crear el registro.",
+        description: "Define una contrasena temporal para crear el registro.",
       });
       return false;
     }
 
     if (!formData.rol) {
-      setError("El rol es requerido");
+      setError("El rol es obligatorio");
       toast.warning("Informacion incompleta", {
         description: "Selecciona un rol para el usuario.",
       });
@@ -119,9 +119,9 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
     }
 
     if (isEncargado && !formData.area_id) {
-      setError("El area_id es obligatorio para encargado");
+      setError("El area asignada es obligatoria");
       toast.warning("Informacion incompleta", {
-        description: "El area es obligatoria cuando el rol es encargado.",
+        description: "Selecciona el area asignada para el encargado.",
       });
       return false;
     }
@@ -167,7 +167,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <div className="glass-card rounded-2xl p-6 space-y-5">
-              <FormField label="nombre" required>
+              <FormField label="Nombre(s)" required>
                 <input
                   type="text"
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
@@ -178,7 +178,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
                 />
               </FormField>
 
-              <FormField label="apellido_paterno" required>
+              <FormField label="Apellido Paterno" required>
                 <input
                   type="text"
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
@@ -189,7 +189,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
                 />
               </FormField>
 
-              <FormField label="apellido_materno" required>
+              <FormField label="Apellido Materno" required>
                 <input
                   type="text"
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
@@ -200,18 +200,18 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
                 />
               </FormField>
 
-              <FormField label="nombre_usuario" required>
+              <FormField label="Nombre de Usuario" required>
                 <input
                   type="text"
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
                   value={formData.nombre_usuario}
                   onChange={(e) => handleChange("nombre_usuario", e.target.value)}
-                  placeholder="ej. juan.lopez"
+                  placeholder="ej. joel.decoz"
                   required
                 />
               </FormField>
 
-              <FormField label="email" required>
+              <FormField label="Correo Electronico" required>
                 <input
                   type="email"
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
@@ -223,13 +223,13 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
               </FormField>
 
               {!isEditing && (
-                <FormField label="contrasena_hash" required>
+                <FormField label="Contrasena Temporal" required>
                   <input
                     type="text"
                     className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
                     value={formData.contrasena_hash}
                     onChange={(e) => handleChange("contrasena_hash", e.target.value)}
-                    placeholder="hash_demo_123"
+                    placeholder="Temporal123"
                     required
                   />
                 </FormField>
@@ -252,7 +252,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
             <div className="glass-card rounded-2xl p-6 space-y-5 h-fit">
               <h3 className="text-lg font-semibold text-text-primary mb-4">Configuracion</h3>
 
-              <FormField label="rol" required>
+              <FormField label="Rol" required>
                 <Select
                   value={formData.rol}
                   onChange={(value) => handleChange("rol", value)}
@@ -262,7 +262,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
                 />
               </FormField>
 
-              <FormField label="estado_cuenta">
+              <FormField label="Estado de Cuenta">
                 <Select
                   value={formData.estado_cuenta}
                   onChange={(value) => handleChange("estado_cuenta", value)}
@@ -272,25 +272,24 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
                 />
               </FormField>
 
-              <FormField label="area_id">
-                <Select
-                  value={formData.area_id}
-                  onChange={(value) => handleChange("area_id", value)}
-                  options={AREA_OPTIONS}
-                  placeholder={isEncargado ? "Selecciona un area" : "Solo aplica para encargado"}
-                  className="w-full"
-                  disabled={!isEncargado}
-                />
-              </FormField>
+              {isEncargado && (
+                <FormField label="Area Asignada" required>
+                  <Select
+                    value={formData.area_id}
+                    onChange={(value) => handleChange("area_id", value)}
+                    options={AREA_OPTIONS}
+                    placeholder="Selecciona un area"
+                    className="w-full"
+                  />
+                </FormField>
+              )}
 
-              <div className="text-sm text-gray-400 bg-white/5 p-4 rounded-lg mt-6">
-                <p>
-                  {isEncargado
-                    ? "El payload enviara area_id como entero."
-                    : "Para admin y tecnico el payload enviara area_id como NULL."}
-                </p>
-                {selectedArea && <p className="mt-2 text-xs text-text-muted">{selectedArea.label}</p>}
-              </div>
+              {isEncargado && selectedArea && (
+                <div className="text-sm text-gray-400 bg-white/5 p-4 rounded-lg mt-6">
+                  <p>Area seleccionada</p>
+                  <p className="mt-2 text-xs text-text-muted">{selectedArea.label}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
