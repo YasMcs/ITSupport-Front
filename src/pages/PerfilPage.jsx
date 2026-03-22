@@ -29,7 +29,6 @@ export function PerfilPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-8">
       <div className="flex flex-col gap-1">
-        <span className="text-sm font-medium text-purple-electric">Tu espacio personal</span>
         <h1 className="text-3xl font-bold text-white">Perfil</h1>
         <p className="text-text-secondary">Consulta tu informacion, preferencias y detalles de acceso en un solo lugar.</p>
       </div>
@@ -46,7 +45,7 @@ export function PerfilPage() {
               </div>
 
               <div className="space-y-2">
-                <p className="text-xs uppercase tracking-[0.28em] text-purple-electric">Perfil Personal</p>
+                <p className="text-sm font-medium text-purple-electric">Informacion personal</p>
                 <h1 className="text-3xl font-bold text-text-primary">{getUserDisplayName(user)}</h1>
                 <p className="text-text-secondary">{user?.email}</p>
                 <span className="inline-flex items-center rounded-full border border-purple-electric/20 bg-purple-electric/10 px-3 py-1 text-sm font-medium text-purple-electric">
@@ -70,8 +69,8 @@ export function PerfilPage() {
         <aside className="glass-card rounded-2xl border border-white/5 bg-white/[0.03] p-6 backdrop-blur-lg">
           <div className="space-y-5">
             <div>
-              <p className="text-xs uppercase tracking-[0.28em] text-purple-electric">Configuracion</p>
-              <h2 className="mt-2 text-2xl font-semibold text-text-primary">Preferencias y Seguridad</h2>
+              <p className="text-sm font-medium text-purple-electric">Configuracion</p>
+              <h2 className="mt-2 text-2xl font-semibold text-text-primary">Preferencias y seguridad</h2>
             </div>
 
             <div className="glass-card rounded-xl border border-white/5 bg-white/[0.03] p-4 backdrop-blur-lg">
