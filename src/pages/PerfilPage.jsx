@@ -7,7 +7,7 @@ import { getUserDisplayName, getUserInitial } from "../utils/userDisplay";
 function InfoCard({ label, value }) {
   return (
     <div className="glass-card rounded-xl p-4">
-      <p className="mb-2 text-xs uppercase tracking-[0.24em] text-text-muted">{label}</p>
+      <p className="mb-2 text-sm font-medium text-text-muted">{label}</p>
       <p className="font-medium text-text-primary">{value}</p>
     </div>
   );
