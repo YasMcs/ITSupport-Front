@@ -1,38 +1,38 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { ROLES } from "../../constants/roles";
-import { 
-  LayoutDashboard, 
-  Ticket, 
-  BarChart3, 
-  User, 
+import {
+  LayoutDashboard,
+  Ticket,
+  BarChart3,
+  User,
   LogOut,
   Users,
   Building2,
   MapPin,
-  PlusCircle
+  PlusCircle,
 } from "lucide-react";
 
 const MENU_ITEMS = {
   [ROLES.ADMIN]: [
     { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { path: "/tickets", label: "Tickets", icon: Ticket },
-    { path: "/estadisticas", label: "Estadísticas", icon: BarChart3 },
+    { path: "/estadisticas", label: "Estadisticas", icon: BarChart3 },
     { path: "/usuarios", label: "Usuarios", icon: Users },
-    { path: "/areas", label: "Áreas", icon: Building2 },
+    { path: "/areas", label: "Areas", icon: Building2 },
     { path: "/sucursales", label: "Sucursales", icon: MapPin },
     { path: "/perfil", label: "Perfil", icon: User },
   ],
   [ROLES.TECNICO]: [
     { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { path: "/tickets", label: "Tickets", icon: Ticket },
-    { path: "/estadisticas", label: "Estadísticas", icon: BarChart3 },
+    { path: "/estadisticas", label: "Estadisticas", icon: BarChart3 },
     { path: "/perfil", label: "Perfil", icon: User },
   ],
   [ROLES.ENCARGADO]: [
     { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { path: "/tickets", label: "Tickets", icon: Ticket },
-    { path: "/estadisticas", label: "Estadísticas", icon: BarChart3 },
+    { path: "/estadisticas", label: "Estadisticas", icon: BarChart3 },
     { path: "/tickets/nuevo", label: "Nuevo Ticket", icon: PlusCircle },
     { path: "/perfil", label: "Perfil", icon: User },
   ],
@@ -43,12 +43,10 @@ export function Sidebar() {
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
-
   const menuItems = MENU_ITEMS[role] || [];
 
   return (
-    <aside className="w-64 bg-dark-purple-800 border-r border-dark-purple-700 h-full flex flex-col">
-      {/* Navegación */}
+    <aside className="flex h-full w-64 flex-col border-r border-white/5 bg-black/20 backdrop-blur-lg">
       <nav className="flex-1 px-3 pt-12">
         <ul className="flex flex-col gap-6">
           {menuItems.map((item) => {
@@ -57,29 +55,28 @@ export function Sidebar() {
               <li key={item.path}>
                 <Link
                   to={item.path}
-                  className={`flex items-center gap-3 px-3 py-4 rounded-xl transition-all duration-200 ${
+                  className={`flex items-center gap-3 rounded-xl px-3 py-4 transition-all duration-200 ${
                     isActive(item.path)
-                      ? "bg-purple-electric text-white shadow-lg shadow-purple-electric/30"
-                      : "text-text-muted hover:text-text-primary hover:bg-dark-purple-700 text-sm"
+                      ? "border border-purple-electric/20 bg-purple-electric/12 text-white"
+                      : "text-text-muted hover:bg-white/5 hover:text-text-primary"
                   }`}
                 >
                   <Icon size={20} />
-                  <span className="font-medium truncate">{item.label}</span>
+                  <span className="truncate font-medium">{item.label}</span>
                 </Link>
               </li>
             );
           })}
         </ul>
       </nav>
-      
-      {/* Logout Button - pushed to bottom */}
-      <div className="px-3 py-3 border-t border-dark-purple-700 mt-auto mb-6">
+
+      <div className="mt-auto mb-6 border-t border-white/5 px-3 py-3">
         <button
           onClick={logout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-text-muted hover:text-accent-pink hover:bg-dark-purple-700 text-sm"
+          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-text-muted transition-all duration-200 hover:bg-white/5 hover:text-text-primary"
         >
           <LogOut size={20} />
-          <span className="font-medium">Cerrar sesión</span>
+          <span className="font-medium">Cerrar sesion</span>
         </button>
       </div>
     </aside>

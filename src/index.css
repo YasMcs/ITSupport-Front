@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    --fondo: #0b0615;
-    --primario: #7c4dff;
+    --fondo: #07070a;
+    --primario: #6f57c8;
     --texto: #eae6ff;
   }
 
@@ -55,11 +55,11 @@
 
   /* Glassmorphism utility */
   .glass {
-    @apply bg-dark-purple-800/60 backdrop-blur-md border border-white/10;
+    @apply bg-black/20 backdrop-blur-lg border border-white/10;
   }
   
   .glass-card {
-    @apply bg-dark-purple-800/40 backdrop-blur-md border border-white/5 shadow-xl;
+    @apply bg-white/[0.03] backdrop-blur-lg border border-white/5 shadow-none;
   }
 }
 
@@ -83,9 +83,9 @@
 
 [data-sonner-toaster] [data-sonner-toast][data-type="info"],
 [data-sonner-toaster] [data-sonner-toast][data-type="warning"] {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.96), rgba(109, 40, 217, 0.94));
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.94), rgba(91, 33, 182, 0.94));
   border-color: rgba(196, 181, 253, 0.4);
-  box-shadow: 0 0 28px rgba(96, 165, 250, 0.2);
+  box-shadow: 0 0 28px rgba(109, 40, 217, 0.18);
 }
 
 [data-sonner-toaster] [data-sonner-toast] [data-icon] {

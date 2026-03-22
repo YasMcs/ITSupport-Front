@@ -27,7 +27,7 @@ export function PerfilPage() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 bg-[#0b0f1a]">
+    <div className="mx-auto max-w-6xl space-y-6 bg-[#07070a]">
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.35fr_0.85fr]">
         <section className="glass-card rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur-md">
           <div className="flex flex-col gap-6">

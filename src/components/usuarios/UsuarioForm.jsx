@@ -206,7 +206,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false }) 
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
                   value={formData.nombre_usuario}
                   onChange={(e) => handleChange("nombre_usuario", e.target.value)}
-                  placeholder="ej. joel.decoz"
+                  placeholder="ej. jdecoz"
                   required
                 />
               </FormField>

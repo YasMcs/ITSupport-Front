@@ -3,45 +3,32 @@ import { Navbar } from "./Navbar";
 
 function BackgroundOrbs() {
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      {/* Capa base de gradiente */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-950/30 via-transparent to-purple-950/20" />
-      
-      {/* Orbes principales */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-700/15 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-700/15 rounded-full blur-3xl" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-900/20 rounded-full blur-3xl" />
-
-      {/* Orbes secundarios */}
-      <div className="absolute top-[15%] right-[20%] w-64 h-64 bg-violet-800/15 rounded-full blur-3xl" />
-      <div className="absolute bottom-[20%] left-[15%] w-80 h-80 bg-blue-800/15 rounded-full blur-3xl" />
-      
-      {/* Líneas de gradiente sutiles */}
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-purple-500/15 to-transparent" />
-      <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-600/10 to-transparent" />
+    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+      <div className="absolute inset-0 bg-[#07070a]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(111,87,200,0.12),transparent_38%),radial-gradient(circle_at_80%_18%,rgba(91,33,182,0.08),transparent_28%),radial-gradient(circle_at_50%_75%,rgba(76,29,149,0.10),transparent_34%)]" />
+      <div className="animate-pulse-slow absolute left-[10%] top-[12%] h-72 w-72 rounded-full bg-purple-electric/10 blur-3xl" />
+      <div className="animate-float-slow absolute bottom-[14%] right-[12%] h-80 w-80 rounded-full bg-purple-electric/8 blur-3xl" />
+      <div className="animate-drift absolute left-1/2 top-[42%] h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple-electric/6 blur-[140px]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-purple-electric/15 to-transparent" />
     </div>
   );
 }
 
 export function AppLayout({ children }) {
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-dark-purple-900 relative">
+    <div className="relative flex h-screen flex-col overflow-hidden bg-[#07070a]">
       <BackgroundOrbs />
-      
-      {/* Header - ocupa 100% del ancho en la parte superior */}
-      <div className="w-full z-50">
+
+      <div className="z-50 w-full">
         <Navbar />
       </div>
-      
-      {/* Contenedor flexible: Sidebar + Contenido principal */}
+
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar - debajo del header, alineado a la izquierda */}
         <div className="h-full">
           <Sidebar />
         </div>
-        
-        {/* Contenido principal */}
-        <main className="flex-1 overflow-auto p-6">
+
+        <main className="relative z-10 flex-1 overflow-auto p-6">
           {children}
         </main>
       </div>

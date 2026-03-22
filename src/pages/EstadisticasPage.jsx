@@ -107,7 +107,7 @@ export function EstadisticasPage() {
   const slaPercentage = kpis.total > 0 ? Math.round((kpis.resueltos / kpis.total) * 100) : 0;
 
   return (
-    <div className="space-y-6 bg-[#0b0f1a]">
+    <div className="space-y-6 bg-[#07070a]">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold text-text-primary">Estadisticas</h1>
         <p className="mt-1 text-text-secondary">Resumen claro del comportamiento de tickets y equipos de soporte</p>

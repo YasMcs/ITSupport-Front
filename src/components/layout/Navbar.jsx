@@ -7,9 +7,8 @@ export function Navbar() {
   const { user } = useAuth();
 
   return (
-    <nav className="w-full bg-dark-purple-800 border-b border-dark-purple-700 px-6 py-3 z-50">
+    <nav className="z-50 w-full border-b border-white/5 bg-black/20 px-6 py-3 backdrop-blur-lg">
       <div className="flex items-center justify-between">
-        {/* Left - Logos */}
         <div className="flex items-center gap-3">
           <img 
             src={logoIcono} 
@@ -23,20 +22,17 @@ export function Navbar() {
           />
         </div>
 
-        {/* Right - Notifications & Profile */}
         <div className="flex items-center gap-4">
-          {/* Notification Bell */}
-          <button className="relative p-2 rounded-xl hover:bg-dark-purple-700 transition-colors">
+          <button className="relative rounded-xl p-2 transition-colors hover:bg-white/5">
             <svg className="w-6 h-6 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
-            <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-accent-pink rounded-full border-2 border-dark-purple-800"></span>
+            <span className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full border-2 border-[#07070a] bg-purple-electric"></span>
           </button>
 
-          {/* User Profile - Simple */}
           {user && (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-purple-electric/20 flex items-center justify-center">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full border border-purple-electric/20 bg-purple-electric/12">
                 <span className="text-sm font-semibold text-purple-electric">
                   {getUserInitial(user)}
                 </span>
