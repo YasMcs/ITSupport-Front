@@ -151,33 +151,21 @@
 
 .login-brand-block {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
   gap: 1rem;
 }
 
-.login-brand-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 6rem;
-  height: 6rem;
-  border-radius: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(18px);
+.login-brand-icon {
+  width: 5.8rem;
+  height: auto;
+  flex-shrink: 0;
 }
 
-.login-brand-wordmark {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.85rem 1.1rem;
-  border-radius: 1.2rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(18px);
+.login-brand-logo {
+  height: 4rem;
+  width: auto;
+  align-self: center;
 }
 
 .login-copy {
@@ -405,17 +393,12 @@
     border-radius: 1.25rem;
   }
 
-  .login-brand-mark {
-    width: 4.4rem;
-    height: 4.4rem;
+  .login-brand-icon {
+    width: 4.6rem;
   }
 
-  .login-brand-wordmark {
-    padding: 0.7rem 0.9rem;
-  }
-
-  .login-brand-wordmark img {
-    height: 2.4rem;
+  .login-brand-logo {
+    height: 2.8rem;
   }
 
   .login-copy p {

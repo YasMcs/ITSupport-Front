@@ -68,12 +68,8 @@ export function LoginPage() {
       <div className="login-shell">
         <section className="login-intro">
           <div className="login-brand-block">
-            <div className="login-brand-mark">
-              <img src={logoIcono} alt="Logo Icono" className="h-20 w-auto" />
-            </div>
-            <div className="login-brand-wordmark">
-              <img src={logo} alt="Logo" className="h-14 w-auto" />
-            </div>
+            <img src={logoIcono} alt="Logo Icono" className="login-brand-icon" />
+            <img src={logo} alt="Logo" className="login-brand-logo" />
           </div>
 
           <div className="login-copy">
