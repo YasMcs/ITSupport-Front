@@ -153,18 +153,30 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .login-brand-mark {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 5rem;
-  height: 5rem;
+  width: 6rem;
+  height: 6rem;
   border-radius: 1.5rem;
   border: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(18px);
+}
+
+.login-brand-wordmark {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.85rem 1.1rem;
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(18px);
 }
 
@@ -190,26 +202,20 @@
 
 .login-copy p {
   margin: 1.25rem 0 0;
-  max-width: 34rem;
+  max-width: 31rem;
   color: #b8b1d3;
   font-size: 1.05rem;
-  line-height: 1.7;
-}
-
-.login-highlights {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-  max-width: 42rem;
+  line-height: 1.68;
 }
 
 .login-highlight-card {
   display: flex;
   gap: 0.9rem;
-  padding: 1.2rem 1.15rem;
+  padding: 1rem 1.1rem;
+  max-width: 31rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 1.25rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.025);
   backdrop-filter: blur(18px);
 }
 
@@ -387,10 +393,6 @@
   .login-copy h1 {
     font-size: clamp(2rem, 8vw, 3rem);
   }
-
-  .login-highlights {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 640px) {
@@ -406,6 +408,14 @@
   .login-brand-mark {
     width: 4.4rem;
     height: 4.4rem;
+  }
+
+  .login-brand-wordmark {
+    padding: 0.7rem 0.9rem;
+  }
+
+  .login-brand-wordmark img {
+    height: 2.4rem;
   }
 
   .login-copy p {

@@ -69,9 +69,11 @@ export function LoginPage() {
         <section className="login-intro">
           <div className="login-brand-block">
             <div className="login-brand-mark">
-              <img src={logoIcono} alt="Logo Icono" className="h-16 w-auto" />
+              <img src={logoIcono} alt="Logo Icono" className="h-20 w-auto" />
             </div>
-            <img src={logo} alt="Logo" className="h-10 w-auto" />
+            <div className="login-brand-wordmark">
+              <img src={logo} alt="Logo" className="h-14 w-auto" />
+            </div>
           </div>
 
           <div className="login-copy">
@@ -82,20 +84,11 @@ export function LoginPage() {
             </p>
           </div>
 
-          <div className="login-highlights">
-            <div className="login-highlight-card">
-              <span className="login-highlight-dot" />
-              <div>
-                <h2>Seguimiento centralizado</h2>
-                <p>Visualiza el estado de cada incidencia con trazabilidad clara para todo el equipo.</p>
-              </div>
-            </div>
-            <div className="login-highlight-card">
-              <span className="login-highlight-dot" />
-              <div>
-                <h2>Acceso ordenado por roles</h2>
-                <p>Cada perfil entra a un espacio consistente, enfocado y alineado a sus permisos.</p>
-              </div>
+          <div className="login-highlight-card">
+            <span className="login-highlight-dot" />
+            <div>
+              <h2>Seguimiento centralizado y acceso ordenado</h2>
+              <p>Controla incidencias, responsables y avances desde una sola plataforma con contexto claro para cada rol.</p>
             </div>
           </div>
         </section>
