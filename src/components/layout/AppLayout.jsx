@@ -6,6 +6,8 @@ function BackgroundOrbs() {
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
       <div className="absolute inset-0 bg-[#0d0a16]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(125,99,230,0.14),transparent_38%),radial-gradient(circle_at_80%_18%,rgba(139,124,255,0.10),transparent_28%),radial-gradient(circle_at_50%_75%,rgba(244,114,182,0.06),transparent_34%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(145deg,rgba(13,10,22,0.78),rgba(13,10,22,0.28)_40%,rgba(13,10,22,0.84)),linear-gradient(to_top_left,rgba(34,24,56,0.22),transparent,rgba(83,38,128,0.14))]" />
+      <div className="absolute inset-0 opacity-[0.06] [background-image:linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:120px_120px] [mask-image:radial-gradient(circle_at_center,black_28%,transparent_78%)]" />
       <div className="animate-sweep-slow absolute left-[10%] top-[12%] h-72 w-72 rounded-full bg-purple-electric/10 blur-3xl" />
       <div className="animate-drift-wide absolute bottom-[14%] right-[12%] h-80 w-80 rounded-full bg-purple-electric/8 blur-3xl" />
       <div className="animate-orbit-slow absolute left-[58%] top-[18%] h-56 w-56 rounded-full bg-accent-pink/8 blur-3xl" />

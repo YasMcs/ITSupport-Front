@@ -64,7 +64,7 @@ export function Sidebar() {
   const menuItems = MENU_ITEMS[role] || [];
 
   return (
-    <aside className="flex h-full w-64 flex-col border-r border-white/5 bg-[#0f0f18]/95 backdrop-blur-2xl">
+    <aside className="flex h-full w-64 flex-col border-r border-white/[0.06] bg-white/[0.04] backdrop-blur-[22px]">
       <nav className="flex-1 px-3 pt-12">
         <ul className="flex flex-col gap-4">
           {menuItems.map((item) => {
@@ -77,8 +77,8 @@ export function Sidebar() {
                   to={item.path}
                   className={`group relative flex items-center gap-3 overflow-hidden rounded-xl px-3 py-3.5 text-sm transition-[background-color,border-color,color,transform] duration-200 ease-out ${
                     active
-                      ? "border border-white/10 bg-white/[0.08] text-white"
-                      : "text-text-muted hover:bg-white/[0.04] hover:text-text-primary"
+                      ? "border border-white/[0.08] bg-white/[0.075] text-white"
+                      : "text-text-muted hover:bg-white/[0.05] hover:text-text-primary"
                   }`}
                 >
                   <span
@@ -100,7 +100,7 @@ export function Sidebar() {
         </ul>
       </nav>
 
-      <div className="mt-auto mb-6 border-t border-white/5 px-3 py-3">
+      <div className="mt-auto mb-6 border-t border-white/[0.06] px-3 py-3">
         <button
           onClick={logout}
           className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-text-muted transition-colors duration-150 hover:bg-white/[0.04] hover:text-text-primary"
