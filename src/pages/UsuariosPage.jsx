@@ -66,7 +66,7 @@ const RolBadge = ({ rol }) => {
 };
 
 const EstadoToggleIcon = ({ isActive }) =>
-  isActive ? <CheckCircle2 className="h-5 w-5 text-emerald-400" strokeWidth={2.1} /> : <XCircle className="h-5 w-5 text-slate-400" strokeWidth={2.1} />;
+  isActive ? <CheckCircle2 className="h-5 w-5 text-cyan-300" strokeWidth={2.1} /> : <XCircle className="h-5 w-5 text-pink-300" strokeWidth={2.1} />;
 
 export function UsuariosPage() {
   const navigate = useNavigate();
@@ -151,8 +151,8 @@ export function UsuariosPage() {
               onClick={() => toggleSuspension(row)}
               className={`p-2 rounded-lg transition-colors duration-200 ${
                 isActive
-                  ? "text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10"
-                  : "text-rose-400 hover:text-rose-300 hover:bg-rose-500/10"
+                  ? "text-cyan-300 hover:text-cyan-200 hover:bg-cyan-500/10"
+                  : "text-pink-300 hover:text-pink-200 hover:bg-pink-500/10"
               }`}
               title={isActive ? "Suspender cuenta" : "Reactivar cuenta"}
             >

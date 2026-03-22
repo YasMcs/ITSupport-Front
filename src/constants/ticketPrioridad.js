@@ -14,34 +14,34 @@ export const getPriorityConfig = (prioridad) => {
   switch (prioridad) {
     case PRIORIDAD.ALTA:
       return {
-        color: "text-red-300",
-        bg: "bg-red-500/90",
-        ring: "ring-red-400/40",
-        dot: "bg-red-400",
+        color: "text-pink-200",
+        bg: "bg-pink-500/80",
+        ring: "ring-pink-400/35",
+        dot: "bg-pink-300",
         label: "Alta",
       };
     case PRIORIDAD.MEDIA:
       return {
-        color: "text-amber-300",
-        bg: "bg-amber-500/90",
-        ring: "ring-amber-400/40",
-        dot: "bg-amber-400",
+        color: "text-orange-200",
+        bg: "bg-orange-500/80",
+        ring: "ring-orange-400/35",
+        dot: "bg-orange-300",
         label: "Media",
       };
     case PRIORIDAD.BAJA:
       return {
-        color: "text-emerald-300",
-        bg: "bg-emerald-500/90",
-        ring: "ring-emerald-400/40",
-        dot: "bg-emerald-400",
+        color: "text-blue-200",
+        bg: "bg-blue-500/80",
+        ring: "ring-blue-400/35",
+        dot: "bg-blue-300",
         label: "Baja",
       };
     default:
       return {
-        color: "text-amber-300",
-        bg: "bg-amber-500/90",
-        ring: "ring-amber-400/40",
-        dot: "bg-amber-400",
+        color: "text-orange-200",
+        bg: "bg-orange-500/80",
+        ring: "ring-orange-400/35",
+        dot: "bg-orange-300",
         label: "Media",
       };
   }

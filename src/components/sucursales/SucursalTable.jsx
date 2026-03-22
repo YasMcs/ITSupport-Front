@@ -4,7 +4,7 @@ import { Table } from "../ui/Table";
 import { Badge } from "../ui/Badge";
 
 const EstadoToggleIcon = ({ isActive }) =>
-  isActive ? <CheckCircle2 className="h-5 w-5 text-emerald-400" strokeWidth={2.2} /> : <XCircle className="h-5 w-5 text-slate-400" strokeWidth={2.2} />;
+  isActive ? <CheckCircle2 className="h-5 w-5 text-cyan-300" strokeWidth={2.2} /> : <XCircle className="h-5 w-5 text-pink-300" strokeWidth={2.2} />;
 
 export function SucursalTable({ sucursales, onEditar, onToggleEstado }) {
   const navigate = useNavigate();
@@ -55,8 +55,8 @@ export function SucursalTable({ sucursales, onEditar, onToggleEstado }) {
               onClick={() => onToggleEstado && onToggleEstado(row.id)}
               className={`p-2 rounded-lg transition-colors duration-200 ${
                 isActive
-                  ? "text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10"
-                  : "text-slate-400 hover:text-slate-300 hover:bg-slate-500/10"
+                  ? "text-cyan-300 hover:text-cyan-200 hover:bg-cyan-500/10"
+                  : "text-pink-300 hover:text-pink-200 hover:bg-pink-500/10"
               }`}
               title={isActive ? "Desactivar" : "Activar"}
             >

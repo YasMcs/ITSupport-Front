@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    --fondo: #07070a;
-    --primario: #6f57c8;
+    --fondo: #0b0b12;
+    --primario: #7660d8;
     --texto: #eae6ff;
   }
 
@@ -70,15 +70,15 @@
 }
 
 [data-sonner-toaster] [data-sonner-toast][data-type="success"] {
-  background: linear-gradient(135deg, rgba(5, 150, 105, 0.98), rgba(4, 120, 87, 0.96));
-  border-color: rgba(110, 231, 183, 0.4);
-  box-shadow: 0 0 28px rgba(16, 185, 129, 0.28);
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.96), rgba(59, 130, 246, 0.94));
+  border-color: rgba(125, 211, 252, 0.38);
+  box-shadow: 0 0 28px rgba(34, 211, 238, 0.22);
 }
 
 [data-sonner-toaster] [data-sonner-toast][data-type="error"] {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.98), rgba(185, 28, 28, 0.96));
-  border-color: rgba(252, 165, 165, 0.4);
-  box-shadow: 0 0 28px rgba(248, 113, 113, 0.24);
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.96), rgba(192, 38, 211, 0.94));
+  border-color: rgba(249, 168, 212, 0.38);
+  box-shadow: 0 0 28px rgba(236, 72, 153, 0.22);
 }
 
 [data-sonner-toaster] [data-sonner-toast][data-type="info"],

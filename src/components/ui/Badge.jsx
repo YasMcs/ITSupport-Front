@@ -2,20 +2,20 @@ import { TICKET_STATUS } from "../../constants/ticketStatus";
 
 const statusStyles = {
   [TICKET_STATUS.ABIERTO]: {
-    container: "border border-emerald-400/20 bg-emerald-500/10 text-emerald-300",
-    dot: "bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.55)]",
+    container: "border border-cyan-400/20 bg-cyan-400/10 text-cyan-200",
+    dot: "bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.45)]",
   },
   [TICKET_STATUS.EN_PROCESO]: {
-    container: "border border-sky-400/20 bg-sky-500/10 text-sky-300",
-    dot: "bg-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.5)]",
+    container: "border border-blue-400/20 bg-blue-500/10 text-blue-200",
+    dot: "bg-blue-300 shadow-[0_0_12px_rgba(96,165,250,0.42)]",
   },
   [TICKET_STATUS.CERRADO]: {
-    container: "border border-slate-400/15 bg-slate-500/10 text-slate-300",
-    dot: "bg-slate-400 shadow-[0_0_10px_rgba(148,163,184,0.4)]",
+    container: "border border-violet-400/20 bg-violet-500/10 text-violet-200",
+    dot: "bg-violet-300 shadow-[0_0_12px_rgba(167,139,250,0.38)]",
   },
   [TICKET_STATUS.ANULADO]: {
-    container: "border border-rose-400/20 bg-rose-500/10 text-rose-300",
-    dot: "bg-rose-400 shadow-[0_0_12px_rgba(251,113,133,0.45)]",
+    container: "border border-pink-400/20 bg-pink-500/10 text-pink-200",
+    dot: "bg-pink-300 shadow-[0_0_12px_rgba(244,114,182,0.42)]",
   },
 };
 
@@ -28,49 +28,49 @@ const statusLabels = {
 
 const sucursalStatusStyles = {
   Activa: {
-    container: "border border-emerald-400/20 bg-emerald-500/10 text-emerald-300",
-    dot: "bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.55)]",
+    container: "border border-cyan-400/20 bg-cyan-400/10 text-cyan-200",
+    dot: "bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.45)]",
   },
   Desactivada: {
-    container: "border border-slate-400/15 bg-slate-500/10 text-slate-300",
-    dot: "bg-slate-400 shadow-[0_0_10px_rgba(148,163,184,0.4)]",
+    container: "border border-pink-400/20 bg-pink-500/10 text-pink-200",
+    dot: "bg-pink-300 shadow-[0_0_12px_rgba(244,114,182,0.38)]",
   },
 };
 
 const areaStatusStyles = {
   Activa: {
-    container: "border border-emerald-400/20 bg-emerald-500/10 text-emerald-300",
-    dot: "bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.55)]",
+    container: "border border-cyan-400/20 bg-cyan-400/10 text-cyan-200",
+    dot: "bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.45)]",
   },
   Inactiva: {
-    container: "border border-slate-400/15 bg-slate-500/10 text-slate-300",
-    dot: "bg-slate-400 shadow-[0_0_10px_rgba(148,163,184,0.4)]",
+    container: "border border-pink-400/20 bg-pink-500/10 text-pink-200",
+    dot: "bg-pink-300 shadow-[0_0_12px_rgba(244,114,182,0.38)]",
   },
 };
 
 const priorityStyles = {
   alta: {
-    container: "border border-red-400/20 bg-red-500/10 text-red-300",
-    dot: "bg-red-400 shadow-[0_0_12px_rgba(248,113,113,0.55)]",
+    container: "border border-pink-400/20 bg-pink-500/10 text-pink-200",
+    dot: "bg-pink-300 shadow-[0_0_12px_rgba(244,114,182,0.42)]",
   },
   media: {
-    container: "border border-amber-400/20 bg-amber-500/10 text-amber-300",
-    dot: "bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.45)]",
+    container: "border border-orange-400/20 bg-orange-500/10 text-orange-200",
+    dot: "bg-orange-300 shadow-[0_0_12px_rgba(251,146,60,0.42)]",
   },
   baja: {
-    container: "border border-emerald-400/20 bg-emerald-500/10 text-emerald-300",
-    dot: "bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.45)]",
+    container: "border border-blue-400/20 bg-blue-500/10 text-blue-200",
+    dot: "bg-blue-300 shadow-[0_0_12px_rgba(96,165,250,0.4)]",
   },
 };
 
 const accountStatusStyles = {
   activo: {
-    container: "border border-emerald-400/20 bg-emerald-500/10 text-emerald-300",
-    dot: "bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.55)]",
+    container: "border border-cyan-400/20 bg-cyan-400/10 text-cyan-200",
+    dot: "bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.45)]",
   },
   suspendido: {
-    container: "border border-slate-400/15 bg-slate-500/10 text-slate-300",
-    dot: "bg-slate-400 shadow-[0_0_10px_rgba(148,163,184,0.4)]",
+    container: "border border-pink-400/20 bg-pink-500/10 text-pink-200",
+    dot: "bg-pink-300 shadow-[0_0_12px_rgba(244,114,182,0.38)]",
   },
 };
 
