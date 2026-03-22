@@ -6,7 +6,7 @@ import { getUserDisplayName, getUserInitial } from "../utils/userDisplay";
 
 function InfoCard({ label, value }) {
   return (
-    <div className="glass-card rounded-xl border border-white/5 bg-white/[0.03] p-4 backdrop-blur-lg">
+    <div className="glass-card rounded-xl p-4">
       <p className="mb-2 text-xs uppercase tracking-[0.24em] text-text-muted">{label}</p>
       <p className="font-medium text-text-primary">{value}</p>
     </div>
@@ -34,12 +34,12 @@ export function PerfilPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.35fr_0.85fr]">
-        <section className="glass-card rounded-2xl border border-white/5 bg-white/[0.03] p-6 backdrop-blur-lg">
+        <section className="glass-card rounded-2xl p-6">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-5 md:flex-row md:items-center">
               <div className="relative">
                 <div className="absolute inset-0 rounded-full bg-purple-electric/12 blur-2xl" />
-                <div className="relative flex h-28 w-28 items-center justify-center rounded-full border border-purple-electric/30 bg-black/30 text-4xl font-bold text-white backdrop-blur-lg">
+                <div className="relative flex h-28 w-28 items-center justify-center rounded-full border border-purple-electric/30 bg-dark-purple-800/85 text-4xl font-bold text-white backdrop-blur-xl">
                   {getUserInitial(user)}
                 </div>
               </div>
@@ -66,14 +66,14 @@ export function PerfilPage() {
           </div>
         </section>
 
-        <aside className="glass-card rounded-2xl border border-white/5 bg-white/[0.03] p-6 backdrop-blur-lg">
+        <aside className="glass-card rounded-2xl p-6">
           <div className="space-y-5">
             <div>
               <p className="text-sm font-medium text-purple-electric">Configuracion</p>
               <h2 className="mt-2 text-2xl font-semibold text-text-primary">Preferencias y seguridad</h2>
             </div>
 
-            <div className="glass-card rounded-xl border border-white/5 bg-white/[0.03] p-4 backdrop-blur-lg">
+            <div className="glass-card rounded-xl p-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5 flex h-10 w-10 items-center justify-center rounded-full bg-purple-electric/12 text-purple-electric">
@@ -98,7 +98,7 @@ export function PerfilPage() {
             </div>
 
             <div className="space-y-3">
-              <div className="glass-card rounded-xl border border-white/5 bg-white/[0.03] p-4 backdrop-blur-lg">
+              <div className="glass-card rounded-xl p-4">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-electric/12 text-purple-electric">
                     <UserRound className="h-5 w-5" />
@@ -110,7 +110,7 @@ export function PerfilPage() {
                 </div>
               </div>
 
-              <div className="glass-card rounded-xl border border-white/5 bg-white/[0.03] p-4 backdrop-blur-lg">
+              <div className="glass-card rounded-xl p-4">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-electric/12 text-purple-electric">
                     <LockKeyhole className="h-5 w-5" />

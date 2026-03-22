@@ -72,7 +72,7 @@ function getStagnantTickets(tickets) {
 
 function KPICard({ title, value, subtitle }) {
   return (
-    <div className="glass-card rounded-xl border border-white/5 bg-white/5 p-4 backdrop-blur-md shadow-none">
+    <div className="glass-card rounded-xl p-4 shadow-none">
       <p className="mb-1 text-xs font-medium text-text-secondary">{title}</p>
       <p className="text-3xl font-bold text-text-primary">{value}</p>
       {subtitle && <p className="mt-1 text-xs text-text-muted">{subtitle}</p>}
@@ -86,7 +86,7 @@ function BarChart({ data }) {
       {data.map((item) => (
         <div key={item.label} className="flex items-center gap-3">
           <span className="w-12 text-xs text-text-secondary">{item.label}</span>
-          <div className="h-6 flex-1 overflow-hidden rounded-xl border border-white/5 bg-white/5">
+          <div className="h-6 flex-1 overflow-hidden rounded-xl border border-dark-purple-700/90 bg-dark-purple-800/60 backdrop-blur-xl">
             <div className={`h-full rounded-xl ${item.barClass}`} style={{ width: `${item.percentage}%` }} />
           </div>
           <span className="w-8 text-right text-xs font-medium text-text-primary">{item.count}</span>
@@ -121,12 +121,12 @@ export function EstadisticasPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="glass-card rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur-md shadow-none">
+        <div className="glass-card rounded-2xl p-6 shadow-none">
           <h2 className="mb-4 text-xs font-medium uppercase tracking-wider text-text-secondary">Tickets por Prioridad</h2>
           <BarChart data={priorityData} />
         </div>
 
-        <div className="glass-card rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur-md shadow-none">
+        <div className="glass-card rounded-2xl p-6 shadow-none">
           <h2 className="mb-4 text-xs font-medium uppercase tracking-wider text-text-secondary">Areas con Mas Incidencias</h2>
           <div className="space-y-2">
             {topAreas.map((item, index) => (
@@ -142,7 +142,7 @@ export function EstadisticasPage() {
         </div>
       </div>
 
-      <div className="glass-card rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur-md shadow-none">
+      <div className="glass-card rounded-2xl p-6 shadow-none">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xs font-medium uppercase tracking-wider text-text-secondary">Atencion Requerida</h2>
           {stagnantTickets.length > 0 && (
@@ -159,7 +159,7 @@ export function EstadisticasPage() {
               <Link
                 key={ticket.id}
                 to={`/tickets/${ticket.id}`}
-                className="flex items-center justify-between rounded-xl border border-white/5 bg-white/5 p-3 transition-colors hover:bg-white/10"
+                className="flex items-center justify-between rounded-xl border border-dark-purple-700/90 bg-dark-purple-800/55 p-3 transition-colors hover:bg-dark-purple-700/60"
               >
                 <div>
                   <p className="text-sm text-text-primary">#{ticket.id}</p>

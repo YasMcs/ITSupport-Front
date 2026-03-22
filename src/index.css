@@ -55,11 +55,11 @@
 
   /* Glassmorphism utility */
   .glass {
-    @apply bg-black/20 backdrop-blur-lg border border-white/10;
+    @apply border border-dark-purple-700/90 bg-dark-purple-800/70 backdrop-blur-xl;
   }
   
   .glass-card {
-    @apply bg-white/[0.03] backdrop-blur-lg border border-white/5 shadow-none;
+    @apply border border-dark-purple-700/90 bg-dark-purple-800/60 backdrop-blur-xl shadow-none;
   }
 }
 
