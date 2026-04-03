@@ -116,10 +116,12 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
       return false;
     }
 
-    const passwordError = validateRequiredText(formData.contrasena_hash, { min: 6, max: 60 });
-    if (passwordError) {
-      setError(passwordError === "Este campo es obligatorio" ? "La contrasena es obligatoria" : passwordError);
-      return false;
+    if (!isEditing || formData.contrasena_hash.trim()) {
+      const passwordError = validateRequiredText(formData.contrasena_hash, { min: 6, max: 60 });
+      if (passwordError) {
+        setError(passwordError === "Este campo es obligatorio" ? "La contrasena es obligatoria" : passwordError);
+        return false;
+      }
     }
 
     if (!formData.rol) {
@@ -229,16 +231,16 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
                 />
               </FormField>
 
-              <FormField label={isEditing ? "Contrasena" : "Contrasena Temporal"} required>
+              <FormField label={isEditing ? "Contrasena" : "Contrasena Temporal"} required={!isEditing}>
                 <input
                   type="password"
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
                   value={formData.contrasena_hash}
                   onChange={(e) => handleChange("contrasena_hash", e.target.value)}
-                  placeholder={isEditing ? "Nueva contrasena" : "Temporal123"}
+                  placeholder={isEditing ? "Deja vacio si no cambia" : "Temporal123"}
                   maxLength={60}
                   autoComplete="new-password"
-                  required
+                  required={!isEditing}
                 />
               </FormField>
 

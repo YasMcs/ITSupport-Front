@@ -33,14 +33,19 @@ export const userService = {
   },
 
   async updateByAdmin(id, payload) {
-    const response = await api.put(`/usuarios/admin/${id}`, {
+    const requestBody = {
       nombreUsuario: payload.nombre ?? payload.nombre_usuario,
       apellidoPaterno: payload.apellido_paterno,
       apellidoMaterno: payload.apellido_materno,
       email: payload.email,
-      contrasena: payload.contrasena_hash,
       rol: String(payload.rol || "").toLowerCase(),
-    });
+    };
+
+    if (payload.contrasena_hash) {
+      requestBody.contrasena = payload.contrasena_hash;
+    }
+
+    const response = await api.put(`/usuarios/admin/${id}`, requestBody);
     return normalizeUser(extractData(response));
   },
 
