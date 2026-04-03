@@ -261,6 +261,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
                   options={ROL_OPTIONS}
                   placeholder="Selecciona un rol"
                   className="w-full"
+                  disabled={isEditing}
                 />
               </FormField>
 
@@ -296,7 +297,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
 
               {isEditing && (
                 <div className="text-sm text-gray-400 bg-white/5 p-4 rounded-lg mt-6">
-                  <p>La edicion administrativa actualiza usuario, correo, contrasena y rol.</p>
+                  <p>Por ahora la edicion administrativa actualiza nombre, apellidos, correo y contrasena. El cargo queda bloqueado hasta contar con la asignacion de area correspondiente.</p>
                 </div>
               )}
             </div>
