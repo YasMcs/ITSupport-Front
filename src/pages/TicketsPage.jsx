@@ -198,41 +198,39 @@ export function TicketsPage() {
         </div>
       ) : role === ROLES.TECNICO ? (
         <div className="space-y-6">
-          <section className="rounded-3xl border border-white/8 bg-white/[0.03] p-3 backdrop-blur-sm">
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => setTecnicoView("assigned")}
-                  className={`rounded-2xl px-4 py-2.5 text-sm font-medium transition-all ${
-                    tecnicoView === "assigned"
-                      ? "bg-purple-electric/90 text-white shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
-                      : "border border-white/10 bg-dark-purple-900/35 text-text-secondary hover:bg-dark-purple-800/45 hover:text-text-primary"
-                  }`}
-                >
-                  Mis tickets
-                  <span className="ml-2 text-xs opacity-80">{filteredTickets.length}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTecnicoView("available")}
-                  className={`rounded-2xl px-4 py-2.5 text-sm font-medium transition-all ${
-                    tecnicoView === "available"
-                      ? "bg-purple-electric/90 text-white shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
-                      : "border border-white/10 bg-dark-purple-900/35 text-text-secondary hover:bg-dark-purple-800/45 hover:text-text-primary"
-                  }`}
-                >
-                  Disponibles
-                  <span className="ml-2 text-xs opacity-80">{filteredAvailableTickets.length}</span>
-                </button>
-              </div>
-              <p className="px-2 text-sm text-text-secondary">
-                {tecnicoView === "assigned"
-                  ? "Organiza y consulta tu bandeja personal de trabajo."
-                  : "Toma un ticket cuando tengas capacidad y se agregara automaticamente a tu tablero."}
-              </p>
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="inline-flex w-fit flex-wrap gap-2 rounded-2xl bg-dark-purple-900/30 p-1.5">
+              <button
+                type="button"
+                onClick={() => setTecnicoView("assigned")}
+                className={`rounded-xl px-4 py-2 text-sm font-medium transition-all ${
+                  tecnicoView === "assigned"
+                    ? "bg-white/8 text-text-primary"
+                    : "text-text-secondary hover:bg-white/5 hover:text-text-primary"
+                }`}
+              >
+                Mis tickets
+                <span className="ml-2 text-xs opacity-75">{filteredTickets.length}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setTecnicoView("available")}
+                className={`rounded-xl px-4 py-2 text-sm font-medium transition-all ${
+                  tecnicoView === "available"
+                    ? "bg-white/8 text-text-primary"
+                    : "text-text-secondary hover:bg-white/5 hover:text-text-primary"
+                }`}
+              >
+                Disponibles
+                <span className="ml-2 text-xs opacity-75">{filteredAvailableTickets.length}</span>
+              </button>
             </div>
-          </section>
+            <p className="text-sm text-text-secondary">
+              {tecnicoView === "assigned"
+                ? "Organiza y consulta tu bandeja personal de trabajo."
+                : "Toma un ticket cuando tengas capacidad y se agregara automaticamente a tu tablero."}
+            </p>
+          </div>
 
           {tecnicoView === "available" ? (
             <section className="rounded-3xl border border-white/8 bg-white/[0.03] p-6 backdrop-blur-sm">
