@@ -15,6 +15,7 @@ export function TicketsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [takingTicketId, setTakingTicketId] = useState(null);
   const [filters, setFilters] = useState({
     estado: "",
     prioridad: "",
@@ -23,6 +24,7 @@ export function TicketsPage() {
     tecnico: "",
   });
   const [tickets, setTickets] = useState([]);
+  const [availableTickets, setAvailableTickets] = useState([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -31,11 +33,28 @@ export function TicketsPage() {
       setLoading(true);
 
       try {
+        if (role === ROLES.TECNICO) {
+          const [assignedData, availableData] = await Promise.all([
+            ticketService.getMineAssigned(),
+            ticketService.getAvailable(),
+          ]);
+
+          if (!cancelled) {
+            setTickets(filterTicketsByRole(assignedData, role, user));
+            setAvailableTickets(availableData);
+          }
+          return;
+        }
+
         const data = await ticketService.getScoped(role);
-        if (!cancelled) setTickets(filterTicketsByRole(data, role, user));
+        if (!cancelled) {
+          setTickets(filterTicketsByRole(data, role, user));
+          setAvailableTickets([]);
+        }
       } catch (error) {
         if (!cancelled) {
           setTickets([]);
+          setAvailableTickets([]);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -55,27 +74,15 @@ export function TicketsPage() {
     toast.success(`Estado actualizado a ${newStatus}`);
   };
 
-  const filteredTickets = useMemo(() => {
-    let currentTickets = [...tickets];
+  const filteredTickets = useMemo(
+    () => applyTicketFilters(tickets, { filters, role, searchQuery }),
+    [filters, role, searchQuery, tickets]
+  );
 
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      currentTickets = currentTickets.filter((ticket) =>
-        [ticket.id, ticket.titulo, ticket.descripcion, ticket.encargado, ticket.tecnico, ticket.area]
-          .filter(Boolean)
-          .some((value) => String(value).toLowerCase().includes(query))
-      );
-    }
-
-    return currentTickets.filter((ticket) => {
-      if (role !== ROLES.TECNICO && filters.estado && ticket.estado !== filters.estado) return false;
-      if (filters.prioridad && ticket.prioridad !== filters.prioridad) return false;
-      if (filters.area && ticket.area !== filters.area) return false;
-      if (filters.sucursal && ticket.sucursal !== filters.sucursal) return false;
-      if (filters.tecnico && ticket.tecnico !== filters.tecnico) return false;
-      return true;
-    });
-  }, [filters, role, searchQuery, tickets]);
+  const filteredAvailableTickets = useMemo(
+    () => applyTicketFilters(availableTickets, { filters, role, searchQuery }),
+    [availableTickets, filters, role, searchQuery]
+  );
 
   const getColumns = () => {
     if (role === ROLES.ADMIN) {
@@ -100,6 +107,34 @@ export function TicketsPage() {
     if (role === ROLES.TECNICO) return "No tienes tickets asignados";
     if (role === ROLES.ENCARGADO) return "Aun no tienes tickets registrados";
     return "No hay tickets registrados";
+  };
+
+  const handleTakeTicket = async (ticketId) => {
+    if (!user?.id || takingTicketId) return;
+
+    try {
+      setTakingTicketId(ticketId);
+      const assignedTicket = await ticketService.assign({
+        ticketId: Number(ticketId),
+        tecnicoId: Number(user.id),
+      });
+
+      setAvailableTickets((prev) => prev.filter((ticket) => String(ticket.id) !== String(ticketId)));
+      setTickets((prev) => {
+        const withoutDuplicate = prev.filter((ticket) => String(ticket.id) !== String(assignedTicket.id));
+        return [assignedTicket, ...withoutDuplicate];
+      });
+
+      toast.success("Ticket asignado", {
+        description: "El ticket ya forma parte de tu bandeja de trabajo.",
+      });
+    } catch (error) {
+      toast.error("No pudimos tomar el ticket", {
+        description: error.response?.data?.message ?? "Intenta nuevamente en unos segundos.",
+      });
+    } finally {
+      setTakingTicketId(null);
+    }
   };
 
   return (
@@ -159,6 +194,81 @@ export function TicketsPage() {
         <div className="glass-card rounded-2xl p-12 text-center">
           <p className="text-text-secondary text-lg">Cargando tickets...</p>
         </div>
+      ) : role === ROLES.TECNICO ? (
+        <div className="space-y-6">
+          <section className="glass-card rounded-2xl p-6">
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-semibold text-text-primary">Tickets Disponibles</h2>
+                <p className="mt-1 text-sm text-text-secondary">
+                  Toma un ticket cuando tengas capacidad y se agregara automaticamente a tu tablero.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-dark-purple-700 bg-dark-purple-900/60 px-4 py-3 text-right">
+                <p className="text-xs uppercase tracking-wide text-text-muted">Disponibles</p>
+                <p className="text-2xl font-semibold text-text-primary">{filteredAvailableTickets.length}</p>
+              </div>
+            </div>
+
+            {filteredAvailableTickets.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-dark-purple-700 bg-dark-purple-900/40 px-6 py-10 text-center">
+                <p className="text-text-secondary">No hay tickets disponibles por tomar en este momento.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+                {filteredAvailableTickets.map((ticket) => (
+                  <article key={ticket.id} className="rounded-2xl border border-dark-purple-700 bg-dark-purple-900/45 p-5">
+                    <div className="mb-3 flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-mono text-text-muted">#{ticket.id}</p>
+                        <h3 className="mt-1 text-base font-semibold text-text-primary">{ticket.titulo}</h3>
+                      </div>
+                      <Badge priority={ticket.prioridad} />
+                    </div>
+
+                    <p className="line-clamp-2 text-sm text-text-secondary">{ticket.descripcion}</p>
+
+                    <div className="mt-4 flex flex-wrap gap-2 text-xs text-text-muted">
+                      <span className="rounded-full border border-dark-purple-700 bg-dark-purple-800/80 px-3 py-1">
+                        {ticket.area || "Sin area"}
+                      </span>
+                      <span className="rounded-full border border-dark-purple-700 bg-dark-purple-800/80 px-3 py-1">
+                        {ticket.sucursal || "Sin sucursal"}
+                      </span>
+                    </div>
+
+                    <div className="mt-5 flex items-center justify-between gap-3">
+                      <span className="text-xs text-text-muted">
+                        Creado el {ticket.fechaCreacion ? new Date(ticket.fechaCreacion).toLocaleDateString("es-MX") : "sin fecha"}
+                      </span>
+                      <Button
+                        type="button"
+                        onClick={() => handleTakeTicket(ticket.id)}
+                        disabled={takingTicketId === ticket.id}
+                        className="w-auto px-5 py-2.5"
+                      >
+                        {takingTicketId === ticket.id ? "Tomando..." : "Tomar ticket"}
+                      </Button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+
+          {filteredTickets.length === 0 ? (
+            <div className="glass-card rounded-2xl p-12 text-center">
+              <div className="flex flex-col items-center gap-3">
+                <svg className="w-16 h-16 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <p className="text-text-secondary text-lg">{getEmptyMessage()}</p>
+              </div>
+            </div>
+          ) : (
+            <KanbanBoard tickets={filteredTickets} onTicketMove={handleTicketMove} />
+          )}
+        </div>
       ) : filteredTickets.length === 0 ? (
         <div className="glass-card rounded-2xl p-12 text-center">
           <div className="flex flex-col items-center gap-3">
@@ -168,8 +278,6 @@ export function TicketsPage() {
             <p className="text-text-secondary text-lg">{getEmptyMessage()}</p>
           </div>
         </div>
-      ) : role === ROLES.TECNICO ? (
-        <KanbanBoard tickets={filteredTickets} onTicketMove={handleTicketMove} />
       ) : (
         <div className="glass-card rounded-2xl overflow-hidden">
           <TicketTable tickets={filteredTickets} columnas={getColumns()} />
@@ -184,4 +292,26 @@ function filterTicketsByRole(tickets, role, user) {
   if (role === ROLES.TECNICO) return tickets.filter((ticket) => Number(ticket.tecnico_id) === Number(user?.id));
   if (role === ROLES.ENCARGADO) return tickets.filter((ticket) => Number(ticket.encargado_id) === Number(user?.id));
   return [];
+}
+
+function applyTicketFilters(tickets, { filters, role, searchQuery }) {
+  let currentTickets = [...tickets];
+
+  if (searchQuery) {
+    const query = searchQuery.toLowerCase();
+    currentTickets = currentTickets.filter((ticket) =>
+      [ticket.id, ticket.titulo, ticket.descripcion, ticket.encargado, ticket.tecnico, ticket.area]
+        .filter(Boolean)
+        .some((value) => String(value).toLowerCase().includes(query))
+    );
+  }
+
+  return currentTickets.filter((ticket) => {
+    if (role !== ROLES.TECNICO && filters.estado && ticket.estado !== filters.estado) return false;
+    if (filters.prioridad && ticket.prioridad !== filters.prioridad) return false;
+    if (filters.area && ticket.area !== filters.area) return false;
+    if (filters.sucursal && ticket.sucursal !== filters.sucursal) return false;
+    if (filters.tecnico && ticket.tecnico !== filters.tecnico) return false;
+    return true;
+  });
 }
