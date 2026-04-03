@@ -245,7 +245,7 @@ export function TicketsPage() {
           </div>
 
           {tecnicoView === "available" ? (
-            <section className="rounded-3xl border border-white/8 bg-white/[0.03] p-6 backdrop-blur-sm">
+            <section className="rounded-3xl bg-white/[0.03] p-6 backdrop-blur-sm">
               <div className="mb-5 flex items-start justify-between gap-4">
                 <div>
                   <h2 className="text-xl font-semibold text-text-primary">Tickets Disponibles</h2>
@@ -253,20 +253,20 @@ export function TicketsPage() {
                     Selecciona un ticket libre para incorporarlo a tu flujo de trabajo.
                   </p>
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-dark-purple-900/35 px-4 py-3 text-right backdrop-blur-sm">
+                <div className="rounded-2xl bg-dark-purple-900/35 px-4 py-3 text-right backdrop-blur-sm">
                   <p className="text-xs uppercase tracking-wide text-text-muted">Disponibles</p>
                   <p className="text-2xl font-semibold text-text-primary">{filteredAvailableTickets.length}</p>
                 </div>
               </div>
 
               {filteredAvailableTickets.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-white/10 bg-dark-purple-900/20 px-6 py-10 text-center">
+                <div className="rounded-2xl bg-dark-purple-900/20 px-6 py-10 text-center">
                   <p className="text-text-secondary">No hay tickets disponibles por tomar en este momento.</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
                   {filteredAvailableTickets.map((ticket) => (
-                    <article key={ticket.id} className="rounded-2xl border border-white/10 bg-dark-purple-900/30 p-5 backdrop-blur-sm">
+                    <article key={ticket.id} className="rounded-2xl bg-dark-purple-900/30 p-5 backdrop-blur-sm">
                       <div className="mb-3 flex items-start justify-between gap-3">
                         <div>
                           <p className="text-xs font-mono text-text-muted">#{ticket.id}</p>
@@ -278,10 +278,10 @@ export function TicketsPage() {
                       <p className="line-clamp-2 text-sm text-text-secondary">{ticket.descripcion}</p>
 
                       <div className="mt-4 flex flex-wrap gap-2 text-xs text-text-muted">
-                        <span className="rounded-full border border-white/10 bg-dark-purple-800/55 px-3 py-1">
+                        <span className="rounded-full bg-dark-purple-800/55 px-3 py-1">
                           {ticket.area || "Sin area"}
                         </span>
-                        <span className="rounded-full border border-white/10 bg-dark-purple-800/55 px-3 py-1">
+                        <span className="rounded-full bg-dark-purple-800/55 px-3 py-1">
                           {ticket.sucursal || "Sin sucursal"}
                         </span>
                       </div>
