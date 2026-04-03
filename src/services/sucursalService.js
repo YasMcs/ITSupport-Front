@@ -25,9 +25,7 @@ export const sucursalService = {
   },
 
   async update(id, payload) {
-    const response = await api.put(`/sucursales/${id}`, null, {
-      params: { nuevoNombre: payload.nombre },
-    });
+    const response = await api.put(`/sucursales/${id}`, buildSucursalPayload(payload));
     return normalizeSucursal(extractData(response));
   },
 

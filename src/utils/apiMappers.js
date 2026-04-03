@@ -48,20 +48,31 @@ export function normalizeUser(user = {}) {
 }
 
 export function normalizeSucursal(sucursal = {}) {
+  const direccionFisica = firstDefined(sucursal.direccionFisica, sucursal.direccion, sucursal.domicilio, "");
+  const horarioOperacion = firstDefined(
+    sucursal.horarioOperacion,
+    sucursal.horario_operacion,
+    sucursal.horario,
+    ""
+  );
+
   return {
     id: firstDefined(sucursal.id, sucursal.sucursalId),
     nombre: firstDefined(sucursal.nombre, sucursal.nombreSucursal, ""),
     zona: firstDefined(sucursal.zona, sucursal.colonia, ""),
-    direccion: firstDefined(sucursal.direccion, sucursal.domicilio, ""),
+    direccion: direccionFisica,
+    direccionFisica,
     contacto: firstDefined(sucursal.contacto, sucursal.encargado, ""),
     telefono: firstDefined(sucursal.telefono, sucursal.telefonoDirecto, ""),
     extension: firstDefined(sucursal.extension, sucursal.extensionInterna, ""),
     horaApertura: firstDefined(sucursal.horaApertura, sucursal.hora_apertura, ""),
     horaCierre: firstDefined(sucursal.horaCierre, sucursal.hora_cierre, ""),
+    horarioOperacion,
     estado: normalizeCatalogState(firstDefined(sucursal.estado, sucursal.estatus, "ACTIVA"), "Activa", "Desactivada"),
     usuariosCount: firstDefined(sucursal.usuariosCount, sucursal.totalUsuarios, 0),
     areasCount: firstDefined(sucursal.areasCount, sucursal.totalAreas, 0),
     totalTickets: firstDefined(sucursal.totalTickets, 0),
+    areasNombres: Array.isArray(sucursal.areasNombres) ? sucursal.areasNombres : [],
   };
 }
 
@@ -140,6 +151,10 @@ export function buildAreaPayload(payload = {}) {
 export function buildSucursalPayload(payload = {}) {
   return {
     nombre: payload.nombre,
+    direccionFisica: payload.direccionFisica ?? payload.direccion ?? "",
+    telefono: payload.telefono ?? "",
+    horarioOperacion: payload.horarioOperacion ?? "",
+    zona: payload.zona ?? "",
   };
 }
 

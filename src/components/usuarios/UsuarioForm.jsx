@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { FormField } from "../ui/FormField";
 import { Select } from "../ui/Select";
 import { Button } from "../ui/Button";
@@ -49,6 +50,20 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
     [formData.area_id, normalizedAreaOptions]
   );
 
+  useEffect(() => {
+    setFormData({
+      nombre: usuario?.nombre || "",
+      apellido_paterno: usuario?.apellido_paterno || "",
+      apellido_materno: usuario?.apellido_materno || "",
+      nombre_usuario: usuario?.nombre_usuario || "",
+      email: usuario?.email || "",
+      contrasena_hash: "",
+      rol: usuario?.rol || "",
+      estado_cuenta: usuario?.estado_cuenta || "activo",
+      area_id: usuario?.area_id ? String(usuario.area_id) : "",
+    });
+  }, [usuario]);
+
   const handleChange = (field, value) => {
     setFormData((prev) => {
       const next = { ...prev, [field]: value };
@@ -60,36 +75,35 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
   };
 
   const validate = () => {
-    const fieldsToCheck = [
-      formData.nombre,
-      formData.apellido_paterno,
-      formData.apellido_materno,
-      formData.nombre_usuario,
-      formData.email,
-      formData.contrasena_hash,
-    ];
+    const fieldsToCheck = [formData.nombre_usuario, formData.email, formData.contrasena_hash];
+
+    if (!isEditing) {
+      fieldsToCheck.unshift(formData.nombre, formData.apellido_paterno, formData.apellido_materno);
+    }
 
     if (fieldsToCheck.some((value) => containsForbiddenInput(value))) {
       setError("Deteccion de caracteres no permitidos");
       return false;
     }
 
-    const nombreError = validateName(formData.nombre, "El nombre");
-    if (nombreError) {
-      setError(nombreError);
-      return false;
-    }
+    if (!isEditing) {
+      const nombreError = validateName(formData.nombre, "El nombre");
+      if (nombreError) {
+        setError(nombreError);
+        return false;
+      }
 
-    const apellidoPaternoError = validateName(formData.apellido_paterno, "El apellido paterno");
-    if (apellidoPaternoError) {
-      setError(apellidoPaternoError);
-      return false;
-    }
+      const apellidoPaternoError = validateName(formData.apellido_paterno, "El apellido paterno");
+      if (apellidoPaternoError) {
+        setError(apellidoPaternoError);
+        return false;
+      }
 
-    const apellidoMaternoError = validateName(formData.apellido_materno, "El apellido materno");
-    if (apellidoMaternoError) {
-      setError(apellidoMaternoError);
-      return false;
+      const apellidoMaternoError = validateName(formData.apellido_materno, "El apellido materno");
+      if (apellidoMaternoError) {
+        setError(apellidoMaternoError);
+        return false;
+      }
     }
 
     const usernameError = validateUsername(formData.nombre_usuario);
@@ -104,12 +118,10 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
       return false;
     }
 
-    if (!isEditing) {
-      const passwordError = validateRequiredText(formData.contrasena_hash, { min: 8, max: 60 });
-      if (passwordError) {
-        setError(passwordError === "Este campo es obligatorio" ? "La contrasena es obligatoria" : passwordError);
-        return false;
-      }
+    const passwordError = validateRequiredText(formData.contrasena_hash, { min: 8, max: 60 });
+    if (passwordError) {
+      setError(passwordError === "Este campo es obligatorio" ? "La contrasena es obligatoria" : passwordError);
+      return false;
     }
 
     if (!formData.rol) {
@@ -117,7 +129,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
       return false;
     }
 
-    if (isEncargado && !formData.area_id) {
+    if (!isEditing && isEncargado && !formData.area_id) {
       setError("El area asignada es obligatoria");
       return false;
     }
@@ -147,7 +159,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
         area_id: isEncargado ? Number(formData.area_id) : null,
       }));
 
-      toast.success("Registro creado exitosamente", {
+      toast.success(isEditing ? "Usuario actualizado" : "Registro creado exitosamente", {
         description: isEditing ? "Los cambios ya fueron aplicados." : "La informacion se guardo correctamente.",
       });
     } catch (error) {
@@ -180,7 +192,8 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
                   onChange={(e) => handleChange("nombre", e.target.value)}
                   placeholder="Joel"
                   maxLength={60}
-                  required
+                  required={!isEditing}
+                  disabled={isEditing}
                 />
               </FormField>
 
@@ -192,7 +205,8 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
                   onChange={(e) => handleChange("apellido_paterno", e.target.value)}
                   placeholder="De Coz"
                   maxLength={60}
-                  required
+                  required={!isEditing}
+                  disabled={isEditing}
                 />
               </FormField>
 
@@ -204,7 +218,8 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
                   onChange={(e) => handleChange("apellido_materno", e.target.value)}
                   placeholder="Fernandez"
                   maxLength={60}
-                  required
+                  required={!isEditing}
+                  disabled={isEditing}
                 />
               </FormField>
 
@@ -232,20 +247,18 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
                 />
               </FormField>
 
-              {!isEditing && (
-                <FormField label="Contrasena Temporal" required>
-                  <input
-                    type="password"
-                    className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
-                    value={formData.contrasena_hash}
-                    onChange={(e) => handleChange("contrasena_hash", e.target.value)}
-                    placeholder="Temporal123"
-                    maxLength={60}
-                    autoComplete="new-password"
-                    required
-                  />
-                </FormField>
-              )}
+              <FormField label={isEditing ? "Contrasena" : "Contrasena Temporal"} required>
+                <input
+                  type="password"
+                  className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
+                  value={formData.contrasena_hash}
+                  onChange={(e) => handleChange("contrasena_hash", e.target.value)}
+                  placeholder={isEditing ? "Nueva contrasena" : "Temporal123"}
+                  maxLength={60}
+                  autoComplete="new-password"
+                  required
+                />
+              </FormField>
 
               <div className="flex justify-end gap-3 mt-6">
                 {onCancel && (
@@ -281,10 +294,11 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
                   options={ESTADO_OPTIONS}
                   placeholder="Selecciona un estado"
                   className="w-full"
+                  disabled={isEditing}
                 />
               </FormField>
 
-              {isEncargado && (
+              {!isEditing && isEncargado && (
                 <FormField label="Area Asignada" required>
                   <Select
                     value={formData.area_id}
@@ -296,10 +310,16 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
                 </FormField>
               )}
 
-              {isEncargado && selectedArea && (
+              {!isEditing && isEncargado && selectedArea && (
                 <div className="text-sm text-gray-400 bg-white/5 p-4 rounded-lg mt-6">
                   <p>Area seleccionada</p>
                   <p className="mt-2 text-xs text-text-muted">{selectedArea.label}</p>
+                </div>
+              )}
+
+              {isEditing && (
+                <div className="text-sm text-gray-400 bg-white/5 p-4 rounded-lg mt-6">
+                  <p>La edicion administrativa actualiza usuario, correo, contrasena y rol.</p>
                 </div>
               )}
             </div>

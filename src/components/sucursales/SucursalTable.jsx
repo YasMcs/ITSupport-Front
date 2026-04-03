@@ -11,23 +11,23 @@ export function SucursalTable({ sucursales, onEditar, onToggleEstado }) {
 
   const COLUMNS = [
     { key: "nombre", label: "Nombre" },
-    { key: "zona", label: "Zona / Colonia" },
-    { key: "contacto", label: "Contacto Local" },
-    { key: "extension", label: "Extension" },
-    {
-      key: "usuariosCount",
-      label: "Usuarios",
-      render: (val) => (
-        <span className="inline-flex items-center justify-center bg-indigo-500/10 text-indigo-400 px-2.5 py-0.5 rounded-full text-xs font-medium border border-indigo-500/20">
-          {val}
-        </span>
-      ),
-    },
+    { key: "zona", label: "Zona" },
+    { key: "telefono", label: "Telefono" },
+    { key: "horarioOperacion", label: "Horario" },
     {
       key: "areasCount",
       label: "Areas",
       render: (val) => (
         <span className="inline-flex items-center justify-center bg-purple-500/10 text-purple-400 px-2.5 py-0.5 rounded-full text-xs font-medium border border-purple-500/20">
+          {val}
+        </span>
+      ),
+    },
+    {
+      key: "totalTickets",
+      label: "Tickets",
+      render: (val) => (
+        <span className="inline-flex items-center justify-center bg-indigo-500/10 text-indigo-400 px-2.5 py-0.5 rounded-full text-xs font-medium border border-indigo-500/20">
           {val}
         </span>
       ),

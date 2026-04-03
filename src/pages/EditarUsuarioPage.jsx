@@ -10,6 +10,7 @@ export function EditarUsuarioPage() {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState(null);
   const [areas, setAreas] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -28,9 +29,11 @@ export function EditarUsuarioPage() {
       } catch (error) {
         if (!cancelled) {
           toast.error("No pudimos cargar el usuario", {
-            description: error.response?.data?.message ?? "El backend no expone una actualizacion administrativa completa para este recurso.",
+            description: error.response?.data?.message ?? "Intenta nuevamente.",
           });
         }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     }
 
@@ -40,12 +43,18 @@ export function EditarUsuarioPage() {
     };
   }, [id]);
 
-  const handleSubmit = async () => {
-    toast.info("La API documentada no incluye una ruta para editar usuarios arbitrarios", {
-      description: "Deje esta vista conectada a lectura real, pero la escritura administrativa requiere soporte adicional en backend.",
-    });
+  const handleSubmit = async (payload) => {
+    await userService.updateByAdmin(id, payload);
     navigate("/usuarios");
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-text-secondary">Cargando usuario...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

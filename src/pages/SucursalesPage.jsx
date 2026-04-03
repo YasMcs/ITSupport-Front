@@ -56,7 +56,8 @@ export function SucursalesPage() {
         (sucursal) =>
           sucursal.nombre?.toLowerCase().includes(query) ||
           sucursal.zona?.toLowerCase().includes(query) ||
-          sucursal.contacto?.toLowerCase().includes(query)
+          sucursal.telefono?.toLowerCase().includes(query) ||
+          sucursal.direccionFisica?.toLowerCase().includes(query)
       );
     }
 

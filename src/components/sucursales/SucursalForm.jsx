@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/Button";
 import { FormField } from "../ui/FormField";
 import { Select } from "../ui/Select";
-import { CustomTimePicker } from "../ui/CustomTimePicker";
 
 const ESTADO_OPTIONS = [
   { value: "Activa", label: "Activa" },
@@ -17,10 +16,9 @@ export function SucursalForm({ initialData, onSubmit }) {
   const [form, setForm] = useState({
     nombre: initialData?.nombre || "",
     zona: initialData?.zona || "",
-    direccion: initialData?.direccion || "",
+    direccionFisica: initialData?.direccionFisica || initialData?.direccion || "",
     telefono: initialData?.telefono || "",
-    horaApertura: initialData?.horaApertura || "",
-    horaCierre: initialData?.horaCierre || "",
+    horarioOperacion: initialData?.horarioOperacion || "",
     estado: initialData?.estado || "Activa",
   });
 
@@ -37,6 +35,21 @@ export function SucursalForm({ initialData, onSubmit }) {
 
     if (!form.zona.trim()) {
       setError("La zona o colonia es obligatoria");
+      return;
+    }
+
+    if (!form.direccionFisica.trim()) {
+      setError("La direccion fisica es obligatoria");
+      return;
+    }
+
+    if (!/^\d{10}$/.test(form.telefono.trim())) {
+      setError("El telefono debe tener exactamente 10 digitos");
+      return;
+    }
+
+    if (!form.horarioOperacion.trim()) {
+      setError("El horario de operacion es obligatorio");
       return;
     }
 
@@ -112,60 +125,43 @@ export function SucursalForm({ initialData, onSubmit }) {
                     onChange={(e) => handleChange("zona", e.target.value)}
                     placeholder="Centro Historico"
                     required
-                    disabled={isEditing}
                   />
                 </FormField>
               </div>
 
-              <FormField label="Direccion fisica exacta">
+              <FormField label="Direccion fisica exacta" required>
                 <textarea
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600 resize-none"
-                  value={form.direccion}
-                  onChange={(e) => handleChange("direccion", e.target.value)}
+                  value={form.direccionFisica}
+                  onChange={(e) => handleChange("direccionFisica", e.target.value)}
                   rows={2}
                   placeholder="Calle, numero, referencias..."
-                  disabled={isEditing}
+                  required
                 />
               </FormField>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField label="Telefono Directo / Movil">
+                <FormField label="Telefono Directo / Movil" required>
                   <input
-                    type="text"
+                    type="tel"
                     className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
                     value={form.telefono}
-                    onChange={(e) => handleChange("telefono", e.target.value)}
-                    placeholder="Para emergencias si cae la red"
-                    disabled={isEditing}
+                    onChange={(e) => handleChange("telefono", e.target.value.replace(/\D/g, "").slice(0, 10))}
+                    placeholder="5551234567"
+                    inputMode="numeric"
+                    required
                   />
                 </FormField>
 
-                <FormField label="Horario de Operacion">
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1">
-                      <CustomTimePicker
-                        value={form.horaApertura}
-                        onChange={(value) => handleChange("horaApertura", value)}
-                        placeholder="Apertura"
-                        disabled={isEditing}
-                      />
-                    </div>
-                    <span className="text-gray-400">a</span>
-                    <div className="flex-1">
-                      <CustomTimePicker
-                        value={form.horaCierre}
-                        onChange={(value) => handleChange("horaCierre", value)}
-                        placeholder="Cierre"
-                        disabled={isEditing}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 mt-1 text-xs text-purple-400">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>Formato de 24 horas</span>
-                  </div>
+                <FormField label="Horario de Operacion" required>
+                  <input
+                    type="text"
+                    className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
+                    value={form.horarioOperacion}
+                    onChange={(e) => handleChange("horarioOperacion", e.target.value)}
+                    placeholder="Lun-Vie 9-18"
+                    required
+                  />
                 </FormField>
               </div>
 
@@ -196,8 +192,8 @@ export function SucursalForm({ initialData, onSubmit }) {
               <div className="text-sm text-gray-400 bg-white/5 p-4 rounded-lg mt-6">
                 <p>
                   {isEditing
-                    ? "Por ahora el backend solo permite actualizar el nombre de la sucursal desde esta vista."
-                    : "Podras completar la configuracion de esta sucursal despues de crearla."}
+                    ? "La edicion ahora usa el mismo contrato completo de la API para mantener la sucursal sincronizada."
+                    : "La sucursal se creara con todos los datos obligatorios que solicita el backend."}
                 </p>
               </div>
             </div>

@@ -25,10 +25,18 @@ export const areaService = {
   },
 
   async update(id, payload) {
-    const response = await api.put(`/areas/${id}`, null, {
+    const nameResponse = await api.put(`/areas/${id}`, null, {
       params: { nuevoNombre: payload.nombreArea },
     });
-    return normalizeArea(extractData(response));
+
+    if (payload.sucursalId) {
+      const branchResponse = await api.put(`/areas/${id}/sucursal`, {
+        sucursalId: Number(payload.sucursalId),
+      });
+      return normalizeArea(extractData(branchResponse));
+    }
+
+    return normalizeArea(extractData(nameResponse));
   },
 
   async deactivate(id) {

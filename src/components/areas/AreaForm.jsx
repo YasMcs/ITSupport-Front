@@ -103,7 +103,6 @@ export function AreaForm({ initialData, onSubmit, sucursalOptions = [] }) {
                   options={sucursalOptions}
                   placeholder="Seleccionar sucursal"
                   className="w-full"
-                  disabled={isEditing}
                 />
               </FormField>
 
@@ -134,7 +133,7 @@ export function AreaForm({ initialData, onSubmit, sucursalOptions = [] }) {
               <div className="text-sm text-gray-400 bg-white/5 p-4 rounded-lg mt-6">
                 <p>
                   {isEditing
-                    ? "Por ahora el backend solo permite actualizar el nombre del area desde esta vista."
+                    ? "Esta vista ya puede actualizar el nombre del area y moverla a otra sucursal."
                     : "Podras asignar tickets a esta area una vez creada."}
                 </p>
               </div>
