@@ -7,6 +7,7 @@ import { useAuth } from "../hooks/useAuth";
 import { commentService } from "../services/commentService";
 import { ticketService } from "../services/ticketService";
 import { containsForbiddenInput, normalizeTextInput, validateRequiredText } from "../utils/security";
+import { formatDate } from "../utils/formatDate";
 import { getUserDisplayName } from "../utils/userDisplay";
 
 export function TicketDetailPage() {
@@ -27,10 +28,14 @@ export function TicketDetailPage() {
       setLoading(true);
 
       try {
-        const [ticketData, commentsData] = await Promise.all([
-          ticketService.getById(id),
-          commentService.getByTicket(id),
-        ]);
+        const ticketData = await ticketService.getById(id);
+        let commentsData = [];
+
+        try {
+          commentsData = await commentService.getByTicket(id);
+        } catch {
+          commentsData = [];
+        }
 
         if (!cancelled) {
           setTicket(ticketData);
@@ -193,7 +198,7 @@ export function TicketDetailPage() {
           <div className="flex flex-col gap-1">
             <h1 className="text-2xl font-bold text-text-primary">{ticket.titulo}</h1>
             <p className="text-sm text-text-muted">
-              Ticket #{ticket.id} - Creado el {ticket.fechaCreacion}
+              Ticket #{ticket.id} - Creado el {formatDate(ticket.fechaCreacion) || "Sin fecha"}
             </p>
           </div>
         </div>
@@ -260,7 +265,7 @@ export function TicketDetailPage() {
                   <div key={index} className="rounded-xl bg-dark-purple-900/50 p-3">
                     <div className="mb-2 flex items-center justify-between">
                       <span className="text-sm font-medium text-text-primary">{comentario.autor}</span>
-                      <span className="text-xs text-text-muted">{comentario.fecha}</span>
+                      <span className="text-xs text-text-muted">{formatDate(comentario.fecha) || "Sin fecha"}</span>
                     </div>
                     <p className="text-sm text-text-secondary">{comentario.texto}</p>
                   </div>
@@ -340,7 +345,7 @@ export function TicketDetailPage() {
                 <div key={index} className="relative pl-6">
                   <span className="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full bg-purple-electric ring-4 ring-dark-purple-900" />
                   <p className="text-sm text-text-secondary">{item.accion}</p>
-                  <span className="text-xs text-text-muted">{item.fecha}</span>
+                  <span className="text-xs text-text-muted">{formatDate(item.fecha) || item.fecha || "Sin fecha"}</span>
                 </div>
               ))}
             </div>

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Table } from "../ui/Table";
 import { Badge } from "../ui/Badge";
+import { formatDate } from "../../utils/formatDate";
 
 const COLUMN_KEYS = {
   NUMERO: "numero",
@@ -24,7 +25,7 @@ const DEFAULT_COLUMNS = [
   { key: COLUMN_KEYS.ESTADO, label: "Estado", render: (val) => <Badge status={val} /> },
   { key: COLUMN_KEYS.TECNICO, label: "Tecnico Asignado", render: (val) => val || "Sin asignar" },
   { key: COLUMN_KEYS.RESPONSABLE, label: "Encargado" },
-  { key: COLUMN_KEYS.FECHA, label: "Fecha de Creacion", render: (val) => val },
+  { key: COLUMN_KEYS.FECHA, label: "Fecha de Creacion", render: (val) => formatDate(val) || "-" },
   { key: COLUMN_KEYS.ACCIONES, label: "Acciones" },
 ];
 
@@ -58,7 +59,7 @@ function columnaKeysToColumns(columnas) {
         case COLUMN_KEYS.RESPONSABLE:
           return { key: "encargado", label: "Encargado" };
         case COLUMN_KEYS.FECHA:
-          return { key: "fechaCreacion", label: "Fecha de Creacion", render: (val) => val };
+          return { key: "fechaCreacion", label: "Fecha de Creacion", render: (val) => formatDate(val) || "-" };
         case COLUMN_KEYS.ACCIONES:
           return {
             key: "id",
