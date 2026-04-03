@@ -106,12 +106,14 @@ export function UsuariosPage() {
   }, []);
 
   const usuarios = useMemo(() => {
-    const usersWithoutCurrentAdmin = usuariosState.filter((row) => row.id !== currentUser?.id);
+    const visibleUsers = usuariosState.filter(
+      (row) => row.id !== currentUser?.id && ["tecnico", "encargado"].includes(row.rol)
+    );
 
-    if (!searchQuery) return usersWithoutCurrentAdmin;
+    if (!searchQuery) return visibleUsers;
 
     const query = searchQuery.toLowerCase();
-    return usersWithoutCurrentAdmin.filter((row) =>
+    return visibleUsers.filter((row) =>
       [getUserDisplayName(row), row.nombre_usuario, row.email, row.area]
         .filter(Boolean)
         .some((value) => value.toLowerCase().includes(query))
