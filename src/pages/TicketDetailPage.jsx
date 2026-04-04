@@ -73,7 +73,7 @@ export function TicketDetailPage() {
   const isCreator = ticket ? Number(user?.id) === Number(ticket.encargado_id) : false;
   const isAssignedTechnician = ticket ? Number(user?.id) === Number(ticket.tecnico_id) : false;
   const canViewTicket = ticket ? isAdmin || isCreator || isAssignedTechnician : false;
-  const canCloseTicket = !isAdmin && role === ROLES.SOPORTE && isAssignedTechnician && estadoActual !== TICKET_STATUS.CERRADO;
+  const canCloseTicket = !isAdmin && role === ROLES.TECNICO && isAssignedTechnician && estadoActual !== TICKET_STATUS.CERRADO;
   const canComment = !isAdmin && (isCreator || isAssignedTechnician);
   const comentariosVisibles = comentarios.filter((comentario) => !isAssignmentNoiseComment(comentario, ticket));
 
