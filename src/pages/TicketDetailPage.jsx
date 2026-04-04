@@ -72,6 +72,7 @@ export function TicketDetailPage() {
   const canViewTicket = ticket ? isAdmin || isCreator || isAssignedTechnician : false;
   const canCloseTicket = !isAdmin && role === "tecnico" && isAssignedTechnician && estadoActual !== "cerrado";
   const canComment = !isAdmin && (isCreator || isAssignedTechnician);
+  const comentariosVisibles = comentarios.filter((comentario) => !isAssignmentNoiseComment(comentario, ticket));
 
   useEffect(() => {
     if (!ticket || canViewTicket) return;
@@ -217,65 +218,25 @@ export function TicketDetailPage() {
         <div className="space-y-6 lg:col-span-2">
           <div className="glass-card rounded-2xl p-5">
             <h3 className="mb-4 text-lg font-semibold text-text-primary">Descripcion</h3>
-
-            {canCloseTicket && (
-              <div className="mb-4 flex flex-col gap-3 rounded-2xl bg-white/5 p-4">
-                <div>
-                  <p className="text-sm font-medium text-text-primary">Accion disponible</p>
-                  <p className="mt-1 text-sm text-text-secondary">
-                    Cuando termines la atencion de este ticket, puedes marcarlo como cerrado desde aqui.
-                  </p>
-                </div>
-                <div>
-                  <Button type="button" onClick={handleCloseTicket} className="w-auto px-5 py-2.5">
-                    Cerrar ticket
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {!isAdmin && role === "tecnico" && isAssignedTechnician && estadoActual === "cerrado" && (
-              <div className="mb-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-text-muted">
-                Este ticket ya se encuentra cerrado.
-              </div>
-            )}
-
-            {!canCloseTicket && !isAdmin && role === "tecnico" && !isAssignedTechnician && (
-              <div className="mb-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-text-muted">
-                Solo el tecnico asignado puede cerrar este ticket.
-              </div>
-            )}
-
-            {isAdmin && (
-              <div className="mb-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-text-muted">
-                El administrador solo supervisa este ticket y no puede modificar su estado.
-              </div>
-            )}
-
             <p className="whitespace-pre-wrap leading-relaxed text-text-secondary">{ticket.descripcion}</p>
           </div>
 
           <div className="glass-card rounded-2xl p-5">
-            <h3 className="mb-4 text-lg font-semibold text-text-primary">Comentarios</h3>
-
-            <div className="mb-4 max-h-48 space-y-3 overflow-y-auto">
-              {comentarios.length === 0 ? (
-                <p className="py-4 text-center text-sm text-text-muted">No hay comentarios</p>
-              ) : (
-                comentarios.map((comentario, index) => (
-                  <div key={index} className="rounded-xl bg-dark-purple-900/50 p-3">
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="text-sm font-medium text-text-primary">{comentario.autor}</span>
-                      <span className="text-xs text-text-muted">{formatDate(comentario.fecha) || "Sin fecha"}</span>
-                    </div>
-                    <p className="text-sm text-text-secondary">{comentario.texto}</p>
-                  </div>
-                ))
-              )}
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <div>
+                <h3 className="text-lg font-semibold text-text-primary">Comentarios</h3>
+                <p className="mt-1 text-sm text-text-secondary">
+                  Usa esta seccion para dejar seguimiento relevante sobre la atencion del ticket.
+                </p>
+              </div>
+              <div className="rounded-2xl bg-dark-purple-900/35 px-4 py-3 text-right">
+                <p className="text-xs uppercase tracking-wide text-text-muted">Comentarios</p>
+                <p className="text-2xl font-semibold text-text-primary">{comentariosVisibles.length}</p>
+              </div>
             </div>
 
             {canComment && (
-              <div className="border-t border-dark-purple-700 pt-4">
+              <div className="rounded-2xl bg-white/5 p-4">
                 <label className="mb-2 block text-xs uppercase tracking-wider text-text-muted">Agregar Comentario</label>
                 <div className="flex items-start gap-2">
                   <textarea
@@ -299,20 +260,71 @@ export function TicketDetailPage() {
             )}
 
             {!canComment && !isAdmin && (
-              <div className="border-t border-dark-purple-700 pt-4 text-sm text-text-muted">
+              <div className="rounded-2xl bg-white/5 px-4 py-3 text-sm text-text-muted">
                 Solo el encargado creador o el tecnico asignado pueden agregar comentarios en esta vista.
               </div>
             )}
 
             {isAdmin && (
-              <div className="border-t border-dark-purple-700 pt-4 text-sm text-text-muted">
+              <div className="rounded-2xl bg-white/5 px-4 py-3 text-sm text-text-muted">
                 El administrador puede revisar el historial, pero no agregar comentarios.
               </div>
             )}
+
+            <div className="mt-5 border-t border-dark-purple-700 pt-5">
+              <div className="max-h-72 space-y-3 overflow-y-auto pr-1">
+                {comentariosVisibles.length === 0 ? (
+                  <p className="py-6 text-center text-sm text-text-muted">No hay comentarios relevantes por mostrar.</p>
+                ) : (
+                  comentariosVisibles.map((comentario, index) => (
+                    <div key={index} className="rounded-xl bg-dark-purple-900/50 p-3">
+                      <div className="mb-2 flex items-center justify-between gap-3">
+                        <span className="text-sm font-medium text-text-primary">{comentario.autor}</span>
+                        <span className="text-xs text-text-muted">{formatDate(comentario.fecha) || "Sin fecha"}</span>
+                      </div>
+                      <p className="text-sm leading-relaxed text-text-secondary">{comentario.texto}</p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="flex flex-col gap-6">
+          <div className="glass-card rounded-2xl p-5">
+            <h3 className="mb-4 text-lg font-semibold text-text-primary">Acciones</h3>
+
+            {canCloseTicket && (
+              <div className="space-y-4">
+                <p className="text-sm text-text-secondary">
+                  Cuando confirmes que la atencion termino correctamente, puedes cerrar este ticket.
+                </p>
+                <Button type="button" onClick={handleCloseTicket} className="w-full justify-center py-3">
+                  Cerrar ticket
+                </Button>
+              </div>
+            )}
+
+            {!isAdmin && role === "tecnico" && isAssignedTechnician && estadoActual === "cerrado" && (
+              <div className="rounded-xl bg-white/5 px-4 py-3 text-sm text-text-muted">
+                Este ticket ya se encuentra cerrado.
+              </div>
+            )}
+
+            {!canCloseTicket && !isAdmin && role === "tecnico" && !isAssignedTechnician && (
+              <div className="rounded-xl bg-white/5 px-4 py-3 text-sm text-text-muted">
+                Solo el tecnico asignado puede cerrar este ticket.
+              </div>
+            )}
+
+            {isAdmin && (
+              <div className="rounded-xl bg-white/5 px-4 py-3 text-sm text-text-muted">
+                El administrador solo puede supervisar este ticket.
+              </div>
+            )}
+          </div>
+
           <div className="glass-card rounded-2xl p-5">
             <h3 className="mb-4 text-lg font-semibold text-text-primary">Resumen operativo</h3>
             <div className="space-y-3 text-sm">
@@ -330,7 +342,7 @@ export function TicketDetailPage() {
               </div>
               <div className="flex justify-between gap-4">
                 <span className="text-text-muted">Comentarios</span>
-                <span className="text-text-primary">{comentarios.length}</span>
+                <span className="text-text-primary">{comentariosVisibles.length}</span>
               </div>
               {ticket.fechaCierre && (
                 <div className="flex justify-between gap-4">
@@ -388,4 +400,23 @@ async function loadTicketForRole({ id, role, prefetchedTicket }) {
   }
 
   return ticketService.getById(id);
+}
+
+function isAssignmentNoiseComment(comment, ticket) {
+  const text = String(comment?.texto || comment?.contenido || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const author = String(comment?.autor || "").toLowerCase().trim();
+  const assignedTechnician = String(ticket?.tecnico || ticket?.tecnicoAsignado || "").toLowerCase().trim();
+
+  if (!text) return false;
+
+  const looksLikeAssignmentEvent =
+    text.includes("asigno el ticket") ||
+    text.includes("asignado a") ||
+    text.includes("ticket asignado") ||
+    text.includes("se asigno el ticket") ||
+    text.includes("se ha asignado el ticket");
+
+  if (!looksLikeAssignmentEvent) return false;
+
+  return author === "sistema" || (assignedTechnician && author === assignedTechnician);
 }
