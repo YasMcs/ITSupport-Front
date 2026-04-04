@@ -177,11 +177,6 @@ export function TicketsPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          {role === ROLES.ADMIN && (
-            <Button onClick={() => toast.success("Reporte generado")} variant="secondary">
-              Generar reporte
-            </Button>
-          )}
           {role === ROLES.TECNICO && tecnicoView === "assigned" && (
             <Button onClick={() => navigate("/tickets/disponibles")} variant="secondary">
               Ver disponibles

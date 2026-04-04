@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { toast } from "sonner";
 import { useAuth } from "../hooks/useAuth";
 import { ROLES } from "../constants/roles";
 import { TICKET_STATUS } from "../constants/ticketStatus";
@@ -19,18 +18,7 @@ function calculateKPIs(tickets) {
   const enProceso = tickets.filter((ticket) => ticket.estado === "en_proceso").length;
   const resueltos = tickets.filter((ticket) => ticket.estado === "cerrado").length;
   const anulado = tickets.filter((ticket) => ticket.estado === "anulado").length;
-  const firstResponseSamples = tickets
-    .filter((ticket) => ticket.comentarios?.length > 0)
-    .map((ticket) => {
-      const created = new Date(ticket.fechaCreacion);
-      const firstComment = new Date(ticket.comentarios[0].fecha);
-      return Math.max(1, Math.round((firstComment - created) / (1000 * 60 * 60)));
-    });
-  const avgResponse = firstResponseSamples.length
-    ? Math.round(firstResponseSamples.reduce((sum, value) => sum + value, 0) / firstResponseSamples.length)
-    : 0;
-
-  return { abiertos, enProceso, resueltos, anulado, avgResponse, total: tickets.length };
+  return { abiertos, enProceso, resueltos, anulado, total: tickets.length };
 }
 
 function getTicketsByPriority(tickets) {
@@ -132,7 +120,6 @@ export function EstadisticasPage() {
   const topAreas = useMemo(() => getTopAreas(tickets), [tickets]);
   const stagnantTickets = useMemo(() => getStagnantTickets(tickets), [tickets]);
   const pendientes = kpis.abiertos;
-  const slaPercentage = kpis.total > 0 ? Math.round((kpis.resueltos / kpis.total) * 100) : 0;
 
   return (
     <div className="space-y-6">
@@ -143,9 +130,9 @@ export function EstadisticasPage() {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <KPICard title="Tickets Pendientes" value={pendientes} subtitle={`${kpis.enProceso} en proceso`} />
-        <KPICard title="Tiempo de Respuesta" value={kpis.avgResponse ? `${kpis.avgResponse}h` : "N/A"} subtitle="Promedio hasta primer comentario" />
-        <KPICard title="SLA de Resolucion" value={`${slaPercentage}%`} subtitle={`${kpis.resueltos} cerrados`} />
-        <KPICard title="Anulados" value={loading ? "..." : kpis.anulado} subtitle={`${kpis.total} tickets totales`} />
+        <KPICard title="Tickets Cerrados" value={loading ? "..." : kpis.resueltos} subtitle="Casos finalizados" />
+        <KPICard title="Tickets Anulados" value={loading ? "..." : kpis.anulado} subtitle="Incidencias descartadas" />
+        <KPICard title="Total Registrados" value={loading ? "..." : kpis.total} subtitle="Volumen analizado" />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

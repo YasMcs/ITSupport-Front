@@ -347,10 +347,12 @@ export function TicketDetailPage() {
                 <span className="text-text-muted">Sucursal</span>
                 <span className="text-text-primary">{ticket.sucursal}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-text-muted">Contacto</span>
-                <span className="text-text-primary">{ticket.contacto}</span>
-              </div>
+              {role === "tecnico" && (
+                <div className="flex justify-between gap-4">
+                  <span className="text-text-muted">Contacto del encargado del area</span>
+                  <span className="text-right text-text-primary">{ticket.contacto || "Sin dato disponible"}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
