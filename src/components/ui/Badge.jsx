@@ -13,17 +13,12 @@ const statusStyles = {
     container: "border border-violet-400/20 bg-violet-500/10 text-violet-200",
     dot: "bg-violet-300 shadow-[0_0_12px_rgba(167,139,250,0.38)]",
   },
-  [TICKET_STATUS.ANULADO]: {
-    container: "border border-pink-400/20 bg-pink-500/10 text-pink-200",
-    dot: "bg-pink-300 shadow-[0_0_12px_rgba(244,114,182,0.42)]",
-  },
 };
 
 const statusLabels = {
   [TICKET_STATUS.ABIERTO]: "Abierto",
   [TICKET_STATUS.EN_PROCESO]: "En proceso",
   [TICKET_STATUS.CERRADO]: "Cerrado",
-  [TICKET_STATUS.ANULADO]: "Anulado",
 };
 
 const sucursalStatusStyles = {
