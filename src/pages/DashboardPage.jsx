@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { TICKET_STATUS } from "../constants/ticketStatus";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../hooks/useAuth";
@@ -21,7 +22,11 @@ export function DashboardPage() {
 
       try {
         const data = await ticketService.getScoped(role);
-        if (!cancelled) setTickets(Array.isArray(data) ? data : []);
+        if (!cancelled) {
+          const finalTickets = Array.isArray(data) ? data : [];
+          setTickets(finalTickets);
+          console.log('[DASHBOARD DEBUG Backend]', { role, totalTickets: finalTickets.length, sample: finalTickets.slice(0,3).map(t => ({id: t.id, estado: t.estado, titulo: t.titulo?.slice(0,50) })) });
+        }
       } catch (error) {
         if (!cancelled) {
           setTickets([]);
@@ -178,9 +183,9 @@ export function DashboardPage() {
 }
 
 function buildDashboardStats(tickets, role) {
-  const abiertos = tickets.filter((ticket) => ticket.estado === "abierto").length;
-  const enProceso = tickets.filter((ticket) => ticket.estado === "en_proceso").length;
-  const cerrados = tickets.filter((ticket) => ticket.estado === "cerrado").length;
+const abiertos = tickets.filter((ticket) => ticket.estado === TICKET_STATUS.ABIERTO).length;
+const enProceso = tickets.filter((ticket) => ticket.estado === TICKET_STATUS.EN_PROCESO).length;
+const cerrados = tickets.filter((ticket) => ticket.estado === TICKET_STATUS.CERRADO).length;
   const vencidos = tickets.filter((ticket) => ticket.esVencido).length;
 
   if (role === "tecnico") {
