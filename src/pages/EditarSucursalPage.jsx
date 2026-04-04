@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
 import { SucursalForm } from "../components/sucursales/SucursalForm";
 import { sucursalService } from "../services/sucursalService";
+import { getFeedbackMessage } from "../utils/feedback";
 
 export function EditarSucursalPage() {
   const { id } = useParams();
@@ -23,10 +23,7 @@ export function EditarSucursalPage() {
         }
       } catch (error) {
         if (!cancelled) {
-          setLoadError(error.response?.data?.message ?? "No pudimos cargar la sucursal seleccionada.");
-          toast.error("No pudimos cargar la sucursal", {
-            description: error.response?.data?.message ?? "Intenta nuevamente.",
-          });
+          setLoadError(getFeedbackMessage(error, "No pudimos abrir la sucursal seleccionada."));
         }
       } finally {
         if (!cancelled) setLoading(false);

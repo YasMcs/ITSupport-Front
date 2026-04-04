@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/Button";
 import { FormField } from "../ui/FormField";
 import { Select } from "../ui/Select";
+import { getFeedbackMessage } from "../../utils/feedback";
 
 const ESTADO_FORM_OPTIONS = [
   { value: "Activa", label: "Activa" },
@@ -41,7 +42,12 @@ export function AreaForm({ initialData, onSubmit, sucursalOptions = [] }) {
       }
       navigate("/areas");
     } catch (err) {
-      setError(err.response?.data?.message ?? (isEditing ? "Error al actualizar el area" : "Error al crear el area"));
+      setError(
+        getFeedbackMessage(
+          err,
+          isEditing ? "No pudimos guardar los cambios del area." : "No pudimos guardar el area."
+        )
+      );
     }
   };
 

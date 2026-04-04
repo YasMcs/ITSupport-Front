@@ -10,6 +10,7 @@ import {
   validateName,
   validateRequiredText,
 } from "../../utils/security";
+import { feedbackText, getFeedbackMessage } from "../../utils/feedback";
 
 export const ROL_OPTIONS = [
   { value: "admin", label: "Admin" },
@@ -81,7 +82,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
     ];
 
     if (fieldsToCheck.some((value) => containsForbiddenInput(value))) {
-      setError("Deteccion de caracteres no permitidos");
+      setError(feedbackText.invalidContent);
       return false;
     }
 
@@ -155,7 +156,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
         description: isEditing ? "Los cambios ya fueron aplicados." : "La informacion se guardo correctamente.",
       });
     } catch (error) {
-      setError(error.response?.data?.message ?? "No pudimos guardar la informacion del usuario");
+      setError(getFeedbackMessage(error, feedbackText.saveGeneric));
     } finally {
       setSubmitting(false);
     }

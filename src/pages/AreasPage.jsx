@@ -5,6 +5,7 @@ import { Button } from "../components/ui/Button";
 import { Modal } from "../components/ui/Modal";
 import { AreaTable } from "../components/areas/AreaTable";
 import { areaService } from "../services/areaService";
+import { getFeedbackMessage } from "../utils/feedback";
 
 const ESTADO_OPTIONS = [
   { value: "", label: "Todos" },
@@ -110,7 +111,7 @@ export function AreasPage() {
           });
         } catch (error) {
           toast.error("No pudimos actualizar el area", {
-            description: error.response?.data?.message ?? "Intenta nuevamente en unos segundos.",
+            description: getFeedbackMessage(error, "Intenta nuevamente."),
           });
         } finally {
           setConfirmAction(null);

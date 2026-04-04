@@ -8,6 +8,7 @@ import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
 import { FilterBar } from "../components/ui/FilterBar";
 import { ticketService } from "../services/ticketService";
+import { getFeedbackMessage } from "../utils/feedback";
 
 export function TicketsPage() {
   const { user, role } = useAuth();
@@ -124,7 +125,7 @@ export function TicketsPage() {
       });
     } catch (error) {
       toast.error("No pudimos tomar el ticket", {
-        description: error.response?.data?.message ?? "Intenta nuevamente en unos segundos.",
+        description: getFeedbackMessage(error, "Intenta nuevamente."),
       });
     } finally {
       setTakingTicketId(null);

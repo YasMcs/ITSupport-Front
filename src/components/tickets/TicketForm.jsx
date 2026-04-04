@@ -4,6 +4,7 @@ import { FormField } from "../ui/FormField";
 import { PRIORIDAD, PRIORIDAD_OPTIONS, getPriorityConfig } from "../../constants/ticketPrioridad";
 import { getUserDisplayName } from "../../utils/userDisplay";
 import { containsForbiddenInput, normalizeTextInput, validateRequiredText } from "../../utils/security";
+import { feedbackText, getFeedbackMessage } from "../../utils/feedback";
 
 export function TicketForm({ initialValues, onSubmit, user, layout = "default", areaOptions = [] }) {
   const [form, setForm] = useState({
@@ -18,7 +19,7 @@ export function TicketForm({ initialValues, onSubmit, user, layout = "default", 
 
   const handleSafeChange = (field, value) => {
     if (containsForbiddenInput(value)) {
-      setError("Deteccion de caracteres no permitidos");
+      setError(feedbackText.invalidContent);
       return;
     }
 
@@ -33,8 +34,7 @@ export function TicketForm({ initialValues, onSubmit, user, layout = "default", 
     setError("");
 
     if (containsForbiddenInput(form.titulo) || containsForbiddenInput(form.descripcion)) {
-      const message = "Deteccion de caracteres no permitidos";
-      setError(message);
+      setError(feedbackText.invalidContent);
       return;
     }
 
@@ -67,7 +67,7 @@ export function TicketForm({ initialValues, onSubmit, user, layout = "default", 
         area_id: Number(form.area_id),
       }));
     } catch (err) {
-      setError(err.response?.data?.message ?? "Error al crear el ticket");
+      setError(getFeedbackMessage(err, feedbackText.createGeneric));
     } finally {
       setSubmitting(false);
     }

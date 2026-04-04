@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
 import { UsuarioForm } from "../components/usuarios/UsuarioForm";
 import { areaService } from "../services/areaService";
 import { userService } from "../services/userService";
+import { getFeedbackMessage } from "../utils/feedback";
 
 export function EditarUsuarioPage() {
   const { id } = useParams();
@@ -30,10 +30,7 @@ export function EditarUsuarioPage() {
         }
       } catch (error) {
         if (!cancelled) {
-          setLoadError(error.response?.data?.message ?? "No pudimos cargar el usuario seleccionado.");
-          toast.error("No pudimos cargar el usuario", {
-            description: error.response?.data?.message ?? "Intenta nuevamente.",
-          });
+          setLoadError(getFeedbackMessage(error, "No pudimos abrir el usuario seleccionado."));
         }
       } finally {
         if (!cancelled) setLoading(false);

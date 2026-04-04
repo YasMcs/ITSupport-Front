@@ -5,6 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 import { ROLES } from "../constants/roles";
 import { TicketForm } from "../components/tickets/TicketForm";
 import { containsForbiddenInput } from "../utils/security";
+import { feedbackText, getFeedbackMessage } from "../utils/feedback";
 import { areaService } from "../services/areaService";
 import { ticketService } from "../services/ticketService";
 
@@ -45,8 +46,8 @@ export function NuevoTicketPage() {
 
   const handleSubmit = async (payload) => {
     if (containsForbiddenInput(payload.titulo) || containsForbiddenInput(payload.descripcion)) {
-      toast.error("Deteccion de caracteres no permitidos", {
-        description: "El ticket fue bloqueado antes de registrarse.",
+      toast.error("No pudimos guardar el ticket", {
+        description: feedbackText.invalidContent,
       });
       return;
     }
@@ -59,7 +60,7 @@ export function NuevoTicketPage() {
       navigate("/tickets");
     } catch (error) {
       toast.error("No pudimos registrar el ticket", {
-        description: error.response?.data?.message ?? "Revisa la informacion e intenta nuevamente.",
+        description: getFeedbackMessage(error, "Revisa los datos e intenta nuevamente."),
       });
       throw error;
     }

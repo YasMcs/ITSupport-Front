@@ -4,8 +4,8 @@ import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 import { useAuth } from "../../hooks/useAuth";
 import { authService } from "../../services/authService";
-import { getUserDisplayName } from "../../utils/userDisplay";
 import { containsForbiddenInput, validateEmail, validateRequiredText } from "../../utils/security";
+import { getFeedbackMessage, feedbackText } from "../../utils/feedback";
 import "../../styles/LoginPage.css";
 import logoIcono from "../../assets/logo_icono.png";
 import logo from "../../assets/logo.png";
@@ -25,8 +25,7 @@ export function LoginPage() {
     setError("");
 
     if (containsForbiddenInput(email) || containsForbiddenInput(password)) {
-      const message = "Deteccion de caracteres no permitidos";
-      setError(message);
+      setError(feedbackText.invalidContent);
       return;
     }
 
@@ -54,7 +53,7 @@ export function LoginPage() {
       login(nextUser, data.token);
       navigate("/dashboard", { replace: true });
     } catch (err) {
-      const message = err.response?.data?.message ?? err.message ?? "Credenciales incorrectas";
+      const message = getFeedbackMessage(err, "No pudimos iniciar sesion. Revisa tus datos e intenta nuevamente.");
       setError(message);
     } finally {
       setLoading(false);

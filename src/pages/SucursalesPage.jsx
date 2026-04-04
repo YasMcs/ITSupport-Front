@@ -5,6 +5,7 @@ import { Button } from "../components/ui/Button";
 import { Modal } from "../components/ui/Modal";
 import { SucursalTable } from "../components/sucursales/SucursalTable";
 import { sucursalService } from "../services/sucursalService";
+import { getFeedbackMessage } from "../utils/feedback";
 
 const ESTADO_OPTIONS = [
   { value: "", label: "Todos" },
@@ -112,7 +113,7 @@ export function SucursalesPage() {
           });
         } catch (error) {
           toast.error("No pudimos actualizar la sucursal", {
-            description: error.response?.data?.message ?? "Intenta nuevamente en unos segundos.",
+            description: getFeedbackMessage(error, "Intenta nuevamente."),
           });
         } finally {
           setConfirmAction(null);

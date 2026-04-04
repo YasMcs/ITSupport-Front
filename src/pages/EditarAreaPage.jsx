@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import { AreaForm } from "../components/areas/AreaForm";
 import { areaService } from "../services/areaService";
 import { sucursalService } from "../services/sucursalService";
+import { getFeedbackMessage } from "../utils/feedback";
 
 export function EditarAreaPage() {
   const { id } = useParams();
@@ -35,10 +35,7 @@ export function EditarAreaPage() {
         }
       } catch (error) {
         if (!cancelled) {
-          setLoadError(error.response?.data?.message ?? "No pudimos cargar el area seleccionada.");
-          toast.error("No pudimos cargar el area", {
-            description: error.response?.data?.message ?? "Intenta nuevamente.",
-          });
+          setLoadError(getFeedbackMessage(error, "No pudimos abrir el area seleccionada."));
         }
       } finally {
         if (!cancelled) setLoading(false);

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/Button";
 import { FormField } from "../ui/FormField";
 import { Select } from "../ui/Select";
+import { getFeedbackMessage } from "../../utils/feedback";
 
 const ESTADO_OPTIONS = [
   { value: "Activa", label: "Activa" },
@@ -59,7 +60,12 @@ export function SucursalForm({ initialData, onSubmit }) {
       }
       navigate("/sucursales");
     } catch (err) {
-      setError(err.response?.data?.message ?? (isEditing ? "Error al actualizar la sucursal" : "Error al crear la sucursal"));
+      setError(
+        getFeedbackMessage(
+          err,
+          isEditing ? "No pudimos guardar los cambios de la sucursal." : "No pudimos guardar la sucursal."
+        )
+      );
     }
   };
 
@@ -192,8 +198,8 @@ export function SucursalForm({ initialData, onSubmit }) {
               <div className="text-sm text-gray-400 bg-white/5 p-4 rounded-lg mt-6">
                 <p>
                   {isEditing
-                    ? "La edicion ahora usa el mismo contrato completo de la API para mantener la sucursal sincronizada."
-                    : "La sucursal se creara con todos los datos obligatorios que solicita el backend."}
+                    ? "Actualiza los datos principales de esta sucursal desde una sola vista."
+                    : "Completa los datos principales de la sucursal para registrarla correctamente."}
                 </p>
               </div>
             </div>

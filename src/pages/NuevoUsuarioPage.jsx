@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { UsuarioForm } from "../components/usuarios/UsuarioForm";
 import { areaService } from "../services/areaService";
 import { userService } from "../services/userService";
+import { getFeedbackMessage } from "../utils/feedback";
 
 export function NuevoUsuarioPage() {
   const navigate = useNavigate();
@@ -32,8 +33,8 @@ export function NuevoUsuarioPage() {
       await userService.create(payload);
       navigate("/usuarios");
     } catch (error) {
-      toast.error("No pudimos registrar el usuario", {
-        description: error.response?.data?.message ?? "Revisa la informacion e intenta nuevamente.",
+      toast.error("No pudimos guardar el usuario", {
+        description: getFeedbackMessage(error, "Revisa los datos e intenta nuevamente."),
       });
       throw error;
     }

@@ -7,6 +7,7 @@ import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { Modal } from "../components/ui/Modal";
 import { useAuth } from "../hooks/useAuth";
+import { getFeedbackMessage } from "../utils/feedback";
 import { getUserDisplayName } from "../utils/userDisplay";
 import { userService } from "../services/userService";
 
@@ -89,9 +90,6 @@ export function UsuariosPage() {
         }
       } catch (error) {
         if (!cancelled) {
-          toast.error("No pudimos cargar los usuarios", {
-            description: error.response?.data?.message ?? "Verifica la conexion con el backend.",
-          });
           setUsuariosState([]);
         }
       } finally {
@@ -151,7 +149,7 @@ export function UsuariosPage() {
           });
         } catch (error) {
           toast.error("No pudimos actualizar la cuenta", {
-            description: error.response?.data?.message ?? "Intenta de nuevo en unos segundos.",
+            description: getFeedbackMessage(error, "Intenta nuevamente."),
           });
         } finally {
           setConfirmAction(null);

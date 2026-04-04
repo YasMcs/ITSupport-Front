@@ -8,6 +8,7 @@ import { commentService } from "../services/commentService";
 import { ticketService } from "../services/ticketService";
 import { containsForbiddenInput, normalizeTextInput, validateRequiredText } from "../utils/security";
 import { formatDate } from "../utils/formatDate";
+import { feedbackText, getFeedbackMessage } from "../utils/feedback";
 import { getUserDisplayName } from "../utils/userDisplay";
 
 export function TicketDetailPage() {
@@ -50,7 +51,7 @@ export function TicketDetailPage() {
       } catch (error) {
         if (!cancelled) {
           toast.error("No pudimos cargar el ticket", {
-            description: error.response?.data?.message ?? "Verifica la conexion con el backend.",
+            description: getFeedbackMessage(error, "No pudimos abrir este ticket."),
           });
           setTicket(null);
           setComentarios([]);
@@ -77,8 +78,8 @@ export function TicketDetailPage() {
   useEffect(() => {
     if (!ticket || canViewTicket) return;
 
-    toast.error("No tienes permisos para realizar esta accion", {
-      description: "La apertura directa por URL fue bloqueada para este ticket.",
+    toast.error("No puedes ver este ticket", {
+      description: "No cuentas con permiso para abrir este ticket.",
       id: `ticket-denied:${id}`,
     });
   }, [canViewTicket, id, ticket]);
@@ -113,8 +114,8 @@ export function TicketDetailPage() {
     if (!canComment || submittingComment) return;
 
     if (containsForbiddenInput(nuevoComentario)) {
-      toast.error("Deteccion de caracteres no permitidos", {
-        description: "El comentario incluye HTML o contenido que podia interpretarse como codigo ejecutable.",
+      toast.error("No pudimos guardar el comentario", {
+        description: feedbackText.invalidContent,
       });
       return;
     }
@@ -149,7 +150,7 @@ export function TicketDetailPage() {
       });
     } catch (error) {
       toast.error("No pudimos guardar el comentario", {
-        description: error.response?.data?.message ?? "Intenta nuevamente en unos segundos.",
+        description: getFeedbackMessage(error, "Intenta nuevamente."),
       });
     } finally {
       setSubmittingComment(false);
@@ -158,8 +159,8 @@ export function TicketDetailPage() {
 
   const handleCommentChange = (value) => {
     if (containsForbiddenInput(value)) {
-      toast.error("Deteccion de caracteres no permitidos", {
-        description: "No se permiten etiquetas HTML ni caracteres que puedan ejecutarse en comentarios.",
+      toast.error("No pudimos agregar ese comentario", {
+        description: feedbackText.invalidContent,
       });
       return;
     }
@@ -180,7 +181,7 @@ export function TicketDetailPage() {
       })
       .catch((error) => {
         toast.error("No pudimos cerrar el ticket", {
-          description: error.response?.data?.message ?? "Intenta nuevamente en unos segundos.",
+          description: getFeedbackMessage(error, "Intenta nuevamente."),
         });
       });
   };
@@ -275,7 +276,7 @@ export function TicketDetailPage() {
 
             {isAdmin && (
               <div className="rounded-2xl bg-white/5 px-4 py-3 text-sm text-text-muted">
-                El administrador puede revisar el historial, pero no agregar comentarios.
+                El administrador puede revisar este ticket, pero no agregar comentarios.
               </div>
             )}
 

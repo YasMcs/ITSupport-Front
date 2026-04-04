@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { AreaForm } from "../components/areas/AreaForm";
 import { areaService } from "../services/areaService";
 import { sucursalService } from "../services/sucursalService";
+import { getFeedbackMessage } from "../utils/feedback";
 
 export function NuevaAreaPage() {
   const navigate = useNavigate();
@@ -39,8 +40,8 @@ export function NuevaAreaPage() {
       await areaService.create(payload);
       navigate("/areas");
     } catch (error) {
-      toast.error("No pudimos registrar el area", {
-        description: error.response?.data?.message ?? "Revisa la informacion e intenta nuevamente.",
+      toast.error("No pudimos guardar el area", {
+        description: getFeedbackMessage(error, "Revisa los datos e intenta nuevamente."),
       });
       throw error;
     }
