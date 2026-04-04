@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../hooks/useAuth";
 import { ROLES } from "../constants/roles";
@@ -11,8 +11,8 @@ import { ticketService } from "../services/ticketService";
 
 export function TicketsPage() {
   const { user, role } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
-  const [tecnicoView, setTecnicoView] = useState("assigned");
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -131,6 +131,10 @@ export function TicketsPage() {
     }
   };
 
+  const tecnicoView = role === ROLES.TECNICO && location.pathname === "/tickets/disponibles"
+    ? "available"
+    : "assigned";
+
   const headerTitle =
     role === ROLES.TECNICO
       ? tecnicoView === "available"
@@ -206,7 +210,7 @@ export function TicketsPage() {
             <div className="inline-flex w-fit flex-wrap gap-2 rounded-2xl bg-dark-purple-900/30 p-1.5">
               <button
                 type="button"
-                onClick={() => setTecnicoView("assigned")}
+                onClick={() => navigate("/tickets")}
                 className={`rounded-xl px-4 py-2 text-sm font-medium transition-all ${
                   tecnicoView === "assigned"
                     ? "bg-white/8 text-text-primary"
@@ -218,7 +222,7 @@ export function TicketsPage() {
               </button>
               <button
                 type="button"
-                onClick={() => setTecnicoView("available")}
+                onClick={() => navigate("/tickets/disponibles")}
                 className={`rounded-xl px-4 py-2 text-sm font-medium transition-all ${
                   tecnicoView === "available"
                     ? "bg-white/8 text-text-primary"

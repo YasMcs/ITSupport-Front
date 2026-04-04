@@ -40,7 +40,7 @@ const MENU_ITEMS = {
 
 function matchesSection(pathname, path) {
   if (path === "/tickets") {
-    return pathname === "/tickets" || /^\/tickets\/\d+$/.test(pathname);
+    return pathname === "/tickets" || pathname === "/tickets/disponibles" || /^\/tickets\/\d+$/.test(pathname);
   }
 
   if (path === "/usuarios") {

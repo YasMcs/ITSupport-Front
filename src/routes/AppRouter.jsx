@@ -128,6 +128,14 @@ export function AppRouter() {
         }
       />
       <Route
+        path="/tickets/disponibles"
+        element={
+          <ProtectedRoute>
+            <TicketsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/tickets/nuevo"
         element={
           <ProtectedRoute allowedRoles={[ROLES.ENCARGADO]}>
