@@ -191,7 +191,7 @@ const cerrados = tickets.filter((ticket) => ticket.estado === TICKET_STATUS.CERR
   if (role === "tecnico") {
     return [
       { id: "assigned", label: "Asignados", value: tickets.length, trend: "up", change: `${enProceso} en proceso` },
-      { id: "open", label: "Pendientes", value: abiertos, trend: abiertos > 0 ? "up" : "down", change: `${abiertos} abiertos` },
+{ id: "en-proceso", label: "En Proceso", value: enProceso, trend: enProceso > 0 ? "up" : "down", change: `${enProceso} con tecnico` },
       { id: "closed", label: "Cerrados", value: cerrados, trend: "up", change: "Historial personal" },
     ];
   }
@@ -199,14 +199,15 @@ const cerrados = tickets.filter((ticket) => ticket.estado === TICKET_STATUS.CERR
   if (role === "encargado") {
     return [
       { id: "created", label: "Creados", value: tickets.length, trend: "up", change: "Tus solicitudes" },
-      { id: "open", label: "Abiertos", value: abiertos, trend: abiertos > 0 ? "up" : "down", change: `${enProceso} en proceso` },
+      { id: "en-proceso", label: "En Proceso", value: enProceso, trend: enProceso > 0 ? "up" : "down", change: `${enProceso} con tecnico` },
       { id: "closed", label: "Resueltos", value: cerrados, trend: "up", change: `${vencidos} vencidos` },
     ];
   }
 
   return [
     { id: "total", label: "Total tickets", value: tickets.length, trend: "up", change: "Vision global" },
-    { id: "open", label: "Abiertos", value: abiertos, trend: abiertos > 0 ? "up" : "down", change: `${enProceso} en proceso` },
+    { id: "en-proceso", label: "En Proceso", value: enProceso, trend: enProceso > 0 ? "up" : "down", change: `${enProceso} con tecnico` },
     { id: "closed", label: "Cerrados", value: cerrados, trend: "up", change: `${vencidos} vencidos` },
   ];
+
 }

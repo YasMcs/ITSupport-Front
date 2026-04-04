@@ -131,7 +131,7 @@ export function EstadisticasPage() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <KPICard title="Tickets Pendientes" value={pendientes} subtitle={`${kpis.enProceso} en proceso`} />
         <KPICard title="Tickets Cerrados" value={loading ? "..." : kpis.resueltos} subtitle="Casos finalizados" />
-        <KPICard title="Tickets Anulados" value={loading ? "..." : kpis.anulado} subtitle="Incidencias descartadas" />
+
         <KPICard title="Total Registrados" value={loading ? "..." : kpis.total} subtitle="Volumen analizado" />
       </div>
 
