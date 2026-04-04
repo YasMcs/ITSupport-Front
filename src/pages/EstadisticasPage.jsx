@@ -8,8 +8,8 @@ import { ticketService } from "../services/ticketService";
 
 function filterTicketsByRole(tickets, role, user) {
   if (role === ROLES.ADMIN) return tickets;
-  if (role === ROLES.TECNICO) return tickets.filter((ticket) => ticket.tecnico_id === user?.id);
-  if (role === ROLES.ENCARGADO) return tickets.filter((ticket) => ticket.encargado_id === user?.id);
+  if (role === ROLES.TECNICO) return tickets.filter((ticket) => Number(ticket.tecnico_id) === Number(user?.id));
+  if (role === ROLES.ENCARGADO) return tickets.filter((ticket) => Number(ticket.encargado_id) === Number(user?.id));
   return [];
 }
 
