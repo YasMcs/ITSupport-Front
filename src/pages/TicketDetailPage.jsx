@@ -10,6 +10,8 @@ import { containsForbiddenInput, normalizeTextInput, validateRequiredText } from
 import { formatDate } from "../utils/formatDate";
 import { feedbackText, getFeedbackMessage } from "../utils/feedback";
 import { getUserDisplayName } from "../utils/userDisplay";
+import { ROLES } from "../constants/roles";
+import { TICKET_STATUS } from "../constants/ticketStatus";
 
 export function TicketDetailPage() {
   const { id } = useParams();
@@ -19,7 +21,7 @@ export function TicketDetailPage() {
   const [ticket, setTicket] = useState(() => location.state?.ticket ?? null);
   const [comentarios, setComentarios] = useState([]);
   const [nuevoComentario, setNuevoComentario] = useState("");
-  const [estadoActual, setEstadoActual] = useState("abierto");
+  const [estadoActual, setEstadoActual] = useState(TICKET_STATUS.ABIERTO);
   const [submittingComment, setSubmittingComment] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -45,7 +47,7 @@ export function TicketDetailPage() {
 
         if (!cancelled) {
           setTicket(ticketData);
-          setEstadoActual(ticketData?.estado ?? "abierto");
+          setEstadoActual(ticketData?.estado ?? TICKET_STATUS.ABIERTO);
           setComentarios(commentsData);
         }
       } catch (error) {
@@ -67,11 +69,11 @@ export function TicketDetailPage() {
     };
   }, [id, role, location.state]);
 
-  const isAdmin = role === "admin";
+  const isAdmin = role === ROLES.ADMIN;
   const isCreator = ticket ? Number(user?.id) === Number(ticket.encargado_id) : false;
   const isAssignedTechnician = ticket ? Number(user?.id) === Number(ticket.tecnico_id) : false;
   const canViewTicket = ticket ? isAdmin || isCreator || isAssignedTechnician : false;
-  const canCloseTicket = !isAdmin && role === "tecnico" && isAssignedTechnician && estadoActual !== "cerrado";
+  const canCloseTicket = !isAdmin && role === ROLES.SOPORTE && isAssignedTechnician && estadoActual !== TICKET_STATUS.CERRADO;
   const canComment = !isAdmin && (isCreator || isAssignedTechnician);
   const comentariosVisibles = comentarios.filter((comentario) => !isAssignmentNoiseComment(comentario, ticket));
 
@@ -367,12 +369,12 @@ async function loadTicketForRole({ id, role, prefetchedTicket }) {
     return prefetchedTicket;
   }
 
-  if (role === "encargado") {
+  if (role === ROLES.RESPONSABLE) {
     const tickets = await ticketService.getMineCreated();
     return tickets.find((ticket) => String(ticket.id) === String(id)) ?? null;
   }
 
-  if (role === "tecnico") {
+  if (role === ROLES.SOPORTE) {
     const tickets = await ticketService.getMineAssigned();
     return tickets.find((ticket) => String(ticket.id) === String(id)) ?? null;
   }

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { TICKET_STATUS } from "../constants/ticketStatus";
 import { Link } from "react-router-dom";
-import { toast } from "sonner";
+import { ROLES } from "../constants/roles";
 import { useAuth } from "../hooks/useAuth";
 import { Badge } from "../components/ui/Badge";
 import { PRIORIDAD } from "../constants/ticketPrioridad";
@@ -19,13 +19,16 @@ export function DashboardPage() {
 
     async function loadDashboard() {
       setLoading(true);
-
       try {
         const data = await ticketService.getScoped(role);
         if (!cancelled) {
           const finalTickets = Array.isArray(data) ? data : [];
           setTickets(finalTickets);
-          console.log('[DASHBOARD DEBUG Backend]', { role, totalTickets: finalTickets.length, sample: finalTickets.slice(0,3).map(t => ({id: t.id, estado: t.estado, titulo: t.titulo?.slice(0,50) })) });
+          console.log('[DASHBOARD DEBUG Backend]', { 
+            role, 
+            totalTickets: finalTickets.length, 
+            sample: finalTickets.slice(0, 3).map(t => ({ id: t.id, estado: t.estado, titulo: t.titulo?.slice(0, 50) })) 
+          });
         }
       } catch (error) {
         if (!cancelled) {
@@ -43,13 +46,15 @@ export function DashboardPage() {
   }, [role]);
 
   const stats = useMemo(() => buildDashboardStats(tickets, role), [tickets, role]);
+  
   const recentTickets = useMemo(
     () => [...tickets].sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)).slice(0, 4),
     [tickets]
   );
+
   const criticalTickets = useMemo(
-    () => recentTickets.filter((ticket) => ticket.prioridad === PRIORIDAD.ALTA).slice(0, 3),
-    [recentTickets]
+    () => tickets.filter((ticket) => ticket.prioridad === PRIORIDAD.ALTA).slice(0, 3),
+    [tickets]
   );
 
   const getTrendIcon = (trend) => {
@@ -60,7 +65,6 @@ export function DashboardPage() {
         </svg>
       );
     }
-
     return (
       <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 7l-9.2 9.2M7 7v10h10" />
@@ -134,7 +138,7 @@ export function DashboardPage() {
                     #{ticket.id} - {ticket.titulo}
                   </p>
                   <p className="mt-1 text-sm text-text-secondary">
-                    {ticket.area || "Sin area"} - {formatDate(ticket.fechaCreacion)}
+                    {ticket.area || "Sin área"} - {formatDate(ticket.fechaCreacion)}
                   </p>
                 </div>
                 <div className="ml-4 flex items-center gap-2">
@@ -152,11 +156,11 @@ export function DashboardPage() {
               <svg className="h-5 w-5 text-purple-electric" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              Tickets criticos
+              Tickets críticos
             </h2>
             <div className="space-y-3">
               {loading ? (
-                <p className="text-sm text-text-muted">Cargando tickets criticos...</p>
+                <p className="text-sm text-text-muted">Cargando tickets críticos...</p>
               ) : criticalTickets.length > 0 ? (
                 criticalTickets.map((ticket) => (
                   <Link
@@ -172,7 +176,7 @@ export function DashboardPage() {
                   </Link>
                 ))
               ) : (
-                <p className="text-sm text-text-muted">No hay tickets criticos</p>
+                <p className="text-sm text-text-muted">No hay tickets críticos</p>
               )}
             </div>
           </div>
@@ -182,31 +186,30 @@ export function DashboardPage() {
   );
 }
 
+// Lógica de estadísticas actualizada para Dashboard
 function buildDashboardStats(tickets, role) {
-const abiertos = tickets.filter((ticket) => ticket.estado === TICKET_STATUS.ABIERTO).length;
-const enProceso = tickets.filter((ticket) => ticket.estado === TICKET_STATUS.EN_PROCESO).length;
-const cerrados = tickets.filter((ticket) => ticket.estado === TICKET_STATUS.CERRADO).length;
-  const vencidos = tickets.filter((ticket) => ticket.esVencido).length;
+  const enProceso = tickets.filter((ticket) => ticket.estado === TICKET_STATUS.EN_PROCESO).length;
+  const cerrados = tickets.filter((ticket) => ticket.estado === TICKET_STATUS.CERRADO).length;
 
-  if (role === "tecnico") {
+  if (role === ROLES.TECNICO) {
     return [
-      { id: "assigned", label: "Asignados", value: tickets.length, trend: "up", change: `${enProceso} en proceso` },
-      { id: "open", label: "Pendientes", value: abiertos, trend: abiertos > 0 ? "up" : "down", change: `${abiertos} abiertos` },
-      { id: "closed", label: "Cerrados", value: cerrados, trend: "up", change: "Historial personal" },
+      { id: "assigned", label: "Total Asignados", value: tickets.length, trend: "up", change: "Carga total" },
+      { id: "in_progress", label: "Mis Atenciones", value: enProceso, trend: enProceso > 0 ? "up" : "down", change: "En curso" },
+      { id: "closed", label: "Mis Cierres", value: cerrados, trend: "up", change: "Casos resueltos" },
     ];
   }
 
-  if (role === "encargado") {
+  if (role === ROLES.ENCARGADO) {
     return [
-      { id: "created", label: "Creados", value: tickets.length, trend: "up", change: "Tus solicitudes" },
-      { id: "open", label: "Abiertos", value: abiertos, trend: abiertos > 0 ? "up" : "down", change: `${enProceso} en proceso` },
-      { id: "closed", label: "Resueltos", value: cerrados, trend: "up", change: `${vencidos} vencidos` },
+      { id: "created", label: "Solicitudes", value: tickets.length, trend: "up", change: "Tus tickets" },
+      { id: "in_progress", label: "Siendo Atendidos", value: enProceso, trend: enProceso > 0 ? "up" : "down", change: "Con técnico asignado" },
+      { id: "closed", label: "Resueltos", value: cerrados, trend: "up", change: "Listos para validar" },
     ];
   }
 
   return [
-    { id: "total", label: "Total tickets", value: tickets.length, trend: "up", change: "Vision global" },
-    { id: "open", label: "Abiertos", value: abiertos, trend: abiertos > 0 ? "up" : "down", change: `${enProceso} en proceso` },
-    { id: "closed", label: "Cerrados", value: cerrados, trend: "up", change: `${vencidos} vencidos` },
+    { id: "total", label: "Carga Sistema", value: tickets.length, trend: "up", change: "Visión global" },
+    { id: "in_progress", label: "Tickets en Proceso", value: enProceso, trend: enProceso > 0 ? "up" : "down", change: "Actividad real" },
+    { id: "closed", label: "Cerrados Hoy", value: cerrados, trend: "up", change: "Historial completo" },
   ];
 }

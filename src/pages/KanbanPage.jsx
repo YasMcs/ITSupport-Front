@@ -1,36 +1,57 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../hooks/useAuth";
 import { ROLES } from "../constants/roles";
-import { getEnrichedMockTickets } from "../utils/mockTickets";
 import { KanbanBoard } from "../components/tickets/KanbanBoard";
 import { Button } from "../components/ui/Button";
+import { ticketService } from "../services/ticketService";
+import { getFeedbackMessage } from "../utils/feedback";
 
 export function KanbanPage() {
   const { user, role } = useAuth();
   const navigate = useNavigate();
+  const [tickets, setTickets] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [tickets, setTickets] = useState(() => {
-    const source = getEnrichedMockTickets();
-    if (role === ROLES.ADMIN) return source;
-    if (role === ROLES.TECNICO) return source.filter((ticket) => ticket.tecnico_id === user?.id);
-    if (role === ROLES.ENCARGADO) return source.filter((ticket) => ticket.encargado_id === user?.id);
-    return [];
-  });
+  useEffect(() => {
+    let cancelled = false;
 
-  const handleTicketMove = (ticketId, newStatus) => {
-    setTickets((prev) => prev.map((ticket) => (ticket.id === ticketId ? { ...ticket, estado: newStatus } : ticket)));
-    toast.success(`Estado actualizado a ${newStatus}`);
+    async function loadTablero() {
+      try {
+        setLoading(true);
+        const data = await ticketService.getScoped(role);
+        if (!cancelled) setTickets(Array.isArray(data) ? data : []);
+      } catch (error) {
+        if (!cancelled) {
+          toast.error("Error al sincronizar tablero", {
+            description: getFeedbackMessage(error),
+          });
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    loadTablero();
+    return () => { cancelled = true; };
+  }, [role]);
+
+  const handleTicketMove = async (ticketId, newStatus) => {
+    // Optimistic UI Update
+    setTickets((prev) => prev.map((t) => (String(t.id) === String(ticketId) ? { ...t, estado: newStatus } : t)));
+    toast.success("Estado actualizado visualmente");
   };
 
   const getEmptyMessage = () => {
-    if (role === ROLES.TECNICO) return "No tienes tickets asignados";
-    if (role === ROLES.ENCARGADO) return "Aun no tienes tickets registrados";
+    if (role === ROLES.SOPORTE) return "No tienes tickets asignados";
+    if (role === ROLES.RESPONSABLE) return "Aun no tienes tickets registrados";
     return "No hay tickets disponibles";
   };
 
-  if (!tickets.length) {
+  if (loading) return <div className="p-12 text-center text-text-secondary">Cargando tablero...</div>;
+
+  if (tickets.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)]">
         <div className="glass-card rounded-2xl p-12 text-center">
@@ -39,7 +60,7 @@ export function KanbanPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
             </svg>
             <p className="text-text-secondary text-lg">{getEmptyMessage()}</p>
-            {role === ROLES.ENCARGADO && <Button onClick={() => navigate("/tickets/nuevo")}>Crear Ticket</Button>}
+            {role === ROLES.RESPONSABLE && <Button onClick={() => navigate("/tickets/nuevo")}>Crear Ticket</Button>}
           </div>
         </div>
       </div>
