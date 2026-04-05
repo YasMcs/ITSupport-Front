@@ -11,50 +11,63 @@ import logoIcono from "../../assets/logo_icono.png";
 import logo from "../../assets/logo.png";
 
 export function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [errors, setErrors] = useState({});  
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (containsForbiddenInput(formData.email) || containsForbiddenInput(formData.password)) {
+      newErrors.email = feedbackText.invalidContent;
+    } else {
+      const emailError = validateEmail(formData.email);
+      if (emailError) {
+        newErrors.email = emailError;
+      }
+
+      const passwordError = validateRequiredText(formData.password, { min: 6, max: 100 });
+      if (passwordError) {
+        newErrors.password = passwordError === "Este campo es obligatorio" ? "La contrasena es obligatoria" : passwordError;
+      }
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return false;
+    }
+
+    setErrors({});
+    return true;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
 
-    setError("");
-
-    if (containsForbiddenInput(email) || containsForbiddenInput(password)) {
-      setError(feedbackText.invalidContent);
-      return;
-    }
-
-    const emailError = validateEmail(email);
-    if (emailError) {
-      setError(emailError);
-      return;
-    }
-
-    const passwordError = validateRequiredText(password, { min: 6, max: 100 });
-    if (passwordError) {
-      const message = passwordError === "Este campo es obligatorio" ? "La contrasena es obligatoria" : passwordError;
-      setError(message);
-      return;
-    }
+    if (!validate()) return;
 
     setLoading(true);
 
     try {
-      const safeEmail = email.trim().toLowerCase();
-      const safePassword = password.trim();
+      const safeEmail = formData.email.trim().toLowerCase();
+      const safePassword = formData.password.trim();
       const data = await authService.login({ email: safeEmail, password: safePassword });
       const nextUser = data.user;
 
       login(nextUser, data.token);
       navigate("/dashboard", { replace: true });
     } catch (err) {
-      const message = getFeedbackMessage(err, "No pudimos iniciar sesion. Revisa tus datos e intenta nuevamente.");
-      setError(message);
+      if (err.response?.status === 401) {
+        setErrors({ email: 'Correo o contraseña incorrectos. Por favor, verifica tus datos.', password: '' });
+      } else {
+        toast.error(getFeedbackMessage(err, "No pudimos iniciar sesion. Revisa tus datos e intenta nuevamente."));
+      }
     } finally {
       setLoading(false);
     }
@@ -112,33 +125,29 @@ export function LoginPage() {
             </div>
 
             <div className="login-form">
-              <Input
-                label="Email"
-                type="email"
-                placeholder="tu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={loading}
-                autoComplete="username"
-              />
-              <Input
-                label="Contrasena"
-                type="password"
-                placeholder="********"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={loading}
-                autoComplete="current-password"
-              />
+            <FormField label="Email" error={errors.email} required>
+                <Input
+                  type="email"
+                  placeholder="tu@email.com"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  disabled={loading}
+                  autoComplete="username"
+                />
+              </FormField>
+              <FormField label="Contrasena" error={errors.password} required>
+                <Input
+                  type="password"
+                  placeholder="********"
+                  value={formData.password}
+                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  disabled={loading}
+                  autoComplete="current-password"
+                />
+              </FormField>
             </div>
 
-            {error && (
-              <div className="login-error">
-                <p>{error}</p>
-              </div>
-            )}
+            
 
             <Button type="submit" variant="primary" className="login-button" disabled={loading}>
               {loading ? "Entrando..." : "Entrar"}

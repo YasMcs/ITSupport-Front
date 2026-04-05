@@ -30,7 +30,7 @@ export function getFeedbackMessage(error, fallback = "No pudimos completar la so
   if (apiMessage) return apiMessage;
 
   if (status === 400 || status === 422) return fallback;
-  if (status === 401) return "Revisa tus datos e intenta nuevamente.";
+if (status === 401) return "Correo o contraseña incorrectos. Por favor, verifica tus datos.";
   if (status === 403) return "No tienes permiso para realizar esta accion.";
   if (status === 404) return "No encontramos la informacion solicitada.";
   if (status === 409) return "Ya existe un registro con esos datos.";

@@ -34,7 +34,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
     estado_cuenta: usuario?.estado_cuenta || "activo",
     area_id: usuario?.area_id ? String(usuario.area_id) : "",
   });
-  const [error, setError] = useState("");
+const [errors, setErrors] = useState({});  
   const [submitting, setSubmitting] = useState(false);
   const normalizedAreaOptions = areaOptions
     .filter((area) => area.estado === "Activa")
@@ -73,6 +73,8 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
   };
 
   const validate = () => {
+    const newErrors = {};
+
     const fieldsToCheck = [
       formData.nombre,
       formData.apellido_paterno,
@@ -82,52 +84,61 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
     ];
 
     if (fieldsToCheck.some((value) => containsForbiddenInput(value))) {
-      setError(feedbackText.invalidContent);
+      newErrors.nombre = feedbackText.invalidContent;
+      setErrors(newErrors);
       return false;
     }
 
     const nombreError = validateName(formData.nombre, "El nombre");
     if (nombreError) {
-      setError(nombreError);
+      newErrors.nombre = nombreError;
+      setErrors(newErrors);
       return false;
     }
 
     const apellidoPaternoError = validateName(formData.apellido_paterno, "El apellido paterno");
     if (apellidoPaternoError) {
-      setError(apellidoPaternoError);
+      newErrors.apellido_paterno = apellidoPaternoError;
+      setErrors(newErrors);
       return false;
     }
 
     const apellidoMaternoError = validateName(formData.apellido_materno, "El apellido materno");
     if (apellidoMaternoError) {
-      setError(apellidoMaternoError);
+      newErrors.apellido_materno = apellidoMaternoError;
+      setErrors(newErrors);
       return false;
     }
 
     const emailError = validateEmail(formData.email);
     if (emailError) {
-      setError(emailError);
+      newErrors.email = emailError;
+      setErrors(newErrors);
       return false;
     }
 
     if (!isEditing || formData.contrasena_hash.trim()) {
       const passwordError = validateRequiredText(formData.contrasena_hash, { min: 6, max: 60 });
       if (passwordError) {
-        setError(passwordError === "Este campo es obligatorio" ? "La contrasena es obligatoria" : passwordError);
+        newErrors.contrasena_hash = passwordError === "Este campo es obligatorio" ? "La contrasena es obligatoria" : passwordError;
+        setErrors(newErrors);
         return false;
       }
     }
 
     if (!formData.rol) {
-      setError("El rol es obligatorio");
+      newErrors.rol = "El rol es obligatorio";
+      setErrors(newErrors);
       return false;
     }
 
     if (!isEditing && isEncargado && !formData.area_id) {
-      setError("El area asignada es obligatoria");
+      newErrors.area_id = "El area asignada es obligatoria";
+      setErrors(newErrors);
       return false;
     }
 
+    setErrors({});
     return true;
   };
 
@@ -165,13 +176,14 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
   return (
     <div className="space-y-6">
   <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-{error && toast.error(error)}
+
+      
 
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <div className="glass-card rounded-2xl p-6 space-y-5">
-              <FormField label="Nombre" required>
+              <FormField label="Nombre" error={errors.nombre} required>
                 <input
                   type="text"
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
@@ -183,7 +195,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
                 />
               </FormField>
 
-              <FormField label="Apellido Paterno" required>
+              <FormField label="Apellido Paterno" error={errors.apellido_paterno} required>
                 <input
                   type="text"
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
@@ -195,7 +207,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
                 />
               </FormField>
 
-              <FormField label="Apellido Materno" required>
+              <FormField label="Apellido Materno" error={errors.apellido_materno} required>
                 <input
                   type="text"
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
@@ -207,7 +219,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
                 />
               </FormField>
 
-              <FormField label="Correo Electronico" required>
+              <FormField label="Correo Electronico" error={errors.email} required>
                 <input
                   type="email"
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
@@ -219,7 +231,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
                 />
               </FormField>
 
-              <FormField label={isEditing ? "Contrasena" : "Contrasena Temporal"} required={!isEditing}>
+              <FormField label={isEditing ? "Contrasena" : "Contrasena Temporal"} error={errors.contrasena_hash} required={!isEditing}>
                 <input
                   type="password"
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
@@ -249,7 +261,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
             <div className="glass-card rounded-2xl p-6 space-y-5 h-fit">
               <h3 className="text-lg font-semibold text-text-primary mb-4">Configuracion</h3>
 
-              <FormField label="Rol" required>
+              <FormField label="Rol" error={errors.rol} required>
                 <Select
                   value={formData.rol}
                   onChange={(value) => handleChange("rol", value)}
@@ -272,7 +284,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
               </FormField>
 
               {!isEditing && isEncargado && (
-                <FormField label="Area Asignada" required>
+                <FormField label="Area Asignada" error={errors.area_id} required>
                   <Select
                     value={formData.area_id}
                     onChange={(value) => handleChange("area_id", value)}

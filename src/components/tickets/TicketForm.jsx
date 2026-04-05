@@ -14,46 +14,57 @@ export function TicketForm({ initialValues, onSubmit, user, layout = "default", 
     descripcion: initialValues?.descripcion || "",
     prioridad: initialValues?.prioridad || PRIORIDAD.MEDIA,
   });
-  const [error, setError] = useState("");
+const [errors, setErrors] = useState({});  
   const [submitting, setSubmitting] = useState(false);
 
   const handleSafeChange = (field, value) => {
     if (containsForbiddenInput(value)) {
-      setError(feedbackText.invalidContent);
+      setErrors({ [field]: feedbackText.invalidContent });
       return;
     }
 
-    setError("");
+    setErrors({});
     setForm((current) => ({ ...current, [field]: value }));
+  };
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (containsForbiddenInput(form.titulo) || containsForbiddenInput(form.descripcion)) {
+      newErrors.titulo = feedbackText.invalidContent;
+      setErrors(newErrors);
+      return false;
+    }
+
+    const tituloError = validateRequiredText(form.titulo, { min: 5, max: 120 });
+    if (tituloError) {
+      newErrors.titulo = tituloError === "Este campo es obligatorio" ? "El titulo del ticket es obligatorio" : tituloError;
+      setErrors(newErrors);
+      return false;
+    }
+
+    const descripcionError = validateRequiredText(form.descripcion, { min: 10, max: 1500 });
+    if (descripcionError) {
+      newErrors.descripcion = descripcionError === "Este campo es obligatorio" ? "La descripcion del problema es obligatoria" : descripcionError;
+      setErrors(newErrors);
+      return false;
+    }
+
+    if (!form.area_id) {
+      newErrors.area_id = "Debes seleccionar un area para generar el ticket";
+      setErrors(newErrors);
+      return false;
+    }
+
+    setErrors({});
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (submitting) return;
 
-    setError("");
-
-    if (containsForbiddenInput(form.titulo) || containsForbiddenInput(form.descripcion)) {
-      setError(feedbackText.invalidContent);
-      return;
-    }
-
-    const tituloError = validateRequiredText(form.titulo, { min: 5, max: 120 });
-    if (tituloError) {
-      setError(tituloError === "Este campo es obligatorio" ? "El titulo del ticket es obligatorio" : tituloError);
-      return;
-    }
-
-    const descripcionError = validateRequiredText(form.descripcion, { min: 10, max: 1500 });
-    if (descripcionError) {
-      setError(descripcionError === "Este campo es obligatorio" ? "La descripcion del problema es obligatoria" : descripcionError);
-      return;
-    }
-
-    if (!form.area_id) {
-      setError("Debes seleccionar un area para generar el ticket");
-      return;
-    }
+    if (!validate()) return;
 
     try {
       setSubmitting(true);
@@ -67,7 +78,7 @@ export function TicketForm({ initialValues, onSubmit, user, layout = "default", 
         area_id: Number(form.area_id),
       }));
     } catch (err) {
-      setError(getFeedbackMessage(err, feedbackText.createGeneric));
+      toast.error(getFeedbackMessage(err, feedbackText.createGeneric));
     } finally {
       setSubmitting(false);
     }
@@ -143,7 +154,7 @@ export function TicketForm({ initialValues, onSubmit, user, layout = "default", 
   );
 
   const renderTitleField = () => (
-    <FormField label="Titulo del ticket" required>
+    <FormField label="Titulo del ticket" error={errors.titulo} required>
       <input
         type="text"
         className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
@@ -157,7 +168,7 @@ export function TicketForm({ initialValues, onSubmit, user, layout = "default", 
   );
 
   const renderDescriptionField = () => (
-    <FormField label="Descripcion del problema" required>
+    <FormField label="Descripcion del problema" error={errors.descripcion} required>
       <textarea
         className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600 resize-none min-h-[250px]"
         value={form.descripcion}
@@ -174,7 +185,7 @@ export function TicketForm({ initialValues, onSubmit, user, layout = "default", 
     return (
       <form onSubmit={handleSubmit} className="space-y-6" noValidate>
 
-{error && toast.error(error)}
+  
 
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -219,14 +230,7 @@ export function TicketForm({ initialValues, onSubmit, user, layout = "default", 
       {renderTitleField()}
       {renderDescriptionField()}
       {renderPriorityField()}
-      {error && (
-        <div className="bg-accent-pink/20 border border-accent-pink/30 text-accent-pink px-4 py-3 rounded-xl flex items-center gap-2">
-          <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          {error}
-        </div>
-      )}
+      
       <Button type="submit" className="w-full" disabled={submitting}>
         {submitting ? "Validando..." : initialValues ? "Guardar cambios" : "Enviar ticket"}
       </Button>

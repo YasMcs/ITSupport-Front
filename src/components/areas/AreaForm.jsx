@@ -20,21 +20,32 @@ export function AreaForm({ initialData, onSubmit, sucursalOptions = [] }) {
     estado: initialData?.estado || "Activa",
   });
 
-  const [error, setError] = useState("");
+const [errors, setErrors] = useState({});  
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+  const validate = () => {
+    const newErrors = {};
 
     if (!form.nombreArea.trim()) {
-      setError("El nombre del area es obligatorio");
-      return;
+      newErrors.nombreArea = "El nombre del area es obligatorio";
     }
 
     if (!form.sucursalId) {
-      setError("Debe seleccionar una sucursal");
-      return;
+      newErrors.sucursalId = "Debe seleccionar una sucursal";
     }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return false;
+    }
+
+    setErrors({});
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validate()) return;
 
     try {
       if (onSubmit) {
@@ -42,7 +53,7 @@ export function AreaForm({ initialData, onSubmit, sucursalOptions = [] }) {
       }
       navigate("/areas");
     } catch (err) {
-      setError(
+      toast.error(
         getFeedbackMessage(
           err,
           isEditing ? "No pudimos guardar los cambios del area." : "No pudimos guardar el area."
@@ -79,7 +90,7 @@ export function AreaForm({ initialData, onSubmit, sucursalOptions = [] }) {
 
       <form onSubmit={handleSubmit} className="space-y-6" noValidate>
 
-{error && toast.error(error)}
+  
 
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -89,7 +100,7 @@ export function AreaForm({ initialData, onSubmit, sucursalOptions = [] }) {
                 Informacion del Area
               </h3>
 
-              <FormField label="Nombre del Area" required>
+              <FormField label="Nombre del Area" error={errors.nombreArea} required>
                 <input
                   type="text"
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all"
@@ -100,7 +111,7 @@ export function AreaForm({ initialData, onSubmit, sucursalOptions = [] }) {
                 />
               </FormField>
 
-              <FormField label="Sucursal" required>
+              <FormField label="Sucursal" error={errors.sucursalId} required>
                 <Select
                   value={form.sucursalId}
                   onChange={(value) => handleChange("sucursalId", value)}

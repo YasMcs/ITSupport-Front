@@ -23,36 +23,44 @@ export function SucursalForm({ initialData, onSubmit }) {
     estado: initialData?.estado || "Activa",
   });
 
-  const [error, setError] = useState("");
+const [errors, setErrors] = useState({});  
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+  const validate = () => {
+    const newErrors = {};
 
     if (!form.nombre.trim()) {
-      setError("El nombre de la sucursal es obligatorio");
-      return;
+      newErrors.nombre = "El nombre de la sucursal es obligatorio";
     }
 
     if (!form.zona.trim()) {
-      setError("La zona o colonia es obligatoria");
-      return;
+      newErrors.zona = "La zona o colonia es obligatoria";
     }
 
     if (!form.direccionFisica.trim()) {
-      setError("La direccion fisica es obligatoria");
-      return;
+      newErrors.direccionFisica = "La direccion fisica es obligatoria";
     }
 
     if (!/^\d{10}$/.test(form.telefono.trim())) {
-      setError("El telefono debe tener exactamente 10 digitos");
-      return;
+      newErrors.telefono = "El telefono debe tener exactamente 10 digitos";
     }
 
     if (!form.horarioOperacion.trim()) {
-      setError("El horario de operacion es obligatorio");
-      return;
+      newErrors.horarioOperacion = "El horario de operacion es obligatorio";
     }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return false;
+    }
+
+    setErrors({});
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validate()) return;
 
     try {
       if (onSubmit) {
@@ -60,7 +68,7 @@ export function SucursalForm({ initialData, onSubmit }) {
       }
       navigate("/sucursales");
     } catch (err) {
-      setError(
+      toast.error(
         getFeedbackMessage(
           err,
           isEditing ? "No pudimos guardar los cambios de la sucursal." : "No pudimos guardar la sucursal."
@@ -99,14 +107,14 @@ export function SucursalForm({ initialData, onSubmit }) {
       </div>
 
   <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-{error && toast.error(error)}
+  
 
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <div className="glass-card rounded-2xl p-6 space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField label="Nombre de la sucursal" required>
+                <FormField label="Nombre de la sucursal" error={errors.nombre} required>
                   <input
                     type="text"
                     className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
@@ -117,7 +125,7 @@ export function SucursalForm({ initialData, onSubmit }) {
                   />
                 </FormField>
 
-                <FormField label="Zona / Colonia" required>
+                <FormField label="Zona / Colonia" error={errors.zona} required>
                   <input
                     type="text"
                     className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
@@ -129,7 +137,7 @@ export function SucursalForm({ initialData, onSubmit }) {
                 </FormField>
               </div>
 
-              <FormField label="Direccion fisica exacta" required>
+              <FormField label="Direccion fisica exacta" error={errors.direccionFisica} required>
                 <textarea
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600 resize-none"
                   value={form.direccionFisica}
@@ -141,7 +149,7 @@ export function SucursalForm({ initialData, onSubmit }) {
               </FormField>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField label="Telefono Directo / Movil" required>
+                <FormField label="Telefono Directo / Movil" error={errors.telefono} required>
                   <input
                     type="tel"
                     className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
@@ -153,7 +161,7 @@ export function SucursalForm({ initialData, onSubmit }) {
                   />
                 </FormField>
 
-                <FormField label="Horario de Operacion" required>
+                <FormField label="Horario de Operacion" error={errors.horarioOperacion} required>
                   <input
                     type="text"
                     className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
