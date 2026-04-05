@@ -264,60 +264,35 @@ export function TicketDetailPage() {
             <div className="space-y-6">
               <section>
                 <h3 className="mb-4 text-lg font-semibold text-text-primary">Contexto del ticket</h3>
-                <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-                  <div className="rounded-2xl bg-white/[0.03] px-4 py-3">
-                    <p className="text-xs uppercase tracking-[0.18em] text-text-muted">Folio</p>
-                    <p className="mt-2 font-mono text-text-primary">#{ticket.id}</p>
-                  </div>
-                  <div className="rounded-2xl bg-white/[0.03] px-4 py-3">
-                    <p className="text-xs uppercase tracking-[0.18em] text-text-muted">Creado</p>
-                    <p className="mt-2 text-text-primary">{formatDate(ticket.fechaCreacion) || "Sin fecha"}</p>
-                  </div>
-                  <div className="rounded-2xl bg-white/[0.03] px-4 py-3">
-                    <p className="text-xs uppercase tracking-[0.18em] text-text-muted">Situacion</p>
-                    <div className="mt-2">
-                      <Badge status={estadoActual} />
-                    </div>
-                  </div>
-                  <div className="rounded-2xl bg-white/[0.03] px-4 py-3">
-                    <p className="text-xs uppercase tracking-[0.18em] text-text-muted">Prioridad</p>
-                    <div className="mt-2">
-                      <Badge priority={ticket.prioridad} />
-                    </div>
-                  </div>
+                <div className="space-y-5">
+                  <InfoItem label="Folio" value={`#${ticket.id}`} mono />
+                  <InfoItem label="Creado" value={formatDate(ticket.fechaCreacion) || "Sin fecha"} />
+                  <InfoItem
+                    label="Situacion"
+                    value={<Badge status={estadoActual} />}
+                  />
+                  <InfoItem
+                    label="Prioridad"
+                    value={<Badge priority={ticket.prioridad} />}
+                  />
                   {ticket.fechaCierre && (
-                    <div className="rounded-2xl bg-white/[0.03] px-4 py-3 sm:col-span-2">
-                      <p className="text-xs uppercase tracking-[0.18em] text-text-muted">Cerrado</p>
-                      <p className="mt-2 text-text-primary">{formatDate(ticket.fechaCierre) || "Sin fecha"}</p>
-                    </div>
+                    <InfoItem label="Cerrado" value={formatDate(ticket.fechaCierre) || "Sin fecha"} />
                   )}
                 </div>
               </section>
 
               <section>
                 <h3 className="mb-4 text-lg font-semibold text-text-primary">Ubicacion y contacto</h3>
-                <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-                  <div className="rounded-2xl bg-white/[0.03] px-4 py-3">
-                    <p className="text-xs uppercase tracking-[0.18em] text-text-muted">Sucursal</p>
-                    <p className="mt-2 text-text-primary">{ticket.sucursal || "Sin dato"}</p>
-                  </div>
-                  <div className="rounded-2xl bg-white/[0.03] px-4 py-3">
-                    <p className="text-xs uppercase tracking-[0.18em] text-text-muted">Area</p>
-                    <p className="mt-2 text-text-primary">{ticket.area || "Sin dato"}</p>
-                  </div>
-                  <div className="rounded-2xl bg-white/[0.03] px-4 py-3">
-                    <p className="text-xs uppercase tracking-[0.18em] text-text-muted">Encargado</p>
-                    <p className="mt-2 text-text-primary">{ticket.encargado}</p>
-                  </div>
-                  <div className="rounded-2xl bg-white/[0.03] px-4 py-3">
-                    <p className="text-xs uppercase tracking-[0.18em] text-text-muted">Tecnico</p>
-                    <p className="mt-2 text-text-primary">{ticket.tecnico || "Sin asignar"}</p>
-                  </div>
+                <div className="space-y-5">
+                  <InfoItem label="Sucursal" value={ticket.sucursal || "Sin dato"} />
+                  <InfoItem label="Area" value={ticket.area || "Sin dato"} />
+                  <InfoItem label="Encargado" value={ticket.encargado} />
+                  <InfoItem label="Tecnico" value={ticket.tecnico || "Sin asignar"} />
                   {role === ROLES.TECNICO && (
-                    <div className="rounded-2xl bg-white/[0.03] px-4 py-3 sm:col-span-2">
-                      <p className="text-xs uppercase tracking-[0.18em] text-text-muted">Contacto del encargado del area</p>
-                      <p className="mt-2 text-text-primary">{ticket.contacto || "Sin dato disponible"}</p>
-                    </div>
+                    <InfoItem
+                      label="Contacto del encargado del area"
+                      value={ticket.contacto || "Sin dato disponible"}
+                    />
                   )}
                 </div>
               </section>
@@ -482,4 +457,17 @@ function isAssignmentNoiseComment(comment, ticket) {
   if (!looksLikeAssignmentEvent) return false;
 
   return author === "sistema" || (assignedTechnician && author === assignedTechnician);
+}
+
+function InfoItem({ label, value, mono = false }) {
+  return (
+    <div className="space-y-1.5">
+      <p className="text-xs font-semibold uppercase text-text-muted">
+        {label}
+      </p>
+      <div className={mono ? "font-mono text-base text-text-primary" : "text-base text-text-primary"}>
+        {value}
+      </div>
+    </div>
+  );
 }
