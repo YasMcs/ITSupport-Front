@@ -330,8 +330,8 @@ export function TicketDetailPage() {
           <div className="flex h-full flex-col bg-dark-purple-950/84 px-5 py-4 shadow-[0_24px_70px_rgba(9,6,23,0.28)] backdrop-blur-xl">
             <div className="pb-3">
               <div>
-                <h3 className="text-lg font-semibold text-text-primary">Bitacora de Resolucion</h3>
-                <p className="mt-1 text-sm text-text-secondary">
+                <h3 className="text-base font-semibold text-text-primary">Bitacora de Resolucion</h3>
+                <p className="mt-1 text-xs text-text-muted">
                   Registro cronologico del seguimiento del ticket.
                 </p>
               </div>
@@ -371,16 +371,16 @@ export function TicketDetailPage() {
                         <div
                           className={`relative max-w-[88%] rounded-[1.6rem] px-4 py-3 shadow-[0_12px_28px_rgba(9,6,23,0.18)] ${
                             isTechnicianComment
-                              ? "bg-purple-electric/28 text-white"
-                              : "bg-dark-purple-900 text-text-primary"
+                              ? "bg-purple-electric/32 text-white"
+                              : "bg-[#23193b] text-text-primary"
                           }`}
                         >
                           <span
                             className={`absolute top-4 h-3 w-3 rotate-45 ${
                               isTechnicianComment
-                                ? "-right-1.5 bg-purple-electric/28"
-                                : "-left-1.5 bg-dark-purple-900"
-                            }`}
+                                ? "-right-1.5 bg-purple-electric/32"
+                                : "-left-1.5 bg-[#23193b]"
+                              }`}
                           />
 
                           <div className="mb-2 flex items-center justify-between gap-3">
@@ -404,7 +404,7 @@ export function TicketDetailPage() {
                     onChange={(e) => handleCommentChange(e.target.value)}
                     rows={1}
                     maxLength={600}
-                    className="max-h-[180px] min-h-[44px] w-full resize-none overflow-y-auto rounded-2xl bg-dark-purple-900/80 px-4 py-2.5 text-sm text-text-secondary outline-none placeholder:text-text-muted/50 focus:ring-1 focus:ring-purple-electric"
+                    className="max-h-[160px] min-h-[40px] w-full resize-none overflow-y-auto rounded-2xl bg-dark-purple-900/80 px-4 py-2 text-sm text-text-secondary outline-none placeholder:text-text-muted/50 focus:ring-1 focus:ring-purple-electric"
                     placeholder="Escribe un comentario..."
                   />
                   <div className="flex justify-end">
