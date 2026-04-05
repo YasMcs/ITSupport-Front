@@ -337,59 +337,57 @@ export function TicketDetailPage() {
               </div>
             </div>
 
-            <div
-              ref={chatScrollRef}
-              className="mt-2 min-h-0 flex-1 space-y-3 overflow-y-auto pr-1"
-            >
-              {comentariosVisibles.length === 0 ? (
-                <div className="flex min-h-full items-center justify-center rounded-2xl bg-white/[0.03] px-6 py-10 text-center">
-                  <p className="text-sm text-text-muted">Aun no hay comentarios relevantes por mostrar.</p>
-                </div>
-              ) : (
-                comentariosVisibles.map((comentario, index) => {
-                  const isTechnicianComment =
-                    Number(comentario?.usuario_id) === Number(ticket?.tecnico_id) ||
-                    String(comentario?.autor || "").toLowerCase().trim() ===
-                      String(ticket?.tecnico || "").toLowerCase().trim();
+            <div className="mt-2 flex min-h-0 flex-1 flex-col rounded-[1.9rem] bg-white/[0.04] shadow-[0_16px_36px_rgba(9,6,23,0.2)]">
+              <div
+                ref={chatScrollRef}
+                className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4"
+              >
+                {comentariosVisibles.length === 0 ? (
+                  <div className="flex min-h-full items-center justify-center rounded-2xl bg-white/[0.03] px-6 py-10 text-center">
+                    <p className="text-sm text-text-muted">Aun no hay comentarios relevantes por mostrar.</p>
+                  </div>
+                ) : (
+                  comentariosVisibles.map((comentario, index) => {
+                    const isTechnicianComment =
+                      Number(comentario?.usuario_id) === Number(ticket?.tecnico_id) ||
+                      String(comentario?.autor || "").toLowerCase().trim() ===
+                        String(ticket?.tecnico || "").toLowerCase().trim();
 
-                  return (
-                    <div
-                      key={index}
-                      className={`flex ${isTechnicianComment ? "justify-end" : "justify-start"}`}
-                    >
+                    return (
                       <div
-                        className={`relative max-w-[88%] rounded-[1.6rem] px-4 py-3 shadow-[0_10px_28px_rgba(9,6,23,0.16)] ${
-                          isTechnicianComment
-                            ? "bg-purple-electric/18 text-text-primary"
-                            : "bg-white/[0.05] text-text-secondary"
-                        }`}
+                        key={index}
+                        className={`flex ${isTechnicianComment ? "justify-end" : "justify-start"}`}
                       >
-                        <span
-                          className={`absolute top-4 h-3 w-3 rotate-45 ${
+                        <div
+                          className={`relative max-w-[88%] rounded-[1.6rem] px-4 py-3 shadow-[0_10px_28px_rgba(9,6,23,0.16)] ${
                             isTechnicianComment
-                              ? "-right-1.5 bg-purple-electric/18"
-                              : "-left-1.5 bg-white/[0.05]"
+                              ? "bg-purple-electric/18 text-text-primary"
+                              : "bg-white/[0.05] text-text-secondary"
                           }`}
-                        />
+                        >
+                          <span
+                            className={`absolute top-4 h-3 w-3 rotate-45 ${
+                              isTechnicianComment
+                                ? "-right-1.5 bg-purple-electric/18"
+                                : "-left-1.5 bg-white/[0.05]"
+                            }`}
+                          />
 
-                        <div className="mb-2 flex items-center justify-between gap-3">
-                          <span className="text-sm font-medium text-text-primary">{comentario.autor}</span>
-                          <span className="text-xs text-text-muted">{formatDate(comentario.fecha) || "Sin fecha"}</span>
+                          <div className="mb-2 flex items-center justify-between gap-3">
+                            <span className="text-sm font-medium text-text-primary">{comentario.autor}</span>
+                            <span className="text-xs text-text-muted">{formatDate(comentario.fecha) || "Sin fecha"}</span>
+                          </div>
+                          <p className="text-sm leading-relaxed">{comentario.texto}</p>
                         </div>
-                        <p className="text-sm leading-relaxed">{comentario.texto}</p>
                       </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
+                    );
+                  })
+                )}
+              </div>
 
-            <div className="mt-4 pt-4">
+              <div className="border-t border-white/6 px-4 py-4">
               {canComment ? (
-                <div className="space-y-3 rounded-[1.75rem] bg-white/[0.04] p-4 shadow-[0_12px_30px_rgba(9,6,23,0.18)]">
-                  <label className="block text-xs uppercase tracking-[0.22em] text-text-muted">
-                    Nuevo comentario
-                  </label>
+                <div className="space-y-3">
                   <textarea
                     value={nuevoComentario}
                     onChange={(e) => handleCommentChange(e.target.value)}
@@ -398,10 +396,7 @@ export function TicketDetailPage() {
                     className="min-h-[108px] w-full resize-none rounded-2xl bg-dark-purple-900/80 p-3 text-sm text-text-secondary outline-none placeholder:text-text-muted/50 focus:ring-1 focus:ring-purple-electric"
                     placeholder="Escribe un comentario..."
                   />
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-xs text-text-muted">
-                      Comparte solo informacion util para el seguimiento.
-                    </span>
+                  <div className="flex justify-end">
                     <Button
                       variant="secondary"
                       onClick={handleAgregarComentario}
@@ -413,7 +408,7 @@ export function TicketDetailPage() {
                   </div>
                 </div>
               ) : (
-                <div className="rounded-2xl bg-white/[0.04] px-4 py-3 text-sm text-text-muted">
+                <div className="rounded-2xl bg-white/[0.03] px-4 py-3 text-sm text-text-muted">
                   {isClosedTicket
                     ? "Este ticket ya fue cerrado, por lo que la conversacion queda solo como consulta."
                     : isAdmin
@@ -421,6 +416,7 @@ export function TicketDetailPage() {
                       : "Solo el encargado creador o el tecnico asignado pueden agregar comentarios en esta vista."}
                 </div>
               )}
+              </div>
             </div>
           </div>
         </aside>
