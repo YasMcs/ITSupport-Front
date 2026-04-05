@@ -12,7 +12,13 @@ const ESTADO_OPTIONS = [
   { value: "Desactivada", label: "Desactivada" },
 ];
 
-export function SucursalForm({ initialData, onSubmit }) {
+export function SucursalForm({
+  initialData,
+  onSubmit,
+  readOnly = false,
+  onPrimaryAction,
+  primaryActionLabel = "Editar Sucursal",
+}) {
   const navigate = useNavigate();
   const isEditing = !!initialData;
 
@@ -86,6 +92,7 @@ const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (readOnly) return;
     if (submitting) return;
 
     if (!validate()) return;
@@ -161,6 +168,7 @@ const [errors, setErrors] = useState({});
                     onChange={(e) => handleChange("nombre", e.target.value)}
                     placeholder="Sucursal Centro"
                     required
+                    disabled={readOnly}
                   />
                 </FormField>
 
@@ -172,6 +180,7 @@ const [errors, setErrors] = useState({});
                     onChange={(e) => handleChange("zona", e.target.value)}
                     placeholder="Centro Historico"
                     required
+                    disabled={readOnly}
                   />
                 </FormField>
               </div>
@@ -184,6 +193,7 @@ const [errors, setErrors] = useState({});
                   rows={2}
                   placeholder="Calle, numero, referencias..."
                   required
+                  disabled={readOnly}
                 />
               </FormField>
 
@@ -197,6 +207,7 @@ const [errors, setErrors] = useState({});
                     placeholder="5551234567"
                     inputMode="numeric"
                     required
+                    disabled={readOnly}
                   />
                 </FormField>
 
@@ -208,14 +219,21 @@ const [errors, setErrors] = useState({});
                     onChange={(e) => handleChange("horarioOperacion", e.target.value)}
                     placeholder="Lun-Vie 9-18"
                     required
+                    disabled={readOnly}
                   />
                 </FormField>
               </div>
 
               <div className="flex justify-end mt-6">
-                <Button type="submit" className="px-8 py-3 w-auto" disabled={submitting}>
-                  {submitting ? "Validando..." : isEditing ? "Guardar Cambios" : "Crear Sucursal"}
-                </Button>
+                {readOnly ? (
+                  <Button type="button" className="px-8 py-3 w-auto" onClick={onPrimaryAction}>
+                    {primaryActionLabel}
+                  </Button>
+                ) : (
+                  <Button type="submit" className="px-8 py-3 w-auto" disabled={submitting}>
+                    {submitting ? "Validando..." : isEditing ? "Guardar Cambios" : "Crear Sucursal"}
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -232,10 +250,11 @@ const [errors, setErrors] = useState({});
                   onChange={(value) => handleChange("estado", value)}
                   options={ESTADO_OPTIONS}
                   className="w-full"
-                  disabled={isEditing}
+                  disabled={isEditing || readOnly}
                 />
               </FormField>
 
+              {!readOnly && (
               <div className="text-sm text-gray-400 bg-white/5 p-4 rounded-lg mt-6">
                 <p>
                   {isEditing
@@ -243,6 +262,7 @@ const [errors, setErrors] = useState({});
                     : "Completa los datos principales de la sucursal para registrarla correctamente."}
                 </p>
               </div>
+              )}
             </div>
           </div>
         </div>

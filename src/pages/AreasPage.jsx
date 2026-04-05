@@ -85,6 +85,10 @@ export function AreasPage() {
     navigate(`/areas/editar/${id}`);
   };
 
+  const handleVer = (id) => {
+    navigate(`/areas/${id}`);
+  };
+
   const handleToggleEstado = (id) => {
     const area = areas.find((item) => item.id === id);
     if (!area) return;
@@ -210,6 +214,7 @@ export function AreasPage() {
             areas={filteredAreas}
             onEditar={handleEditar}
             onToggleEstado={handleToggleEstado}
+            onVer={handleVer}
           />
         </div>
       )}

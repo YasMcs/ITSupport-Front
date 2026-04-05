@@ -5,7 +5,7 @@ import { Badge } from "../ui/Badge";
 const EstadoToggleIcon = ({ isActive }) =>
   isActive ? <CheckCircle2 className="h-5 w-5 text-cyan-300" strokeWidth={2.2} /> : <XCircle className="h-5 w-5 text-pink-300" strokeWidth={2.2} />;
 
-export function AreaTable({ areas, onEditar, onToggleEstado }) {
+export function AreaTable({ areas, onEditar, onToggleEstado, onVer }) {
   const COLUMNS = [
     { key: "nombreArea", label: "Nombre del Area" },
     {
@@ -55,5 +55,5 @@ export function AreaTable({ areas, onEditar, onToggleEstado }) {
     },
   ];
 
-  return <Table columns={COLUMNS} data={areas} onRowClick={(row) => onEditar && onEditar(row.id)} />;
+  return <Table columns={COLUMNS} data={areas} onRowClick={(row) => onVer && onVer(row.id)} />;
 }

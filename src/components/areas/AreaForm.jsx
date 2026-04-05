@@ -12,7 +12,14 @@ const ESTADO_FORM_OPTIONS = [
   { value: "Inactiva", label: "Inactiva" },
 ];
 
-export function AreaForm({ initialData, onSubmit, sucursalOptions = [] }) {
+export function AreaForm({
+  initialData,
+  onSubmit,
+  sucursalOptions = [],
+  readOnly = false,
+  onPrimaryAction,
+  primaryActionLabel = "Editar Area",
+}) {
   const navigate = useNavigate();
   const isEditing = !!initialData;
 
@@ -53,6 +60,7 @@ const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (readOnly) return;
     if (submitting) return;
 
     if (!validate()) return;
@@ -126,6 +134,7 @@ const [errors, setErrors] = useState({});
                   onChange={(e) => handleChange("nombreArea", e.target.value)}
                   placeholder="Ej: Recepcion, Almacen, Produccion"
                   required
+                  disabled={readOnly}
                 />
               </FormField>
 
@@ -136,13 +145,20 @@ const [errors, setErrors] = useState({});
                   options={sucursalOptions}
                   placeholder="Seleccionar sucursal"
                   className="w-full"
+                  disabled={readOnly}
                 />
               </FormField>
 
               <div className="flex justify-end mt-6">
-                <Button type="submit" className="px-8 py-3 w-auto" disabled={submitting}>
-                  {submitting ? "Validando..." : isEditing ? "Guardar Cambios" : "Crear Area"}
-                </Button>
+                {readOnly ? (
+                  <Button type="button" className="px-8 py-3 w-auto" onClick={onPrimaryAction}>
+                    {primaryActionLabel}
+                  </Button>
+                ) : (
+                  <Button type="submit" className="px-8 py-3 w-auto" disabled={submitting}>
+                    {submitting ? "Validando..." : isEditing ? "Guardar Cambios" : "Crear Area"}
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -159,10 +175,11 @@ const [errors, setErrors] = useState({});
                   onChange={(value) => handleChange("estado", value)}
                   options={ESTADO_FORM_OPTIONS}
                   className="w-full"
-                  disabled={isEditing}
+                  disabled={isEditing || readOnly}
                 />
               </FormField>
 
+              {!readOnly && (
               <div className="text-sm text-gray-400 bg-white/5 p-4 rounded-lg mt-6">
                 <p>
                   {isEditing
@@ -170,6 +187,7 @@ const [errors, setErrors] = useState({});
                     : "Podras asignar tickets a esta area una vez creada."}
                 </p>
               </div>
+              )}
             </div>
           </div>
         </div>

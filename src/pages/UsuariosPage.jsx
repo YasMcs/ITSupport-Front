@@ -248,7 +248,7 @@ export function UsuariosPage() {
         </div>
       ) : (
         <div className="glass-card rounded-2xl overflow-hidden">
-          <Table columns={columns} data={usuarios} onRowClick={(row) => navigate(`/usuarios/editar/${row.id}`)} />
+          <Table columns={columns} data={usuarios} onRowClick={(row) => navigate(`/usuarios/${row.id}`)} />
         </div>
       )}
 

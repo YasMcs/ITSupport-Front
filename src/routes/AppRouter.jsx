@@ -9,12 +9,15 @@ import { PerfilPage } from "../pages/PerfilPage";
 import { SucursalesPage } from "../pages/SucursalesPage";
 import { NuevaSucursalPage } from "../pages/NuevaSucursalPage";
 import { EditarSucursalPage } from "../pages/EditarSucursalPage";
+import { SucursalDetallePage } from "../pages/SucursalDetallePage";
 import { AreasPage } from "../pages/AreasPage";
 import { NuevaAreaPage } from "../pages/NuevaAreaPage";
 import { EditarAreaPage } from "../pages/EditarAreaPage";
+import { AreaDetallePage } from "../pages/AreaDetallePage";
 import { UsuariosPage } from "../pages/UsuariosPage";
 import { NuevoUsuarioPage } from "../pages/NuevoUsuarioPage";
 import { EditarUsuarioPage } from "../pages/EditarUsuarioPage";
+import { UsuarioDetallePage } from "../pages/UsuarioDetallePage";
 import { AccesoDenegadoPage } from "../pages/AccesoDenegadoPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { ROLES } from "../constants/roles";
@@ -56,6 +59,14 @@ export function AppRouter() {
         }
       />
       <Route
+        path="/sucursales/:id"
+        element={
+          <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
+            <SucursalDetallePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/sucursales/editar/:id"
         element={
           <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
@@ -80,6 +91,14 @@ export function AppRouter() {
         }
       />
       <Route
+        path="/areas/:id"
+        element={
+          <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
+            <AreaDetallePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/areas/editar/:id"
         element={
           <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
@@ -100,6 +119,14 @@ export function AppRouter() {
         element={
           <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
             <NuevoUsuarioPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/usuarios/:id"
+        element={
+          <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
+            <UsuarioDetallePage />
           </ProtectedRoute>
         }
       />

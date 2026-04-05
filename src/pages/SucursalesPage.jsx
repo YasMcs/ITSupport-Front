@@ -87,6 +87,10 @@ export function SucursalesPage() {
     navigate(`/sucursales/editar/${id}`);
   };
 
+  const handleVer = (id) => {
+    navigate(`/sucursales/${id}`);
+  };
+
   const handleToggleEstado = (id) => {
     const sucursal = sucursales.find((item) => item.id === id);
     if (!sucursal) return;
@@ -212,6 +216,7 @@ export function SucursalesPage() {
             sucursales={filteredSucursales}
             onEditar={handleEditar}
             onToggleEstado={handleToggleEstado}
+            onVer={handleVer}
           />
         </div>
       )}

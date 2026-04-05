@@ -6,7 +6,7 @@ import { Badge } from "../ui/Badge";
 const EstadoToggleIcon = ({ isActive }) =>
   isActive ? <CheckCircle2 className="h-5 w-5 text-cyan-300" strokeWidth={2.2} /> : <XCircle className="h-5 w-5 text-pink-300" strokeWidth={2.2} />;
 
-export function SucursalTable({ sucursales, onEditar, onToggleEstado }) {
+export function SucursalTable({ sucursales, onEditar, onToggleEstado, onVer }) {
   const navigate = useNavigate();
 
   const COLUMNS = [
@@ -74,7 +74,7 @@ export function SucursalTable({ sucursales, onEditar, onToggleEstado }) {
     <Table
       columns={COLUMNS}
       data={sucursales}
-      onRowClick={(row) => navigate(`/sucursales/editar/${row.id}`)}
+      onRowClick={(row) => (onVer ? onVer(row.id) : navigate(`/sucursales/${row.id}`))}
     />
   );
 }

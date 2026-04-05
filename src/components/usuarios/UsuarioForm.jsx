@@ -23,7 +23,16 @@ export const ESTADO_OPTIONS = [
   { value: "suspendido", label: "Suspendido" },
 ];
 
-export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, areaOptions = [] }) {
+export function UsuarioForm({
+  usuario,
+  onSubmit,
+  onCancel,
+  isEditing = false,
+  areaOptions = [],
+  readOnly = false,
+  onPrimaryAction,
+  primaryActionLabel = "Editar",
+}) {
   const [formData, setFormData] = useState({
     nombre: usuario?.nombre || usuario?.nombre_usuario || "",
     apellido_paterno: usuario?.apellido_paterno || "",
@@ -146,6 +155,7 @@ const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (readOnly) return;
     if (submitting) return;
 
     setFormError("");
@@ -199,6 +209,7 @@ const [errors, setErrors] = useState({});
                   placeholder="Nombre registrado"
                   maxLength={60}
                   required
+                  disabled={readOnly}
                 />
               </FormField>
 
@@ -211,6 +222,7 @@ const [errors, setErrors] = useState({});
                   placeholder="De Coz"
                   maxLength={60}
                   required
+                  disabled={readOnly}
                 />
               </FormField>
 
@@ -223,6 +235,7 @@ const [errors, setErrors] = useState({});
                   placeholder="Fernandez"
                   maxLength={60}
                   required
+                  disabled={readOnly}
                 />
               </FormField>
 
@@ -235,10 +248,12 @@ const [errors, setErrors] = useState({});
                   placeholder="correo@ejemplo.com"
                   maxLength={120}
                   required
+                  disabled={readOnly}
                 />
               </FormField>
 
-              <FormField label={isEditing ? "Contrasena" : "Contrasena Temporal"} error={errors.contrasena_hash} required={!isEditing}>
+              {!readOnly && (
+                <FormField label={isEditing ? "Contrasena" : "Contrasena Temporal"} error={errors.contrasena_hash} required={!isEditing}>
                 <input
                   type="password"
                   className="w-full bg-dark-purple-800 border border-dark-purple-700 rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted/50 focus:ring-2 focus:ring-purple-electric focus:border-purple-electric outline-none transition-all duration-200 hover:border-dark-purple-600"
@@ -250,6 +265,7 @@ const [errors, setErrors] = useState({});
                   required={!isEditing}
                 />
               </FormField>
+              )}
 
               <div className="flex justify-end gap-3 mt-6">
                 {onCancel && (
@@ -257,9 +273,15 @@ const [errors, setErrors] = useState({});
                     Cancelar
                   </Button>
                 )}
+                {readOnly ? (
+                  <Button type="button" className="px-8 py-3 w-auto" onClick={onPrimaryAction}>
+                    {primaryActionLabel}
+                  </Button>
+                ) : (
                   <Button type="submit" className="px-8 py-3 w-auto" disabled={submitting}>
                     {submitting ? "Validando..." : isEditing ? "Guardar Cambios" : "Crear Usuario"}
                   </Button>
+                )}
               </div>
             </div>
           </div>
@@ -275,7 +297,7 @@ const [errors, setErrors] = useState({});
                   options={ROL_OPTIONS}
                   placeholder="Selecciona un rol"
                   className="w-full"
-                  disabled={isEditing}
+                  disabled={isEditing || readOnly}
                 />
               </FormField>
 
@@ -286,11 +308,11 @@ const [errors, setErrors] = useState({});
                   options={ESTADO_OPTIONS}
                   placeholder="Selecciona un estado"
                   className="w-full"
-                  disabled={isEditing}
+                  disabled={isEditing || readOnly}
                 />
               </FormField>
 
-              {!isEditing && isEncargado && (
+              {(readOnly || !isEditing) && isEncargado && (
                 <FormField label="Area Asignada" error={errors.area_id} required>
                   <Select
                     value={formData.area_id}
@@ -298,24 +320,25 @@ const [errors, setErrors] = useState({});
                     options={normalizedAreaOptions}
                     placeholder="Selecciona un area"
                     className="w-full"
+                    disabled={readOnly}
                   />
                 </FormField>
               )}
 
-              {!isEditing && isEncargado && selectedArea && (
+              {!readOnly && !isEditing && isEncargado && selectedArea && (
                 <div className="text-sm text-gray-400 bg-white/5 p-4 rounded-lg mt-6">
                   <p>Area seleccionada</p>
                   <p className="mt-2 text-xs text-text-muted">{selectedArea.label}</p>
                 </div>
               )}
 
-              {!isEditing && (
+              {!readOnly && !isEditing && (
                 <div className="text-sm text-gray-400 bg-white/5 p-4 rounded-lg mt-6">
                   <p>El cargo se define al crear el usuario y despues ya no se modifica desde la edicion por seguridad.</p>
                 </div>
               )}
 
-              {isEditing && (
+              {!readOnly && isEditing && (
                 <div className="text-sm text-gray-400 bg-white/5 p-4 rounded-lg mt-6">
                   <p>En esta vista puedes actualizar nombre, apellidos, correo y contrasena. El cargo se mantiene fijo por seguridad.</p>
                 </div>
