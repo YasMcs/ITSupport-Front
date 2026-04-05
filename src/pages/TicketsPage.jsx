@@ -284,7 +284,10 @@ export function TicketsPage() {
               ) : (
                 <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
                   {filteredAvailableTickets.map((ticket) => (
-                    <article key={ticket.id} className="rounded-2xl bg-dark-purple-900/30 p-5 backdrop-blur-sm">
+                    <article
+                      key={ticket.id}
+                      className="group rounded-2xl bg-dark-purple-900/30 p-5 backdrop-blur-sm transition-all duration-200 hover:bg-dark-purple-900/40"
+                    >
                       <div className="mb-3 flex items-start justify-between gap-3">
                         <div>
                           <p className="text-xs font-mono text-text-muted">#{ticket.id}</p>
@@ -305,12 +308,17 @@ export function TicketsPage() {
                       </div>
 
                       <div className="mt-5 flex items-center justify-between gap-3">
-                        <span className="text-xs text-text-muted">
-                          Creado el{" "}
-                          {ticket.fechaCreacion
-                            ? new Date(ticket.fechaCreacion).toLocaleDateString("es-MX")
-                            : "sin fecha"}
-                        </span>
+                        <div className="space-y-1">
+                          <span className="block text-xs text-text-muted">
+                            Creado el{" "}
+                            {ticket.fechaCreacion
+                              ? new Date(ticket.fechaCreacion).toLocaleDateString("es-MX")
+                              : "sin fecha"}
+                          </span>
+                          <span className="text-[11px] text-text-muted/0 transition-all duration-200 group-hover:text-text-muted/80">
+                            Usa el boton para asignarte este ticket.
+                          </span>
+                        </div>
                         <Button
                           type="button"
                           onClick={() => handleTakeTicket(ticket.id)}
@@ -395,7 +403,11 @@ export function TicketsPage() {
                     ) : (
                       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
                         {visibleTechnicianTickets.map((ticket) => (
-                          <article key={ticket.id} className="rounded-2xl bg-dark-purple-900/30 p-5 backdrop-blur-sm">
+                          <article
+                            key={ticket.id}
+                            onClick={() => navigate(`/tickets/${ticket.id}`, { state: { ticket } })}
+                            className="group cursor-pointer rounded-2xl bg-dark-purple-900/30 p-5 backdrop-blur-sm transition-all duration-200 hover:bg-dark-purple-900/40"
+                          >
                             <div className="flex items-start justify-between gap-3">
                               <div className="min-w-0">
                                 <p className="text-xs font-mono text-text-muted">#{ticket.id}</p>
@@ -435,16 +447,19 @@ export function TicketsPage() {
                                     Cerrado el {new Date(ticket.fechaCierre).toLocaleDateString("es-MX")}
                                   </p>
                                 )}
+                                <p className="pt-1 text-[11px] text-text-muted/0 transition-all duration-200 group-hover:text-text-muted/80">
+                                  Haz clic en la tarjeta para ver el detalle.
+                                </p>
                               </div>
-
-                              <Button
-                                type="button"
-                                variant={ticket.estado === "cerrado" ? "secondary" : "primary"}
-                                className="w-auto px-5 py-2.5"
-                                onClick={() => navigate(`/tickets/${ticket.id}`, { state: { ticket } })}
+                              <div
+                                className={`rounded-full px-4 py-2 text-xs font-medium transition-all duration-200 ${
+                                  ticket.estado === "cerrado"
+                                    ? "bg-white/[0.05] text-text-muted group-hover:bg-white/[0.08]"
+                                    : "bg-purple-electric/12 text-purple-electric group-hover:bg-purple-electric/18"
+                                }`}
                               >
                                 Ver detalle
-                              </Button>
+                              </div>
                             </div>
                           </article>
                         ))}
