@@ -106,10 +106,14 @@ const [errors, setErrors] = useState({});
         </button>
         <div>
           <h1 className="text-3xl font-bold text-text-primary">
-            {isEditing ? "Editar Area" : "Nueva Area"}
+            {readOnly ? "Visualizar Area" : isEditing ? "Editar Area" : "Nueva Area"}
           </h1>
           <p className="text-text-secondary mt-1">
-            {isEditing ? "Modifica los datos del area" : "Registra una nueva area operativa"}
+            {readOnly
+              ? "Consulta la informacion del area antes de realizar cambios."
+              : isEditing
+                ? "Modifica los datos del area"
+                : "Registra una nueva area operativa"}
           </p>
         </div>
       </div>
@@ -166,7 +170,7 @@ const [errors, setErrors] = useState({});
           <div className="lg:col-span-1 space-y-6 h-fit">
             <div className="glass-card rounded-2xl p-6 space-y-5 h-fit">
               <h3 className="text-lg font-semibold text-text-primary mb-4">
-                Configuracion
+                {readOnly ? "Resumen" : "Configuracion"}
               </h3>
 
               <FormField label="Estado">

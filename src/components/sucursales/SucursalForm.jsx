@@ -142,12 +142,14 @@ const [errors, setErrors] = useState({});
 
         <div>
           <h1 className="text-3xl font-bold text-text-primary">
-            {isEditing ? "Editar Sucursal" : "Nueva Sucursal"}
+            {readOnly ? "Visualizar Sucursal" : isEditing ? "Editar Sucursal" : "Nueva Sucursal"}
           </h1>
           <p className="text-text-secondary mt-1">
-            {isEditing
-              ? "Modifica los datos de la sucursal seleccionada"
-              : "Registra los datos de una nueva sede operativa"}
+            {readOnly
+              ? "Consulta los datos principales de la sucursal antes de realizar cambios."
+              : isEditing
+                ? "Modifica los datos de la sucursal seleccionada"
+                : "Registra los datos de una nueva sede operativa"}
           </p>
         </div>
       </div>
@@ -241,7 +243,7 @@ const [errors, setErrors] = useState({});
           <div className="lg:col-span-1 space-y-6 h-fit">
             <div className="glass-card rounded-2xl p-6 space-y-5 h-fit">
               <h3 className="text-lg font-semibold text-text-primary mb-4">
-                Configuracion
+                {readOnly ? "Resumen" : "Configuracion"}
               </h3>
 
               <FormField label="Estado">
