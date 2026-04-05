@@ -18,6 +18,7 @@ export function TicketsPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [takingTicketId, setTakingTicketId] = useState(null);
+  const [showAllTechnicianTickets, setShowAllTechnicianTickets] = useState(false);
   const [filters, setFilters] = useState({
     estado: "",
     prioridad: "",
@@ -83,6 +84,26 @@ export function TicketsPage() {
       { filters, role, searchQuery }
     ),
     [availableTickets, filters, role, searchQuery]
+  );
+
+  const visibleTechnicianTickets = useMemo(() => {
+    if (role !== ROLES.TECNICO) return [];
+
+    const scopedTickets = showAllTechnicianTickets
+      ? filteredTickets
+      : filteredTickets.filter((ticket) => ticket.estado !== "cerrado");
+
+    return [...scopedTickets].sort(sortTechnicianWorkQueue);
+  }, [filteredTickets, role, showAllTechnicianTickets]);
+
+  const technicianClosedCount = useMemo(
+    () => filteredTickets.filter((ticket) => ticket.estado === "cerrado").length,
+    [filteredTickets]
+  );
+
+  const technicianActiveCount = useMemo(
+    () => filteredTickets.filter((ticket) => ticket.estado !== "cerrado").length,
+    [filteredTickets]
   );
 
   const getColumns = () => {
@@ -289,10 +310,114 @@ export function TicketsPage() {
                   </div>
                 </div>
               ) : (
-                <section>
-                  <div className="glass-card overflow-hidden rounded-2xl">
-                    <TicketTable tickets={filteredTickets} columnas={getColumns()} />
+                <section className="space-y-5">
+                  <div className="flex flex-col gap-4 rounded-3xl bg-white/[0.03] p-5 backdrop-blur-sm md:flex-row md:items-center md:justify-between">
+                    <div>
+                      <h2 className="text-lg font-semibold text-text-primary">Bandeja de trabajo</h2>
+                      <p className="mt-1 text-sm text-text-secondary">
+                        Se muestran primero los tickets que requieren atencion. Los cerrados quedan fuera del foco por defecto.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <div className="inline-flex rounded-2xl bg-dark-purple-900/45 p-1">
+                        <button
+                          type="button"
+                          onClick={() => setShowAllTechnicianTickets(false)}
+                          className={`rounded-2xl px-4 py-2 text-sm font-medium transition-all ${
+                            !showAllTechnicianTickets
+                              ? "bg-purple-electric/90 text-white shadow-[0_10px_25px_rgba(139,92,246,0.24)]"
+                              : "text-text-secondary hover:text-text-primary"
+                          }`}
+                        >
+                          Activos
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowAllTechnicianTickets(true)}
+                          className={`rounded-2xl px-4 py-2 text-sm font-medium transition-all ${
+                            showAllTechnicianTickets
+                              ? "bg-purple-electric/90 text-white shadow-[0_10px_25px_rgba(139,92,246,0.24)]"
+                              : "text-text-secondary hover:text-text-primary"
+                          }`}
+                        >
+                          Todos
+                        </button>
+                      </div>
+
+                      <div className="text-right text-xs text-text-muted">
+                        <p>{technicianActiveCount} activos</p>
+                        <p>{technicianClosedCount} cerrados</p>
+                      </div>
+                    </div>
                   </div>
+
+                  {visibleTechnicianTickets.length === 0 ? (
+                    <div className="rounded-2xl bg-dark-purple-900/20 px-6 py-10 text-center">
+                      <p className="text-text-secondary">
+                        {showAllTechnicianTickets
+                          ? "No hay tickets para mostrar con los filtros actuales."
+                          : "No tienes tickets activos en este momento."}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+                      {visibleTechnicianTickets.map((ticket) => (
+                        <article key={ticket.id} className="rounded-2xl bg-dark-purple-900/30 p-5 backdrop-blur-sm">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0">
+                              <p className="text-xs font-mono text-text-muted">#{ticket.id}</p>
+                              <h3 className="mt-1 line-clamp-2 text-base font-semibold text-text-primary">
+                                {ticket.titulo}
+                              </h3>
+                            </div>
+                            <div className="flex shrink-0 flex-col items-end gap-2">
+                              <Badge priority={ticket.prioridad} />
+                              <Badge status={ticket.estado} />
+                            </div>
+                          </div>
+
+                          <p className="mt-3 line-clamp-2 text-sm text-text-secondary">{ticket.descripcion}</p>
+
+                          <div className="mt-4 flex flex-wrap gap-2 text-xs text-text-muted">
+                            <span className="rounded-full bg-dark-purple-800/55 px-3 py-1">
+                              {ticket.area || "Sin area"}
+                            </span>
+                            {ticket.encargado && (
+                              <span className="rounded-full bg-dark-purple-800/55 px-3 py-1">
+                                {ticket.encargado}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="mt-5 flex items-end justify-between gap-4">
+                            <div className="space-y-1 text-xs text-text-muted">
+                              <p>
+                                Creado el{" "}
+                                {ticket.fechaCreacion
+                                  ? new Date(ticket.fechaCreacion).toLocaleDateString("es-MX")
+                                  : "sin fecha"}
+                              </p>
+                              {ticket.fechaCierre && (
+                                <p>
+                                  Cerrado el {new Date(ticket.fechaCierre).toLocaleDateString("es-MX")}
+                                </p>
+                              )}
+                            </div>
+
+                            <Button
+                              type="button"
+                              variant={ticket.estado === "cerrado" ? "secondary" : "primary"}
+                              className="w-auto px-5 py-2.5"
+                              onClick={() => navigate(`/tickets/${ticket.id}`, { state: { ticket } })}
+                            >
+                              Ver detalle
+                            </Button>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  )}
                 </section>
               )}
             </>
@@ -314,6 +439,28 @@ export function TicketsPage() {
       )}
     </div>
   );
+}
+
+function sortTechnicianWorkQueue(a, b) {
+  const stateWeight = {
+    abierto: 0,
+    en_proceso: 1,
+    cerrado: 2,
+  };
+
+  const priorityWeight = {
+    alta: 0,
+    media: 1,
+    baja: 2,
+  };
+
+  const stateDiff = (stateWeight[a.estado] ?? 99) - (stateWeight[b.estado] ?? 99);
+  if (stateDiff !== 0) return stateDiff;
+
+  const priorityDiff = (priorityWeight[a.prioridad] ?? 99) - (priorityWeight[b.prioridad] ?? 99);
+  if (priorityDiff !== 0) return priorityDiff;
+
+  return new Date(a.fechaCreacion) - new Date(b.fechaCreacion);
 }
 
 function filterTicketsByRole(tickets, role, user) {
