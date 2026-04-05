@@ -121,7 +121,7 @@ export function TicketDetailPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto h-full max-w-7xl space-y-6 overflow-hidden">
+      <div className="mx-auto h-screen max-w-7xl space-y-6 overflow-hidden">
         <div className="glass-card rounded-2xl p-12 text-center">
           <p className="text-lg text-text-secondary">Cargando ticket...</p>
         </div>
@@ -232,7 +232,7 @@ export function TicketDetailPage() {
   };
 
   return (
-    <div className="mx-auto flex h-full min-h-0 max-w-7xl flex-col overflow-hidden">
+    <div className="mx-auto flex h-screen max-w-7xl flex-col overflow-hidden">
       <div className="space-y-3 pb-3">
       <div className="flex w-full items-start gap-3">
         <div className="flex items-start gap-3">
@@ -265,14 +265,18 @@ export function TicketDetailPage() {
           <div className="space-y-4">
             <section className="rounded-3xl bg-white/[0.03] p-6 shadow-[0_18px_45px_rgba(9,6,23,0.16)]">
               <h3 className="mb-5 text-lg font-semibold text-text-primary">Contexto del ticket</h3>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <InfoRow label="Folio" value={`#${ticket.id}`} mono />
-                <InfoRow label="Creado" value={formatDate(ticket.fechaCreacion) || "Sin fecha"} />
-                <InfoRow label="Situacion" value={<Badge status={estadoActual} />} />
-                <InfoRow label="Prioridad" value={<Badge priority={ticket.prioridad} />} />
-                {ticket.fechaCierre && (
-                  <InfoRow label="Cerrado" value={formatDate(ticket.fechaCierre) || "Sin fecha"} />
-                )}
+              <div className="grid gap-5 sm:grid-cols-2 sm:gap-6">
+                <div className="space-y-4 sm:pr-5">
+                  <InfoRow label="Folio" value={`#${ticket.id}`} mono />
+                  <InfoRow label="Creado" value={formatDate(ticket.fechaCreacion) || "Sin fecha"} />
+                  {ticket.fechaCierre && (
+                    <InfoRow label="Cerrado" value={formatDate(ticket.fechaCierre) || "Sin fecha"} />
+                  )}
+                </div>
+                <div className="space-y-4 sm:border-l sm:border-neutral-800 sm:pl-5">
+                  <InfoRow label="Situacion" value={<Badge status={estadoActual} />} />
+                  <InfoRow label="Prioridad" value={<Badge priority={ticket.prioridad} />} />
+                </div>
               </div>
             </section>
 
@@ -308,7 +312,7 @@ export function TicketDetailPage() {
               <div>
                 <h3 className="text-base font-semibold text-text-primary">Comentarios</h3>
                 <p className="mt-1 text-xs text-text-muted">
-                  Registro del seguimiento.
+                  Seguimiento del ticket.
                 </p>
               </div>
 
