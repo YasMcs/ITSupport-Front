@@ -303,7 +303,7 @@ export function TicketDetailPage() {
         </div>
 
         <aside className="min-h-0 xl:self-start">
-          <div className="flex h-full min-h-0 flex-col overflow-y-hidden rounded-[2rem] bg-white/[0.045] px-4 py-3 shadow-[0_24px_70px_rgba(9,6,23,0.22)] backdrop-blur-xl xl:h-[calc(100vh-108px)]">
+          <div className="flex h-full min-h-0 flex-col overflow-y-hidden rounded-[2rem] bg-white/[0.045] px-4 py-3 shadow-[0_24px_70px_rgba(9,6,23,0.22)] backdrop-blur-xl xl:h-[calc(100vh-128px)]">
             <div className="pb-2">
               <div>
                 <h3 className="text-base font-semibold text-text-primary">Bitacora de Resolucion</h3>
@@ -345,10 +345,10 @@ export function TicketDetailPage() {
                         className={`flex ${isTechnicianComment ? "justify-end" : "justify-start"}`}
                       >
                         <div
-                          className={`max-w-[80%] rounded-[1.45rem] border border-white/6 px-4 py-3 shadow-[0_10px_24px_rgba(9,6,23,0.14)] backdrop-blur-md ${
+                          className={`max-w-[80%] rounded-[1.45rem] px-4 py-3 shadow-[0_10px_24px_rgba(9,6,23,0.14)] backdrop-blur-md ${
                             isTechnicianComment
-                              ? "bg-white/[0.09] text-white"
-                              : "bg-white/[0.055] text-white"
+                              ? "bg-black/24 text-white"
+                              : "bg-black/18 text-white"
                           }`}
                         >
                           <div className="mb-2 flex items-center justify-between gap-3">
