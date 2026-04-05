@@ -24,11 +24,6 @@ export function DashboardPage() {
         if (!cancelled) {
           const finalTickets = Array.isArray(data) ? data : [];
           setTickets(finalTickets);
-          console.log('[DASHBOARD DEBUG Backend]', { 
-            role, 
-            totalTickets: finalTickets.length, 
-            sample: finalTickets.slice(0, 3).map(t => ({ id: t.id, estado: t.estado, titulo: t.titulo?.slice(0, 50) })) 
-          });
         }
       } catch (error) {
         if (!cancelled) {
@@ -53,7 +48,13 @@ export function DashboardPage() {
   );
 
   const criticalTickets = useMemo(
-    () => tickets.filter((ticket) => ticket.prioridad === PRIORIDAD.ALTA).slice(0, 3),
+    () =>
+      tickets
+        .filter(
+          (ticket) =>
+            ticket.prioridad === PRIORIDAD.ALTA && ticket.estado !== TICKET_STATUS.CERRADO
+        )
+        .slice(0, 3),
     [tickets]
   );
 
