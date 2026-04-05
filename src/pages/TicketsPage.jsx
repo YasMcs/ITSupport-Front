@@ -232,10 +232,10 @@ export function TicketsPage() {
 
           {tecnicoView === "available" ? (
             <section className="rounded-3xl bg-white/[0.03] p-6 backdrop-blur-sm">
-              <div className="mb-2 flex items-center justify-end gap-3">  <!-- mb-5 to mb-2, gap-4 to 3 -->
-                <div className="rounded-xl bg-dark-purple-900/40 px-3 py-2 text-right backdrop-blur-sm">  <!-- smaller rounded, px/py, opacity -->
+              <div className="mb-2 flex items-center justify-end gap-3">  
+                <div className="rounded-xl bg-dark-purple-900/40 px-3 py-2 text-right backdrop-blur-sm">  
                   <p className="text-xs uppercase tracking-wide text-text-muted/80">Disponibles</p>
-                  <p className="text-lg font-semibold text-text-primary">{filteredAvailableTickets.length}</p>  <!-- text-2xl to lg -->
+                  <p className="text-lg font-semibold text-text-primary">{filteredAvailableTickets.length}</p> 
                 </div>
               </div>  
 
