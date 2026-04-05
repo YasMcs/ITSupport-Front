@@ -77,12 +77,10 @@ export function AreaForm({ initialData, onSubmit, sucursalOptions = [] }) {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {error && (
-          <div className="bg-accent-pink/20 border border-accent-pink/30 text-accent-pink px-4 py-3 rounded-xl">
-            {error}
-          </div>
-        )}
+      <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+
+{error && toast.error(error)}
+
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
