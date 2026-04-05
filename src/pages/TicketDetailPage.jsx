@@ -369,17 +369,17 @@ export function TicketDetailPage() {
                         className={`flex ${isTechnicianComment ? "justify-end" : "justify-start"}`}
                       >
                         <div
-                          className={`relative max-w-[88%] rounded-[1.6rem] px-4 py-3 shadow-[0_10px_28px_rgba(9,6,23,0.16)] ${
+                          className={`relative max-w-[88%] rounded-[1.6rem] px-4 py-3 shadow-[0_12px_28px_rgba(9,6,23,0.18)] ${
                             isTechnicianComment
-                              ? "bg-purple-electric/18 text-text-primary"
-                              : "bg-white/[0.05] text-text-secondary"
+                              ? "bg-purple-electric/28 text-white"
+                              : "bg-dark-purple-900 text-text-primary"
                           }`}
                         >
                           <span
                             className={`absolute top-4 h-3 w-3 rotate-45 ${
                               isTechnicianComment
-                                ? "-right-1.5 bg-purple-electric/18"
-                                : "-left-1.5 bg-white/[0.05]"
+                                ? "-right-1.5 bg-purple-electric/28"
+                                : "-left-1.5 bg-dark-purple-900"
                             }`}
                           />
 
@@ -404,7 +404,7 @@ export function TicketDetailPage() {
                     onChange={(e) => handleCommentChange(e.target.value)}
                     rows={1}
                     maxLength={600}
-                    className="max-h-[220px] min-h-[52px] w-full resize-none overflow-y-auto rounded-2xl bg-dark-purple-900/80 px-4 py-3 text-sm text-text-secondary outline-none placeholder:text-text-muted/50 focus:ring-1 focus:ring-purple-electric"
+                    className="max-h-[180px] min-h-[44px] w-full resize-none overflow-y-auto rounded-2xl bg-dark-purple-900/80 px-4 py-2.5 text-sm text-text-secondary outline-none placeholder:text-text-muted/50 focus:ring-1 focus:ring-purple-electric"
                     placeholder="Escribe un comentario..."
                   />
                   <div className="flex justify-end">
