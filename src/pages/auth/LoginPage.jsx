@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { FormField } from "../../components/ui/FormField";
-import { Input } from "../../components/ui/Input";  
+import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 import { useAuth } from "../../hooks/useAuth";
 import { authService } from "../../services/authService";
@@ -12,11 +13,11 @@ import logoIcono from "../../assets/logo_icono.png";
 import logo from "../../assets/logo.png";
 
 export function LoginPage() {
-const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
   });
-  const [errors, setErrors] = useState({});  
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -34,7 +35,8 @@ const [formData, setFormData] = useState({
 
       const passwordError = validateRequiredText(formData.password, { min: 6, max: 100 });
       if (passwordError) {
-        newErrors.password = passwordError === "Este campo es obligatorio" ? "La contrasena es obligatoria" : passwordError;
+        newErrors.password =
+          passwordError === "Este campo es obligatorio" ? "La contrasena es obligatoria" : passwordError;
       }
     }
 
@@ -65,7 +67,10 @@ const [formData, setFormData] = useState({
       navigate("/dashboard", { replace: true });
     } catch (err) {
       if (err.response?.status === 401) {
-        setErrors({ email: 'Correo o contraseña incorrectos. Por favor, verifica tus datos.', password: '' });
+        setErrors({
+          email: "Correo o contrasena incorrectos. Por favor, verifica tus datos.",
+          password: "",
+        });
       } else {
         toast.error(getFeedbackMessage(err, "No pudimos iniciar sesion. Revisa tus datos e intenta nuevamente."));
       }
@@ -126,12 +131,12 @@ const [formData, setFormData] = useState({
             </div>
 
             <div className="login-form">
-            <FormField label="Email" error={errors.email} required>
+              <FormField label="Email" error={errors.email} required>
                 <Input
                   type="email"
                   placeholder="tu@email.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   disabled={loading}
                   autoComplete="username"
                 />
@@ -141,14 +146,12 @@ const [formData, setFormData] = useState({
                   type="password"
                   placeholder="********"
                   value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   disabled={loading}
                   autoComplete="current-password"
                 />
               </FormField>
             </div>
-
-            
 
             <Button type="submit" variant="primary" className="login-button" disabled={loading}>
               {loading ? "Entrando..." : "Entrar"}

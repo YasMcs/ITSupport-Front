@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "../ui/Button";
 import { FormField } from "../ui/FormField";
 import { Select } from "../ui/Select";
-import { getFeedbackMessage } from "../../utils/feedback";
+import { containsForbiddenInput, normalizeTextInput, validateRequiredText } from "../../utils/security";
+import { feedbackText, getFeedbackMessage } from "../../utils/feedback";
 
 const ESTADO_FORM_OPTIONS = [
   { value: "Activa", label: "Activa" },
@@ -21,12 +23,19 @@ export function AreaForm({ initialData, onSubmit, sucursalOptions = [] }) {
   });
 
 const [errors, setErrors] = useState({});  
+  const [submitting, setSubmitting] = useState(false);
 
   const validate = () => {
     const newErrors = {};
 
-    if (!form.nombreArea.trim()) {
-      newErrors.nombreArea = "El nombre del area es obligatorio";
+    if (containsForbiddenInput(form.nombreArea)) {
+      newErrors.nombreArea = feedbackText.invalidContent;
+    } else {
+      const nombreAreaError = validateRequiredText(form.nombreArea, { min: 2, max: 80 });
+      if (nombreAreaError) {
+        newErrors.nombreArea =
+          nombreAreaError === "Este campo es obligatorio" ? "El nombre del area es obligatorio" : nombreAreaError;
+      }
     }
 
     if (!form.sucursalId) {
@@ -44,12 +53,19 @@ const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return;
 
     if (!validate()) return;
 
     try {
+      setSubmitting(true);
       if (onSubmit) {
-        await Promise.resolve(onSubmit(form));
+        await Promise.resolve(
+          onSubmit({
+            ...form,
+            nombreArea: normalizeTextInput(form.nombreArea),
+          })
+        );
       }
       navigate("/areas");
     } catch (err) {
@@ -59,6 +75,8 @@ const [errors, setErrors] = useState({});
           isEditing ? "No pudimos guardar los cambios del area." : "No pudimos guardar el area."
         )
       );
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -122,8 +140,8 @@ const [errors, setErrors] = useState({});
               </FormField>
 
               <div className="flex justify-end mt-6">
-                <Button type="submit" className="px-8 py-3 w-auto">
-                  {isEditing ? "Guardar Cambios" : "Crear Area"}
+                <Button type="submit" className="px-8 py-3 w-auto" disabled={submitting}>
+                  {submitting ? "Validando..." : isEditing ? "Guardar Cambios" : "Crear Area"}
                 </Button>
               </div>
             </div>

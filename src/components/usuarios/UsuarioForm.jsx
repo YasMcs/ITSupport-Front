@@ -35,6 +35,7 @@ export function UsuarioForm({ usuario, onSubmit, onCancel, isEditing = false, ar
     area_id: usuario?.area_id ? String(usuario.area_id) : "",
   });
 const [errors, setErrors] = useState({});  
+  const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const normalizedAreaOptions = areaOptions
     .filter((area) => area.estado === "Activa")
@@ -63,6 +64,7 @@ const [errors, setErrors] = useState({});
   }, [usuario]);
 
   const handleChange = (field, value) => {
+    setFormError("");
     setFormData((prev) => {
       const next = { ...prev, [field]: value };
       if (field === "rol" && value !== "encargado") {
@@ -146,7 +148,7 @@ const [errors, setErrors] = useState({});
     e.preventDefault();
     if (submitting) return;
 
-    setError("");
+    setFormError("");
 
     if (!validate()) return;
 
@@ -167,7 +169,7 @@ const [errors, setErrors] = useState({});
         description: isEditing ? "Los cambios ya fueron aplicados." : "La informacion se guardo correctamente.",
       });
     } catch (error) {
-      setError(getFeedbackMessage(error, feedbackText.saveGeneric));
+      setFormError(getFeedbackMessage(error, feedbackText.saveGeneric));
     } finally {
       setSubmitting(false);
     }
@@ -176,6 +178,11 @@ const [errors, setErrors] = useState({});
   return (
     <div className="space-y-6">
   <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+        {formError && (
+          <div className="rounded-2xl border border-rose-400/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-100">
+            {formError}
+          </div>
+        )}
 
       
 

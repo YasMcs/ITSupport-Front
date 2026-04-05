@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "../ui/Button";
 import { FormField } from "../ui/FormField";
 import { Select } from "../ui/Select";
-import { getFeedbackMessage } from "../../utils/feedback";
+import { containsForbiddenInput, normalizeTextInput, validateRequiredText } from "../../utils/security";
+import { feedbackText, getFeedbackMessage } from "../../utils/feedback";
 
 const ESTADO_OPTIONS = [
   { value: "Activa", label: "Activa" },
@@ -24,28 +26,53 @@ export function SucursalForm({ initialData, onSubmit }) {
   });
 
 const [errors, setErrors] = useState({});  
+  const [submitting, setSubmitting] = useState(false);
 
   const validate = () => {
     const newErrors = {};
 
-    if (!form.nombre.trim()) {
-      newErrors.nombre = "El nombre de la sucursal es obligatorio";
+    if (containsForbiddenInput(form.nombre)) {
+      newErrors.nombre = feedbackText.invalidContent;
+    } else {
+      const nombreError = validateRequiredText(form.nombre, { min: 2, max: 80 });
+      if (nombreError) {
+        newErrors.nombre =
+          nombreError === "Este campo es obligatorio" ? "El nombre de la sucursal es obligatorio" : nombreError;
+      }
     }
 
-    if (!form.zona.trim()) {
-      newErrors.zona = "La zona o colonia es obligatoria";
+    if (containsForbiddenInput(form.zona)) {
+      newErrors.zona = feedbackText.invalidContent;
+    } else {
+      const zonaError = validateRequiredText(form.zona, { min: 2, max: 80 });
+      if (zonaError) {
+        newErrors.zona =
+          zonaError === "Este campo es obligatorio" ? "La zona o colonia es obligatoria" : zonaError;
+      }
     }
 
-    if (!form.direccionFisica.trim()) {
-      newErrors.direccionFisica = "La direccion fisica es obligatoria";
+    if (containsForbiddenInput(form.direccionFisica)) {
+      newErrors.direccionFisica = feedbackText.invalidContent;
+    } else {
+      const direccionError = validateRequiredText(form.direccionFisica, { min: 5, max: 200 });
+      if (direccionError) {
+        newErrors.direccionFisica =
+          direccionError === "Este campo es obligatorio" ? "La direccion fisica es obligatoria" : direccionError;
+      }
     }
 
     if (!/^\d{10}$/.test(form.telefono.trim())) {
       newErrors.telefono = "El telefono debe tener exactamente 10 digitos";
     }
 
-    if (!form.horarioOperacion.trim()) {
-      newErrors.horarioOperacion = "El horario de operacion es obligatorio";
+    if (containsForbiddenInput(form.horarioOperacion)) {
+      newErrors.horarioOperacion = feedbackText.invalidContent;
+    } else {
+      const horarioError = validateRequiredText(form.horarioOperacion, { min: 3, max: 80 });
+      if (horarioError) {
+        newErrors.horarioOperacion =
+          horarioError === "Este campo es obligatorio" ? "El horario de operacion es obligatorio" : horarioError;
+      }
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -59,12 +86,22 @@ const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return;
 
     if (!validate()) return;
 
     try {
+      setSubmitting(true);
       if (onSubmit) {
-        await Promise.resolve(onSubmit(form));
+        await Promise.resolve(
+          onSubmit({
+            ...form,
+            nombre: normalizeTextInput(form.nombre),
+            zona: normalizeTextInput(form.zona),
+            direccionFisica: normalizeTextInput(form.direccionFisica),
+            horarioOperacion: normalizeTextInput(form.horarioOperacion),
+          })
+        );
       }
       navigate("/sucursales");
     } catch (err) {
@@ -74,6 +111,8 @@ const [errors, setErrors] = useState({});
           isEditing ? "No pudimos guardar los cambios de la sucursal." : "No pudimos guardar la sucursal."
         )
       );
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -174,8 +213,8 @@ const [errors, setErrors] = useState({});
               </div>
 
               <div className="flex justify-end mt-6">
-                <Button type="submit" className="px-8 py-3 w-auto">
-                  {isEditing ? "Guardar Cambios" : "Crear Sucursal"}
+                <Button type="submit" className="px-8 py-3 w-auto" disabled={submitting}>
+                  {submitting ? "Validando..." : isEditing ? "Guardar Cambios" : "Crear Sucursal"}
                 </Button>
               </div>
             </div>
