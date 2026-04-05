@@ -121,7 +121,7 @@ export function TicketDetailPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6">
+      <div className="mx-auto h-screen max-w-7xl space-y-6 overflow-hidden">
         <div className="glass-card rounded-2xl p-12 text-center">
           <p className="text-lg text-text-secondary">Cargando ticket...</p>
         </div>
@@ -232,7 +232,8 @@ export function TicketDetailPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl space-y-3">
+    <div className="mx-auto flex h-screen max-w-7xl flex-col overflow-hidden">
+      <div className="space-y-3 pb-3">
       <div className="flex w-full items-start gap-3">
         <div className="flex items-start gap-3">
           <button
@@ -252,9 +253,10 @@ export function TicketDetailPage() {
           </div>
         </div>
       </div>
+      </div>
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.4fr)_minmax(360px,0.6fr)] xl:items-start">
-        <div className="space-y-6">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-6 overflow-hidden xl:grid-cols-[minmax(0,1.4fr)_minmax(360px,0.6fr)] xl:items-start">
+        <div className="min-h-0 space-y-6 overflow-y-auto pr-2">
           <div className="rounded-3xl bg-white/[0.03] p-6 shadow-[0_18px_45px_rgba(9,6,23,0.16)]">
             <h3 className="mb-4 text-lg font-semibold text-text-primary">Descripcion del fallo</h3>
             <p className="whitespace-pre-wrap leading-relaxed text-text-secondary">{ticket.descripcion}</p>
@@ -308,8 +310,8 @@ export function TicketDetailPage() {
           </div>
         </div>
 
-        <aside className="xl:sticky xl:top-16 xl:h-[calc(100vh-64px)]">
-          <div className="flex h-full flex-col overflow-y-hidden rounded-[2rem] bg-[#18181b] px-5 py-4 shadow-[0_24px_70px_rgba(9,6,23,0.28)] backdrop-blur-xl">
+        <aside className="min-h-0 xl:h-full">
+          <div className="flex h-full min-h-0 flex-col overflow-y-hidden rounded-[2rem] bg-[#0f0c1d] px-5 py-4 shadow-[0_24px_70px_rgba(9,6,23,0.28)] backdrop-blur-xl">
             <div className="pb-3">
               <div>
                 <h3 className="text-base font-semibold text-text-primary">Bitacora de Resolucion</h3>
@@ -329,7 +331,7 @@ export function TicketDetailPage() {
               </div>
             </div>
 
-            <div className="mt-2 flex min-h-0 flex-1 flex-col rounded-[1.9rem] bg-white/[0.04] shadow-[0_16px_36px_rgba(9,6,23,0.2)]">
+            <div className="mt-2 flex min-h-0 flex-1 flex-col overflow-hidden">
               <div
                 ref={chatScrollRef}
                 className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4"
@@ -354,14 +356,14 @@ export function TicketDetailPage() {
                           className={`relative max-w-[82%] rounded-[1.6rem] px-4 py-3 shadow-[0_12px_28px_rgba(9,6,23,0.18)] ${
                             isTechnicianComment
                               ? "bg-purple-electric text-white"
-                              : "bg-zinc-700 text-white"
+                              : "bg-white/[0.08] text-white"
                           }`}
                         >
                           <span
                             className={`absolute top-4 h-3 w-3 rotate-45 ${
                               isTechnicianComment
                                 ? "-right-1.5 bg-purple-electric"
-                                : "-left-1.5 bg-zinc-700"
+                                : "-left-1.5 bg-white/[0.08]"
                               }`}
                           />
 
@@ -377,7 +379,7 @@ export function TicketDetailPage() {
                 )}
               </div>
 
-              <div className="mt-auto px-4 py-4">
+              <div className="mt-auto border-t border-white/6 px-4 py-4">
               {canComment ? (
                 <div className="space-y-3">
                   <textarea
