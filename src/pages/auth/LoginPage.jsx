@@ -104,7 +104,6 @@ export function LoginPage() {
           </div>
 
           <div className="login-copy">
-            <span className="login-eyebrow">Mesa de ayuda corporativa</span>
             <h1>Gestiona incidencias con una experiencia clara, segura y profesional.</h1>
             <p>
               Centraliza tickets, seguimiento y operacion interna en una plataforma pensada para equipos de soporte modernos.
