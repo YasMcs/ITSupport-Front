@@ -1,7 +1,7 @@
 # Frontend: Flujo, Roles, Permisos y Validaciones
 
 ## Objetivo
-Documento vivo del estado actual del frontend: rutas, permisos, flujos funcionales, reglas de validacion, mensajes visibles y puntos que dependen del contrato backend.
+Documento vivo del estado actual del frontend: rutas, permisos, flujos funcionales, validaciones, notificaciones y decisiones visibles para la persona usuaria.
 
 ## Roles oficiales
 - `admin`
@@ -27,12 +27,15 @@ Todos se manejan en minusculas.
 ### Protegidas por rol `admin`
 - `/usuarios`
 - `/usuarios/nuevo`
+- `/usuarios/:id`
 - `/usuarios/editar/:id`
 - `/sucursales`
 - `/sucursales/nueva`
+- `/sucursales/:id`
 - `/sucursales/editar/:id`
 - `/areas`
 - `/areas/nueva`
+- `/areas/:id`
 - `/areas/editar/:id`
 
 ### Protegidas por rol `encargado`
@@ -47,73 +50,104 @@ Todos se manejan en minusculas.
 ### Login
 - Usa correo y contrasena.
 - Sanitiza entradas antes de enviar.
-- Si la autenticacion es correcta, guarda sesion y token y redirige a `/dashboard`.
-- Si hay error de acceso, muestra un mensaje breve y claro para la persona usuaria.
+- Si la autenticacion es correcta:
+  - guarda usuario en `sessionStorage`
+  - guarda token
+  - actualiza contexto de autenticacion
+  - redirige a `/dashboard`
+- Si hay error de acceso, muestra un mensaje breve y claro.
 
 ### Logout
 - Limpia sesion local.
+- Elimina token.
 - Redirige a `/login` con navegacion SPA.
-- Ya no usa redireccion forzada que provocaba 404 en hosting.
+
+## Arquitectura funcional resumida
+
+### Layout global
+- `AppLayout` controla:
+  - navbar
+  - sidebar
+  - fondo global
+  - scroll principal del `main`
+- El detalle de ticket usa una excepcion de layout para evitar doble scroll.
+
+### Contextos activos
+- `AuthContext`
+  - sesion, rol y login/logout
+- `WebSocketContext`
+  - conexion socket
+  - toasts
+  - bandeja ligera de notificaciones
+- `TicketContext`
+  - existe, pero hoy tiene uso minimo frente al flujo real basado en servicios por vista
+
+### Servicios
+- `api.js`
+  - cliente axios y token
+- `authService.js`
+- `ticketService.js`
+- `commentService.js`
+- `userService.js`
+- `areaService.js`
+- `sucursalService.js`
+- `websocketService.js`
 
 ## Modulo de usuarios
 
 ### Listado
 - Solo visible para `admin`.
-- La tabla muestra unicamente usuarios con rol `tecnico` y `encargado`.
-- Ya no muestra usuarios `admin`.
-- La columna principal de contexto es `Area`.
-- Cuando no hay area:
-  - `encargado`: "Sin area asignada"
-  - `tecnico`: "No requiere area"
+- La tabla muestra usuarios `tecnico` y `encargado`.
+- La fila completa lleva a vista de visualizacion.
+- Los botones de accion se conservan.
+
+### Visualizar usuario
+- Ruta: `/usuarios/:id`
+- Usa la misma base visual del formulario en modo solo lectura.
+- Tiene boton para ir a editar.
 
 ### Crear usuario
 - Visible para `admin`.
-- Campos visibles:
-  - Nombre
-  - Apellido paterno
-  - Apellido materno
-  - Correo electronico
-  - Contrasena temporal
-  - Rol
-  - Area asignada solo si el rol es `encargado`
-- Regla de interfaz:
-  - En frontend no se muestra un campo llamado "nombre de usuario".
-  - El campo `Nombre` del front se mapea al `nombreUsuario` del backend.
-- Aviso funcional:
-  - El cargo se define al crear el usuario y despues no se modifica desde edicion.
+- Campos:
+  - nombre
+  - apellido paterno
+  - apellido materno
+  - correo electronico
+  - contrasena temporal
+  - rol
+  - area asignada solo si el rol es `encargado`
+- Regla visual y funcional:
+  - el cargo se define al crear y no se cambia en edicion
 
 ### Editar usuario
 - Visible para `admin`.
 - Campos editables:
-  - Nombre
-  - Apellido paterno
-  - Apellido materno
-  - Correo electronico
-  - Contrasena opcional
+  - nombre
+  - apellido paterno
+  - apellido materno
+  - correo electronico
+  - contrasena opcional
 - Campos no editables:
-  - Rol
-  - Estado de cuenta
-  - Area
-- Si la contrasena se deja vacia, no se envia.
+  - rol
+  - area
+  - estado de cuenta
 
 ### Activar y suspender
 - Visible para `admin`.
 - Se ejecuta desde listado.
-- La tabla se refresca con el resultado real y muestra aviso breve de exito o fallo.
+- La lista se refresca despues de la accion.
 
 ## Modulo de sucursales
 
 ### Listado
 - Solo visible para `admin`.
-- Muestra datos alineados al contrato nuevo:
-  - nombre
-  - direccion fisica
-  - telefono
-  - horario de operacion
-  - zona
-  - estado
-  - total de areas
-  - total de tickets
+- La fila completa lleva a vista de visualizacion.
+- Los botones de accion se conservan.
+
+### Visualizar sucursal
+- Ruta: `/sucursales/:id`
+- Reutiliza estructura de formulario en modo solo lectura.
+- Tiene boton para ir a editar.
 
 ### Crear y editar
 - Visible para `admin`.
@@ -123,27 +157,31 @@ Todos se manejan en minusculas.
   - direccion fisica
   - telefono
   - horario de operacion
-- Campos eliminados del front por no usarse:
+- Campos omitidos en frontend:
   - extension
   - contacto local
-- La edicion ya usa payload completo, no solo renombrado.
 
 ### Activar y desactivar
 - Visible para `admin`.
-- Al ejecutar la accion se refresca la lista completa para evitar inconsistencias.
+- La lista se recarga despues de la accion.
 
 ## Modulo de areas
 
 ### Listado
 - Solo visible para `admin`.
-- Muestra nombre del area, sucursal y estado.
+- La fila completa lleva a vista de visualizacion.
+- Los botones de accion se conservan.
+
+### Visualizar area
+- Ruta: `/areas/:id`
+- Reutiliza estructura de formulario en modo solo lectura.
+- Tiene boton para ir a editar.
 
 ### Crear y editar
 - Visible para `admin`.
 - Campos activos:
   - nombre del area
   - sucursal
-- La edicion puede mover el area a otra sucursal usando el endpoint especifico de cambio de sucursal.
 
 ### Activar y desactivar
 - Visible para `admin`.
@@ -151,22 +189,31 @@ Todos se manejan en minusculas.
 
 ## Modulo de tickets
 
-### Vista de `encargado`
-- Puede crear tickets en `/tickets/nuevo`.
-- Ve sus tickets creados en `/tickets`.
-- Puede abrir detalle del ticket.
-- Puede comentar en el detalle.
+## Vista de `admin`
+- Usa `GET /api/tickets` como fuente global.
+- Mantiene tabla, porque su trabajo sigue siendo mas administrativo y de supervision.
+- La fila completa lleva al detalle.
 
-### Vista de `tecnico`
+## Vista de `tecnico`
 
-#### Mis tickets
-- `/tickets`
-- Se muestra como bandeja de trabajo en tabla.
+### Mis tickets
+- Ruta: `/tickets`
+- Se muestra como bandeja de trabajo en cards.
 - Ya no usa kanban.
-- El objetivo es revisar, abrir y cerrar tickets reales.
+- Por defecto muestra activos primero.
+- Tiene control:
+  - `Activos`
+  - `Todos`
+- Los cerrados quedan fuera del foco por defecto.
+- Cada card:
+  - es clickeable a detalle
+  - muestra prioridad
+  - muestra situacion
+  - muestra area
+  - muestra fecha
 
-#### Tickets disponibles
-- `/tickets/disponibles`
+### Tickets disponibles
+- Ruta: `/tickets/disponibles`
 - Se muestran en cards.
 - Cada card incluye:
   - folio
@@ -175,131 +222,210 @@ Todos se manejan en minusculas.
   - area
   - sucursal
   - prioridad
-  - fecha de creacion
+  - fecha
   - boton `Tomar ticket`
-- Esta vista ya no muestra contadores ni bloques repetidos que compitan con las cards.
+- Mantiene boton explicito para evitar asignaciones accidentales.
 
-#### Tomar ticket
+### Tomar ticket
 - Al tomar un ticket:
   - desaparece de disponibles
   - entra a mis tickets
   - se muestra confirmacion breve
 
-### Vista de `admin`
-- Usa `GET /api/tickets` como fuente global confirmada.
-- La tabla de tickets para admin ya muestra mejor contexto:
-  - numero
+## Vista de `encargado`
+
+### Mis tickets
+- Ruta: `/tickets`
+- Ya no usa tabla.
+- Ahora se muestra como panel de seguimiento en cards.
+- Tiene control:
+  - `Activos`
+  - `Todos`
+- Los tickets cerrados quedan fuera del foco por defecto.
+- Cada card muestra:
+  - folio
   - titulo
-  - area
+  - descripcion breve
   - prioridad
-  - estado
-  - responsable
-  - tecnico
-  - fecha
-  - acciones
+  - situacion
+  - sucursal
+  - area
+  - tecnico asignado si ya existe
+  - fecha de creacion
+  - fecha de cierre si aplica
+- Toda la card abre el detalle.
+
+### Crear ticket
+- Ruta: `/tickets/nuevo`
+- Solo `encargado`.
+- Despues de crear, vuelve al modulo de tickets.
 
 ## Detalle de ticket
 
 ### Carga por rol
-- `admin`: usa detalle directo
+- `admin`: usa detalle global
 - `tecnico`: carga desde sus tickets asignados
 - `encargado`: carga desde sus tickets creados
 
-### Estructura actual
-- Header con:
-  - folio
-  - situacion
-  - prioridad
-  - boton `Cerrar ticket` solo cuando realmente aplica
-- Seccion de descripcion
-- Seccion de comentarios
-- Sidebar con:
-  - resumen operativo
+### Estructura visual actual
+- Columna izquierda:
+  - descripcion del fallo
   - contexto del ticket
+  - ubicacion y contacto
+  - boton `Cerrar ticket` cuando aplica
+- Columna derecha:
+  - panel fijo de comentarios
+  - scroll interno
+  - area de escritura fija al fondo
 
-### Reglas actuales
+### Reglas funcionales
 - Ya no existe selector falso de estados.
 - Si la unica accion real es cerrar, solo se expone esa accion.
-- Historial fue eliminado por no aportar datos utiles.
-- Se ocultan comentarios automaticos ruidosos de asignacion cuando no aportan valor conversacional.
-- El contacto solo se muestra para `tecnico` y se presenta como contacto del encargado del area.
+- Cuando el ticket se cierra:
+  - se bloquea el comentario
+  - se muestra aviso breve en el area de escritura
+- El historial viejo fue eliminado por no aportar datos reales.
+- El chat alinea mensajes asi:
+  - mensaje propio a la derecha
+  - mensaje ajeno a la izquierda
+  - `admin` ve todo a la izquierda como observador
 
 ## Dashboard
 - Usa tickets acotados por rol.
-- Muestra resumenes segun el contexto:
-  - `admin`: vision global
-  - `tecnico`: tickets asignados
-  - `encargado`: tickets creados
+- `Tickets criticos` ya no muestra tickets cerrados.
 
 ## Estadisticas
 - Usa tickets acotados por rol.
 - Ya no muestra metricas engañosas como tiempo de respuesta o SLA falso.
-- Ahora prioriza metricas directas:
+- Priorizan metricas directas:
   - pendientes
   - cerrados
   - anulados
   - total registrados
-- Se corrigieron comparaciones de ids para evitar fallos por tipo string o number.
 
-## Navbar y elementos omitidos
-- La campanita de notificaciones fue retirada temporalmente.
-- Se retomara cuando exista un flujo real de notificaciones.
-- Se removio el boton de "Generar reporte" en tickets por ser solo placeholder.
+## WebSockets y notificaciones
 
-## Validaciones y estilo de feedback
+### Conexion
+- Se conecta con SockJS + STOMP.
+- Endpoint actual:
+  - `/api/ws`
+
+### Suscripciones activas
+- globales:
+  - `/topic/tickets/nuevo`
+  - `/topic/tickets/actualizacion`
+  - `/topic/tickets/cerrado`
+- privadas:
+  - `/user/queue/asignacion`
+  - `/user/queue/comentarios`
+- por ticket:
+  - `/topic/tickets/{id}/comentarios`
+
+### Que hace hoy
+- muestra toasts en tiempo real
+- agrega comentarios en vivo en detalle
+- mantiene una bandeja ligera en la campanita del navbar
+
+### Reglas por rol
+- `admin`
+  - nuevo ticket
+  - ticket cerrado
+- `tecnico`
+  - nuevo ticket
+  - ticket actualizado
+  - ticket asignado
+  - comentario nuevo
+  - ticket cerrado
+- `encargado`
+  - ticket asignado
+  - comentario nuevo
+  - ticket cerrado
+
+### Ejemplos de copy actual
+- `Nuevo ticket`: `Hay un ticket nuevo por atender en la bandeja: #...`
+- `Ticket asignado`: `Un tecnico ya esta atendiendo el ticket #...`
+- `Nuevo comentario`: `Nombre agrego un comentario en el ticket #...`
+
+## Navbar y bandeja de notificaciones
+- La campanita ya no es decorativa.
+- Muestra:
+  - contador de no leidas
+  - ultimas notificaciones recientes
+  - tiempo relativo
+- Al abrirla:
+  - marca la bandeja como leida
+- Si la notificacion tiene ticket asociado:
+  - puede llevar al detalle
+
+## Validaciones y feedback
 
 ### Principios actuales
-- Los mensajes visibles deben ser breves, claros y no tecnicos.
-- No deben hablar de backend, servidor, stack trace ni detalles internos.
-- Las validaciones por campo deben mostrarse cerca del campo cuando aplica.
-- Los fallos generales deben mostrarse con mensajes resumidos.
+- mensajes breves
+- no tecnicos
+- sin mencionar backend, stack o detalles internos
+- errores por campo cerca del campo cuando aplica
+- errores generales resumidos y accionables
 
 ### Reglas ya usadas
-- Sanitizacion de texto en entradas libres.
-- Bloqueo de contenido sospechoso tipo etiquetas o scripts.
-- Validacion de correo.
-- Validacion de longitud minima y maxima.
-- Validacion condicional por rol o contexto.
+- sanitizacion de texto
+- bloqueo de contenido sospechoso
+- validacion de correo
+- validacion de longitud
+- validacion condicional por rol o contexto
 
-### Formularios que ya siguen este enfoque
-- Login
-- Crear ticket
-- Crear y editar usuario
-- Crear y editar area
-- Crear y editar sucursal
+### Formularios ya alineados
+- login
+- ticket
+- usuario
+- area
+- sucursal
 
-### Comportamiento esperado de feedback
-- Error por campo: inline
-- Error general de guardado: breve y accionable
-- Exito: confirmacion corta
-- Carga: mensaje simple
+### Comportamiento esperado
+- error por campo: inline
+- error general: breve
+- exito: corto
+- carga: simple
 
-## Estado actual de consistencia de formularios
+## Filtros y componentes compartidos
 
-### Ya alineados
-- Login
-- Ticket
-- Usuario
-- Area
-- Sucursal
+### FilterBar
+- Usa tamaños mas uniformes.
+- Ya no se estira de forma distinta segun cuantas opciones haya.
+- En tickets, el estado ya responde a la logica actual:
+  - `Sin tecnico`
+  - `Con tecnico`
+  - `Resuelto`
 
-### Que ya se ajusto
-- Los formularios de area y sucursal ya usan el mismo criterio base:
-  - campos obligatorios
-  - contenido valido
-  - mensajes simples
-  - boton en estado `Validando...`
-- El formulario de usuario ya muestra error general del guardado dentro de la vista.
+### Select compartido
+- Ya no usa el desplegable nativo del navegador.
+- Tiene dropdown propio oscuro y redondeado.
+- Si el valor actual es `Todos` o `Todas`, el campo minimizado vuelve a mostrar el nombre real del filtro.
 
-## Dependencias backend que siguen siendo relevantes
-- Confirmar autorizacion real de `GET /api/tickets` para `admin` en produccion si vuelve a aparecer `403`.
-- Mantener consistencia de DTOs de usuario, area, sucursal y ticket para evitar fallos de mapeo.
+### Table compartida
+- Soporta fila completa clickeable.
+- Respeta acciones internas con `data-row-action="true"`.
+
+## Estado actual de consistencia
+
+### Solido
+- autenticacion
+- rutas por rol
+- CRUD base de usuarios, areas y sucursales
+- flujo real de tickets para tecnico y encargado
+- detalle de ticket mas honesto
+- notificaciones websocket funcionales
+- mensajes visibles mas consistentes
+
+### Puntos de mantenimiento
+- existen archivos heredados del arranque visual y mocks que ya no son parte del flujo principal
+- `TicketContext` hoy tiene uso bajo frente al flujo real por servicios
+- la documentacion vieja de `utils/README.md` ya no refleja del todo el estado actual del proyecto
 
 ## Resumen ejecutivo
 - Login funcional y protegido.
 - Roles y rutas principales alineados.
-- CRUD de usuarios, areas y sucursales operativo.
-- Tickets funcionales para encargado y tecnico con flujo mas honesto y usable.
-- Admin ya usa fuente global de tickets.
-- Detalle de ticket simplificado y mas util.
-- Mensajes y validaciones mas consistentes en toda la app.
+- CRUD de usuarios, areas y sucursales operativo con vistas de solo lectura.
+- Tickets funcionales para admin, tecnico y encargado con flujos mas claros por rol.
+- Detalle de ticket simplificado, mas util y con comentarios en tiempo real.
+- WebSockets conectados y visibles en campanita y toasts.
+- Validaciones y feedback bastante mas consistentes que al inicio del proyecto.
