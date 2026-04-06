@@ -5,12 +5,14 @@ import { CheckCircle2, Pencil, XCircle } from "lucide-react";
 import { Table } from "../components/ui/Table";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
+import { FilterBar } from "../components/ui/FilterBar";
 import { LoadingState } from "../components/ui/LoadingState";
 import { Modal } from "../components/ui/Modal";
 import { useAuth } from "../hooks/useAuth";
 import { getFeedbackMessage } from "../utils/feedback";
 import { getUserDisplayName } from "../utils/userDisplay";
 import { userService } from "../services/userService";
+import { ROLES } from "../constants/roles";
 
 const avatarColors = [
   "bg-purple-electric",
@@ -74,7 +76,13 @@ export function UsuariosPage() {
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
   const [usuariosState, setUsuariosState] = useState([]);
+  const [filters, setFilters] = useState({
+    estado: "",
+    rol: "",
+    sucursal: "",
+  });
   const [confirmAction, setConfirmAction] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -105,19 +113,33 @@ export function UsuariosPage() {
   }, []);
 
   const usuarios = useMemo(() => {
-    const visibleUsers = usuariosState.filter(
+    let filtered = usuariosState.filter(
       (row) => row.id !== currentUser?.id && ["tecnico", "encargado"].includes(row.rol)
     );
 
-    if (!searchQuery) return visibleUsers;
+    // Search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter((row) =>
+        [getUserDisplayName(row), row.nombre, row.email, row.area, row.nombreSucursal]
+          .filter(Boolean)
+          .some((value) => value.toLowerCase().includes(query))
+      );
+    }
 
-    const query = searchQuery.toLowerCase();
-    return visibleUsers.filter((row) =>
-      [getUserDisplayName(row), row.nombre, row.email, row.area]
-        .filter(Boolean)
-        .some((value) => value.toLowerCase().includes(query))
-    );
-  }, [currentUser?.id, searchQuery, usuariosState]);
+    // Advanced filters
+    if (filters.estado) {
+      filtered = filtered.filter((row) => row.estado_cuenta === filters.estado);
+    }
+    if (filters.rol) {
+      filtered = filtered.filter((row) => row.rol === filters.rol);
+    }
+    if (filters.sucursal) {
+      filtered = filtered.filter((row) => row.nombreSucursal === filters.sucursal);
+    }
+
+    return filtered;
+  }, [currentUser?.id, searchQuery, usuariosState, filters]);
 
   const toggleSuspension = (row) => {
     const isSuspended = row.estado_cuenta === "suspendido";
@@ -210,27 +232,42 @@ export function UsuariosPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-3xl font-bold text-text-primary">Usuarios</h1>
-          <p className="text-text-secondary mt-1">Administra cuentas, roles y estado de acceso del personal.</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg className="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar usuario..."
-              className="w-64 bg-dark-purple-800 border border-dark-purple-700 text-text-primary rounded-xl pl-10 pr-4 py-2.5 text-sm placeholder:text-text-muted/50 focus:outline-none focus:ring-1 focus:ring-purple-electric focus:border-purple-electric transition-all"
-            />
+      <div className="space-y-4">
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold text-text-primary">Usuarios</h1>
+            <p className="text-text-secondary mt-1">Administra cuentas, roles y estado de acceso del personal.</p>
           </div>
           <Button onClick={() => navigate("/usuarios/nuevo")}>+ Nuevo Usuario</Button>
+        </div>
+
+        <FilterBar
+          filters={filters}
+          onFilterChange={(key, value) => setFilters(prev => ({ ...prev, [key]: value }))}
+          onClearFilters={() => setFilters({ estado: "", rol: "", sucursal: "" })}
+          hasActiveFilters={Object.values(filters).some(v => v !== "")}
+          showFilters={showFilters}
+          onToggleFilters={() => setShowFilters(p => !p)}
+          hideStatus={false}
+          role="admin"
+          areaOptions={[]}
+          sucursalOptions={[...new Set(usuariosState.map(u => u.nombreSucursal).filter(Boolean))]}
+          tecnicoOptions={[]}
+        />
+
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg className="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Buscar usuario por nombre, email o area..."
+            className="w-full max-w-md bg-dark-purple-800 border border-dark-purple-700 text-text-primary rounded-xl pl-10 pr-4 py-2.5 text-sm placeholder:text-text-muted/50 focus:outline-none focus:ring-1 focus:ring-purple-electric focus:border-purple-electric transition-all"
+          />
         </div>
       </div>
 
