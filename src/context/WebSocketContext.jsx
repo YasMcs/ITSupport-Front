@@ -84,8 +84,11 @@ function buildSocketNotification(event, user) {
   if (destination === "/topic/tickets/actualizacion" && role !== ROLES.ADMIN) {
     return {
       id: `ws:update:${ticketId || payload?.titulo || Math.random()}`,
-      title: "Ticket actualizado",
-      description: `El ticket ${ticketLabel} tuvo cambios recientes.`,
+      title: role === ROLES.ENCARGADO ? "Ticket asignado" : "Ticket actualizado",
+      description:
+        role === ROLES.ENCARGADO
+          ? `Un tecnico ya esta atendiendo el ticket ${ticketLabel}.`
+          : `El ticket ${ticketLabel} tuvo cambios recientes.`,
       tone: "info",
       href: ticketId ? `/tickets/${ticketId}` : null,
       timestamp: Date.now(),
