@@ -55,7 +55,7 @@ function handleSocketToast(event, user) {
 
   if (destination === "/topic/tickets/actualizacion") {
     toast.info("Ticket actualizado", {
-      description: `Hubo cambios en ${ticketLabel}.`,
+      description: `El ticket ${ticketLabel} tuvo cambios recientes.`,
       id: `ws:update:${payload?.id || payload?.ticketId || payload?.titulo || Math.random()}`,
     });
     return;
@@ -79,7 +79,9 @@ function handleSocketToast(event, user) {
 
   if (destination === "/user/queue/comentarios" && !isOwnAuthor) {
     toast.info("Nuevo comentario", {
-      description: authorName ? `${authorName} comento en ${ticketLabel}.` : `Hay actividad nueva en ${ticketLabel}.`,
+      description: authorName
+        ? `${authorName} agrego un comentario en el ticket ${ticketLabel}.`
+        : `Hay un comentario nuevo en el ticket ${ticketLabel}.`,
       id: `ws:comment:${payload?.id || payload?.ticketId || payload?.fecha || Math.random()}`,
     });
   }
