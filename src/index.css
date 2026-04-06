@@ -97,6 +97,44 @@
   }
 }
 
+html,
+body,
+#root {
+  scrollbar-width: thin;
+  scrollbar-color: #262626 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(38, 38, 38, 0.9);
+  border-radius: 20px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(125, 99, 230, 0.95);
+}
+
+.scroll-area {
+  overflow: auto;
+  overflow: overlay;
+  scrollbar-gutter: stable;
+}
+
+.scroll-area-no-gutter {
+  overflow: auto;
+  overflow: overlay;
+}
+
 [data-sonner-toaster] [data-sonner-toast] {
   border-radius: 18px;
   border: 1px solid rgba(148, 163, 184, 0.2);

@@ -1,5 +1,6 @@
 import { Sidebar } from "./Sidebar";
 import { Navbar } from "./Navbar";
+import { useLocation } from "react-router-dom";
 
 function BackgroundOrbs() {
   return (
@@ -20,6 +21,9 @@ function BackgroundOrbs() {
 }
 
 export function AppLayout({ children }) {
+  const location = useLocation();
+  const isTicketDetailRoute = /^\/tickets\/[^/]+$/.test(location.pathname);
+
   return (
     <div className="relative flex h-screen flex-col overflow-hidden bg-[#0d0a16]">
       <BackgroundOrbs />
@@ -33,7 +37,7 @@ export function AppLayout({ children }) {
           <Sidebar />
         </div>
 
-        <main className="relative z-10 flex-1 overflow-auto p-6">
+        <main className={`relative z-10 flex-1 p-6 ${isTicketDetailRoute ? "overflow-hidden" : "scroll-area"}`}>
           {children}
         </main>
       </div>

@@ -121,7 +121,7 @@ export function TicketDetailPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto h-screen max-w-7xl space-y-6 overflow-hidden">
+      <div className="mx-auto h-full min-h-0 max-w-7xl space-y-6 overflow-hidden">
         <div className="glass-card rounded-2xl p-12 text-center">
           <p className="text-lg text-text-secondary">Cargando ticket...</p>
         </div>
@@ -232,7 +232,7 @@ export function TicketDetailPage() {
   };
 
   return (
-    <div className="mx-auto flex h-screen max-w-7xl flex-col overflow-hidden">
+    <div className="mx-auto flex h-full min-h-0 max-w-7xl flex-col overflow-hidden">
       <div className="space-y-3 pb-3">
       <div className="flex w-full items-start gap-3">
         <div className="flex items-start gap-3">
@@ -256,7 +256,7 @@ export function TicketDetailPage() {
       </div>
 
       <div className="grid min-h-0 flex-1 grid-cols-1 gap-6 overflow-hidden xl:grid-cols-[minmax(0,1.4fr)_minmax(360px,0.6fr)] xl:items-start">
-        <div className="min-h-0 space-y-6 overflow-y-auto pr-2">
+        <div className="scroll-area min-h-0 space-y-6 pr-2">
           <div className="rounded-3xl bg-white/[0.03] p-6 shadow-[0_18px_45px_rgba(9,6,23,0.16)]">
             <h3 className="mb-4 text-lg font-semibold text-text-primary">Descripcion del fallo</h3>
             <p className="whitespace-pre-wrap leading-relaxed text-text-secondary">{ticket.descripcion}</p>
@@ -307,7 +307,7 @@ export function TicketDetailPage() {
         </div>
 
         <aside className="min-h-0 xl:self-start">
-          <div className="flex h-full min-h-0 flex-col overflow-y-hidden rounded-[2rem] bg-white/[0.045] px-4 py-3 shadow-[0_24px_70px_rgba(9,6,23,0.22)] backdrop-blur-xl xl:h-[calc(100vh-172px)]">
+          <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-[2rem] bg-white/[0.045] px-4 py-3 shadow-[0_24px_70px_rgba(9,6,23,0.22)] backdrop-blur-xl">
             <div className="pb-2">
               <div>
                 <h3 className="text-base font-semibold text-text-primary">Comentarios</h3>
@@ -330,7 +330,7 @@ export function TicketDetailPage() {
             <div className="mt-1 flex min-h-0 flex-1 flex-col overflow-hidden">
               <div
                 ref={chatScrollRef}
-                className="min-h-0 flex-1 space-y-3 overflow-y-auto px-3 py-3"
+                className="scroll-area min-h-0 flex-1 space-y-3 px-3 py-3"
               >
                 {comentariosVisibles.length === 0 ? (
                   <div className="flex min-h-full items-center justify-center rounded-2xl bg-white/[0.03] px-6 py-10 text-center">
