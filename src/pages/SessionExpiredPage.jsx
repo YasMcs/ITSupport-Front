@@ -25,14 +25,6 @@ export function SessionExpiredPage() {
               <Button type="button" onClick={() => navigate("/login", { replace: true })} className="w-auto px-6">
                 Volver a iniciar sesion
               </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => navigate("/login", { replace: true })}
-                className="w-auto px-6"
-              >
-                Ir al acceso
-              </Button>
             </div>
           </div>
 

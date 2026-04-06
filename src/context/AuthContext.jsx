@@ -46,23 +46,17 @@ export function AuthProvider({ children }) {
     const unsubscribe = subscribeToAuthFailures(({ status }) => {
       if (status !== 401 && status !== 403) return;
 
-      setUser((currentUser) => {
-        if (!currentUser) return currentUser;
+      if (!user || hasRedirectedForExpiredSession.current) return;
 
-        window.sessionStorage.removeItem(SESSION_KEY);
-        clearAuthToken();
-
-        if (!hasRedirectedForExpiredSession.current) {
-          hasRedirectedForExpiredSession.current = true;
-          window.location.replace("/sesion-expirada");
-        }
-
-        return null;
-      });
+      hasRedirectedForExpiredSession.current = true;
+      window.sessionStorage.removeItem(SESSION_KEY);
+      clearAuthToken();
+      setUser(null);
+      window.location.replace("/sesion-expirada");
     });
 
     return unsubscribe;
-  }, []);
+  }, [user]);
 
   const isAuthenticated = user !== null;
   const value = useMemo(() => ({ user, role, isAuthenticated, login, logout }), [user, role, isAuthenticated]);
