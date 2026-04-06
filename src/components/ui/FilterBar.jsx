@@ -32,12 +32,12 @@ export function FilterBar({
   pageType = "tickets", // "tickets" | "usuarios" | "areas" | "sucursales"
 }) {
   const ESTADO_OPTIONS = pageType === "areas" 
-    ? [{ value: "", label: "Todos" }, { value: "Activa", label: "Activa" }, { value: "Inactiva", label: "Inactiva" }]
-    : pageType === "sucursales"
-    ? [{ value: "", label: "Todos" }, { value: "Activa", label: "Activa" }, { value: "Desactivada", label: "Desactivada" }]
-    : pageType === "usuarios"
-    ? [{ value: "", label: "Todos" }, { value: "activo", label: "Activo" }, { value: "suspendido", label: "Suspendido" }]
-    : [{ value: "", label: "Todos" }, { value: TICKET_STATUS.ABIERTO, label: "Sin tecnico" }, { value: TICKET_STATUS.EN_PROCESO, label: "Con tecnico" }, { value: TICKET_STATUS.CERRADO, label: "Resuelto" }];
+      ? [{ value: "", label: "Todos" }, { value: "Activa", label: "Activa" }, { value: "Inactiva", label: "Inactiva" }]
+      : pageType === "sucursales"
+      ? [{ value: "", label: "Todos" }, { value: "Activa", label: "Activa" }, { value: "Desactivada", label: "Desactivada" }]
+      : pageType === "usuarios"
+      ? [{ value: "", label: "Todos" }, { value: "activo", label: "Activo" }, { value: "suspendido", label: "Suspendido" }]
+      : [{ value: "", label: "Todos" }, { value: TICKET_STATUS.ABIERTO, label: "Sin tecnico" }, { value: TICKET_STATUS.EN_PROCESO, label: "Con tecnico" }, { value: TICKET_STATUS.CERRADO, label: "Resuelto" }];
 
   const ROL_OPTIONS = pageType === "usuarios" 
     ? [{ value: "", label: "Todos" }, { value: "tecnico", label: "Técnico" }, { value: "encargado", label: "Encargado" }]
@@ -87,25 +87,16 @@ export function FilterBar({
               />
             )}
 
-            <Select
-              value={filters.prioridad}
-              onChange={(value) => onFilterChange("prioridad", value)}
-              options={PRIORIDAD_OPTIONS}
-              placeholder="Prioridad"
-              className="w-full flex-none sm:w-[170px]"
-            />
-
-            {(role === ROLES.ADMIN || role === ROLES.ENCARGADO || role === ROLES.TECNICO) && (
+            {pageType === "usuarios" && (
               <Select
-                value={filters.area}
-                onChange={(value) => onFilterChange("area", value)}
-                options={areaOptions.map((area) => ({ value: area, label: area }))}
-                placeholder="Area"
+                value={filters.sucursal}
+                onChange={(value) => onFilterChange("sucursal", value)}
+                options={sucursalOptions.map((sucursal) => ({ value: sucursal, label: sucursal }))}
+                placeholder="Sucursal"
                 className="w-full flex-none sm:w-[170px]"
               />
             )}
-
-            {(role === ROLES.ADMIN || role === ROLES.ENCARGADO || role === ROLES.TECNICO) && (
+            {pageType === "areas" && (
               <Select
                 value={filters.sucursal}
                 onChange={(value) => onFilterChange("sucursal", value)}
@@ -115,7 +106,27 @@ export function FilterBar({
               />
             )}
 
-            {role === ROLES.ADMIN && (
+            {pageType !== "tickets" && areaOptions.length > 0 && (
+              <Select
+                value={filters.area}
+                onChange={(value) => onFilterChange("area", value)}
+                options={areaOptions.map((area) => ({ value: area, label: area }))}
+                placeholder="Area"
+                className="w-full flex-none sm:w-[170px]"
+              />
+            )}
+
+            {pageType === "tickets" && (
+              <Select
+                value={filters.prioridad}
+                onChange={(value) => onFilterChange("prioridad", value)}
+                options={PRIORIDAD_OPTIONS}
+                placeholder="Prioridad"
+                className="w-full flex-none sm:w-[170px]"
+              />
+            )}
+
+            {role === ROLES.ADMIN && pageType === "tickets" && (
               <Select
                 value={filters.tecnico}
                 onChange={(value) => onFilterChange("tecnico", value)}
