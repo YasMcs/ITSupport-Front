@@ -60,7 +60,7 @@ export function FilterBar({
                 onChange={(value) => onFilterChange("estado", value)}
                 options={ESTADO_OPTIONS}
                 placeholder="Estado"
-                className="w-full flex-none sm:w-[180px]"
+                className="w-full flex-none sm:w-[170px]"
               />
             )}
 
@@ -69,7 +69,7 @@ export function FilterBar({
               onChange={(value) => onFilterChange("prioridad", value)}
               options={PRIORIDAD_OPTIONS}
               placeholder="Prioridad"
-              className="w-full flex-none sm:w-[180px]"
+              className="w-full flex-none sm:w-[170px]"
             />
 
             {(role === ROLES.ADMIN || role === ROLES.ENCARGADO || role === ROLES.TECNICO) && (
@@ -78,7 +78,7 @@ export function FilterBar({
                 onChange={(value) => onFilterChange("area", value)}
                 options={areaOptions.map((area) => ({ value: area, label: area }))}
                 placeholder="Area"
-                className="w-full flex-none sm:w-[180px]"
+                className="w-full flex-none sm:w-[170px]"
               />
             )}
 
@@ -88,7 +88,7 @@ export function FilterBar({
                 onChange={(value) => onFilterChange("sucursal", value)}
                 options={sucursalOptions.map((sucursal) => ({ value: sucursal, label: sucursal }))}
                 placeholder="Sucursal"
-                className="w-full flex-none sm:w-[180px]"
+                className="w-full flex-none sm:w-[170px]"
               />
             )}
 
@@ -98,7 +98,7 @@ export function FilterBar({
                 onChange={(value) => onFilterChange("tecnico", value)}
                 options={tecnicoOptions.map((tecnico) => ({ value: tecnico, label: tecnico }))}
                 placeholder="Tecnico"
-                className="w-full flex-none sm:w-[180px]"
+                className="w-full flex-none sm:w-[170px]"
               />
             )}
           </>

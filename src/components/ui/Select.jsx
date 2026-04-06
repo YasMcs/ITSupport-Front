@@ -1,11 +1,13 @@
 export function Select({ value, onChange, options, placeholder, className = "", disabled = false }) {
   return (
-    <div className={`relative ${className}`}>
+    <div
+      className={`relative overflow-hidden rounded-xl border border-dark-purple-700 bg-dark-purple-800/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-200 hover:border-dark-purple-600 focus-within:border-purple-electric focus-within:ring-2 focus-within:ring-purple-electric/30 ${className}`}
+    >
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className={`min-w-[140px] w-full appearance-none rounded-xl border border-dark-purple-700 bg-dark-purple-800/95 px-4 py-3 pr-10 text-sm text-text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] outline-none transition-all duration-200 hover:border-dark-purple-600 focus:border-purple-electric focus:ring-2 focus:ring-purple-electric/30 disabled:cursor-not-allowed disabled:opacity-70`}
+        className="min-w-[140px] w-full appearance-none bg-transparent px-3 py-2 pr-10 text-sm text-text-primary outline-none disabled:cursor-not-allowed disabled:opacity-70"
       >
         {placeholder && <option value="">{placeholder}</option>}
         {options.map((opt) => (
