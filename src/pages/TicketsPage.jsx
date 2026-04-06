@@ -19,6 +19,7 @@ export function TicketsPage() {
   const [loading, setLoading] = useState(true);
   const [takingTicketId, setTakingTicketId] = useState(null);
   const [showAllTechnicianTickets, setShowAllTechnicianTickets] = useState(false);
+  const [showAllManagerTickets, setShowAllManagerTickets] = useState(false);
   const [filters, setFilters] = useState({
     estado: "",
     prioridad: "",
@@ -104,6 +105,26 @@ export function TicketsPage() {
   );
 
   const technicianActiveCount = useMemo(
+    () => filteredTickets.filter((ticket) => ticket.estado !== "cerrado").length,
+    [filteredTickets]
+  );
+
+  const visibleManagerTickets = useMemo(() => {
+    if (role !== ROLES.ENCARGADO) return [];
+
+    const scopedTickets = showAllManagerTickets
+      ? filteredTickets
+      : filteredTickets.filter((ticket) => ticket.estado !== "cerrado");
+
+    return [...scopedTickets].sort(sortTechnicianWorkQueue);
+  }, [filteredTickets, role, showAllManagerTickets]);
+
+  const managerClosedCount = useMemo(
+    () => filteredTickets.filter((ticket) => ticket.estado === "cerrado").length,
+    [filteredTickets]
+  );
+
+  const managerActiveCount = useMemo(
     () => filteredTickets.filter((ticket) => ticket.estado !== "cerrado").length,
     [filteredTickets]
   );
@@ -469,6 +490,149 @@ export function TicketsPage() {
                 </section>
               )}
             </>
+          )}
+        </div>
+      ) : role === ROLES.ENCARGADO ? (
+        <div className="space-y-4 pt-2">
+          {filteredTickets.length === 0 ? (
+            <div className="glass-card rounded-2xl p-12 text-center">
+              <div className="flex flex-col items-center gap-3">
+                <svg className="h-16 w-16 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                <p className="text-lg text-text-secondary">{getEmptyMessage()}</p>
+              </div>
+            </div>
+          ) : (
+            <section className="rounded-3xl bg-white/[0.03] p-6 backdrop-blur-sm">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="mt-2 text-sm text-text-muted">
+                    Tus tickets activos aparecen primero para facilitar el seguimiento.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="inline-flex rounded-2xl bg-dark-purple-900/45 p-1">
+                    <button
+                      type="button"
+                      onClick={() => setShowAllManagerTickets(false)}
+                      className={`rounded-2xl px-4 py-2 text-sm font-medium transition-all ${
+                        !showAllManagerTickets
+                          ? "bg-purple-electric/90 text-white shadow-[0_10px_25px_rgba(139,92,246,0.24)]"
+                          : "text-text-secondary hover:text-text-primary"
+                      }`}
+                    >
+                      Activos
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowAllManagerTickets(true)}
+                      className={`rounded-2xl px-4 py-2 text-sm font-medium transition-all ${
+                        showAllManagerTickets
+                          ? "bg-purple-electric/90 text-white shadow-[0_10px_25px_rgba(139,92,246,0.24)]"
+                          : "text-text-secondary hover:text-text-primary"
+                      }`}
+                    >
+                      Todos
+                    </button>
+                  </div>
+
+                  <div className="text-right text-xs text-text-muted">
+                    <p>{managerActiveCount} activos</p>
+                    <p>{managerClosedCount} cerrados</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5">
+                {visibleManagerTickets.length === 0 ? (
+                  <div className="rounded-2xl bg-dark-purple-900/20 px-6 py-10 text-center">
+                    <p className="text-text-secondary">
+                      {showAllManagerTickets
+                        ? "No hay tickets para mostrar con los filtros actuales."
+                        : "No tienes tickets activos en este momento."}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+                    {visibleManagerTickets.map((ticket) => (
+                      <article
+                        key={ticket.id}
+                        onClick={() => navigate(`/tickets/${ticket.id}`, { state: { ticket } })}
+                        className="group cursor-pointer rounded-2xl bg-dark-purple-900/30 p-5 backdrop-blur-sm transition-all duration-200 hover:bg-dark-purple-900/40"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="text-xs font-mono text-text-muted">#{ticket.id}</p>
+                            <h3 className="mt-1 line-clamp-2 text-base font-semibold text-text-primary">
+                              {ticket.titulo}
+                            </h3>
+                          </div>
+                          <div className="flex shrink-0 flex-col items-end gap-2">
+                            <Badge priority={ticket.prioridad} />
+                            <Badge status={ticket.estado} />
+                          </div>
+                        </div>
+
+                        <p className="mt-3 line-clamp-2 text-sm text-text-secondary">{ticket.descripcion}</p>
+
+                        <div className="mt-4 flex flex-wrap gap-2 text-xs text-text-muted">
+                          {ticket.sucursal && (
+                            <span className="rounded-full bg-dark-purple-800/55 px-3 py-1">
+                              {ticket.sucursal}
+                            </span>
+                          )}
+                          {ticket.area && (
+                            <span className="rounded-full bg-dark-purple-800/55 px-3 py-1">
+                              {ticket.area}
+                            </span>
+                          )}
+                          {ticket.tecnicoAsignado && (
+                            <span className="rounded-full bg-dark-purple-800/55 px-3 py-1">
+                              Tecnico: {ticket.tecnicoAsignado}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="mt-5 flex items-end justify-between gap-4">
+                          <div className="space-y-1 text-xs text-text-muted">
+                            <p>
+                              Creado el{" "}
+                              {ticket.fechaCreacion
+                                ? new Date(ticket.fechaCreacion).toLocaleDateString("es-MX")
+                                : "sin fecha"}
+                            </p>
+                            {ticket.fechaCierre && (
+                              <p>
+                                Resuelto el {new Date(ticket.fechaCierre).toLocaleDateString("es-MX")}
+                              </p>
+                            )}
+                            <p className="pt-1 text-[11px] font-medium text-text-secondary/0 transition-all duration-200 group-hover:text-text-secondary">
+                              Haz clic en la tarjeta para ver el detalle.
+                            </p>
+                          </div>
+                          <div
+                            className={`rounded-full px-4 py-2 text-xs font-medium transition-all duration-200 ${
+                              ticket.estado === "cerrado"
+                                ? "bg-white/[0.05] text-text-muted group-hover:bg-white/[0.08]"
+                                : "bg-purple-electric/12 text-purple-electric group-hover:bg-purple-electric/18"
+                            }`}
+                          >
+                            Ver detalle
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </section>
           )}
         </div>
       ) : filteredTickets.length === 0 ? (
