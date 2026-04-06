@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "sonner";
 import { clearAuthToken, getAuthToken, setAuthToken, subscribeToAuthFailures } from "../services/api";
 import { isTokenExpired, sanitizeSessionUser } from "../utils/security";
 
@@ -27,7 +26,7 @@ function getStoredUser() {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => getStoredUser());
-  const hasShownSessionToast = useRef(false);
+  const hasRedirectedForExpiredSession = useRef(false);
   const role = user?.rol ?? null;
 
   const login = (userData, token) => {
@@ -53,16 +52,9 @@ export function AuthProvider({ children }) {
         window.sessionStorage.removeItem(SESSION_KEY);
         clearAuthToken();
 
-        if (!hasShownSessionToast.current) {
-          hasShownSessionToast.current = true;
-          toast.error("Tu sesion expiro", {
-            description: "Inicia sesion nuevamente para continuar.",
-            id: "auth:expired-session",
-          });
-
-          window.setTimeout(() => {
-            hasShownSessionToast.current = false;
-          }, 2500);
+        if (!hasRedirectedForExpiredSession.current) {
+          hasRedirectedForExpiredSession.current = true;
+          window.location.replace("/sesion-expirada");
         }
 
         return null;

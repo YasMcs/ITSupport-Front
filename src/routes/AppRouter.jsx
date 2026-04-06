@@ -19,6 +19,7 @@ import { NuevoUsuarioPage } from "../pages/NuevoUsuarioPage";
 import { EditarUsuarioPage } from "../pages/EditarUsuarioPage";
 import { UsuarioDetallePage } from "../pages/UsuarioDetallePage";
 import { AccesoDenegadoPage } from "../pages/AccesoDenegadoPage";
+import { SessionExpiredPage } from "../pages/SessionExpiredPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { ROLES } from "../constants/roles";
 
@@ -26,6 +27,7 @@ export function AppRouter() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/sesion-expirada" element={<SessionExpiredPage />} />
       <Route
         path="/dashboard"
         element={
