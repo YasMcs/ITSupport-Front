@@ -5,9 +5,9 @@ import { PRIORIDAD } from "../../constants/ticketPrioridad";
 
 const ESTADO_OPTIONS = [
   { value: "", label: "Todos" },
-  { value: TICKET_STATUS.ABIERTO, label: "Abierto" },
-  { value: TICKET_STATUS.EN_PROCESO, label: "En proceso" },
-  { value: TICKET_STATUS.CERRADO, label: "Cerrado" },
+  { value: TICKET_STATUS.ABIERTO, label: "Sin tecnico" },
+  { value: TICKET_STATUS.EN_PROCESO, label: "Con tecnico" },
+  { value: TICKET_STATUS.CERRADO, label: "Resuelto" },
 ];
 
 const PRIORIDAD_OPTIONS = [
@@ -60,7 +60,7 @@ export function FilterBar({
                 onChange={(value) => onFilterChange("estado", value)}
                 options={ESTADO_OPTIONS}
                 placeholder="Estado"
-                className="min-w-[150px] flex-1"
+                className="w-full flex-none sm:w-[180px]"
               />
             )}
 
@@ -69,7 +69,7 @@ export function FilterBar({
               onChange={(value) => onFilterChange("prioridad", value)}
               options={PRIORIDAD_OPTIONS}
               placeholder="Prioridad"
-              className="min-w-[150px] flex-1"
+              className="w-full flex-none sm:w-[180px]"
             />
 
             {(role === ROLES.ADMIN || role === ROLES.ENCARGADO || role === ROLES.TECNICO) && (
@@ -78,7 +78,7 @@ export function FilterBar({
                 onChange={(value) => onFilterChange("area", value)}
                 options={areaOptions.map((area) => ({ value: area, label: area }))}
                 placeholder="Area"
-                className="min-w-[150px] flex-1"
+                className="w-full flex-none sm:w-[180px]"
               />
             )}
 
@@ -88,7 +88,7 @@ export function FilterBar({
                 onChange={(value) => onFilterChange("sucursal", value)}
                 options={sucursalOptions.map((sucursal) => ({ value: sucursal, label: sucursal }))}
                 placeholder="Sucursal"
-                className="min-w-[150px] flex-1"
+                className="w-full flex-none sm:w-[180px]"
               />
             )}
 
@@ -98,7 +98,7 @@ export function FilterBar({
                 onChange={(value) => onFilterChange("tecnico", value)}
                 options={tecnicoOptions.map((tecnico) => ({ value: tecnico, label: tecnico }))}
                 placeholder="Tecnico"
-                className="min-w-[150px] flex-1"
+                className="w-full flex-none sm:w-[180px]"
               />
             )}
           </>
