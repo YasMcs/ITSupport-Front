@@ -8,8 +8,8 @@ El frontend actual tiene una base razonable de seguridad para experiencia de usu
 
 Hoy el mayor riesgo no esta en la UI visible, sino en:
 - manejo del token
-- control de sesion expirada
 - autenticacion del websocket
+- exposicion del token en URL del socket
 
 ## Fortalezas actuales
 
@@ -20,6 +20,7 @@ Hoy el mayor riesgo no esta en la UI visible, sino en:
 ### 2. Token centralizado en cliente HTTP
 - El token se inyecta desde un solo lugar en `api.js`.
 - Esto reduce errores de manejo disperso.
+- Se usa `axios` con interceptores para centralizar request y respuesta.
 
 ### 3. Validaciones y sanitizacion
 - Existe una capa de utilidades en `security.js`.
@@ -36,6 +37,27 @@ Hoy el mayor riesgo no esta en la UI visible, sino en:
 ### 5. Sesion menos persistente que `localStorage`
 - El token se guarda en `sessionStorage`.
 - Eso reduce persistencia entre sesiones respecto a `localStorage`.
+
+### 6. La app ya reacciona ante sesion invalida o expirada
+- Si el token ya esta vencido al abrir la app, la sesion local se limpia.
+- Si una request protegida responde `401` o `403`, el frontend:
+  - limpia token
+  - limpia sesion
+  - muestra aviso breve
+  - obliga a volver a login
+
+### Librerias y funciones conocidas usadas aqui
+- `axios`
+  - para cliente HTTP e interceptores globales
+- `sessionStorage`
+  - para persistencia corta de token y sesion
+- `sonner`
+  - para mostrar el aviso de sesion expirada
+- funciones propias:
+  - `sanitizeSessionUser`
+  - `parseJwtPayload`
+  - `isTokenExpired`
+  - `subscribeToAuthFailures`
 
 ## Riesgos detectados
 
@@ -54,23 +76,14 @@ Hoy el mayor riesgo no esta en la UI visible, sino en:
 
 ## Riesgo medio
 
-### Sesion visual valida aunque el token ya expiro
-- El frontend considera autenticado al usuario si existe objeto `user` en sesion.
-- No se valida expiracion del token al montar la app.
-- Esto puede generar estados inconsistentes:
-  - usuario aparentemente dentro
-  - peticiones reales fallando por `401`
-
-### Falta de interceptor global de expiracion
-- No existe un flujo central para:
-  - detectar `401`
-  - limpiar sesion
-  - redirigir a login
-- Esto no rompe la seguridad del backend, pero si la consistencia del front.
-
 ### La proteccion por rol del frontend no es defensa real
 - Ocultar rutas o botones no impide que alguien intente requests manuales.
 - El backend debe seguir siendo la unica autoridad real.
+
+### `403` usado como sesion invalida depende del contrato backend
+- El frontend hoy trata `401` y `403` como fallo de autenticacion en requests protegidas.
+- Esto fue adaptado porque el backend actual responde `403` con token invalido.
+- Si backend separa mejor `401` de `403`, convendra refinar esta regla.
 
 ## Riesgo medio-bajo
 
@@ -103,19 +116,15 @@ Hoy el mayor riesgo no esta en la UI visible, sino en:
   - handshake del backend
 - Si backend ya admite headers STOMP o autenticacion por cookie, quitar `?token=...`
 
-## 3. Agregar interceptor global de `401` y `403`
-- Cuando una peticion falle por token vencido o acceso denegado:
-  - limpiar token
-  - limpiar usuario
-  - cerrar websocket
-  - redirigir a `/login`
-  - mostrar mensaje breve
+## 3. Refinar diferenciacion entre `401` y `403`
+- Hoy el frontend soporta ambas por compatibilidad.
+- Idealmente:
+  - `401` = token invalido o vencido
+  - `403` = usuario autenticado sin permiso
 
 ## 4. Validar expiracion al iniciar la app
-- Si el token es JWT:
-  - leer `exp`
-  - si ya expiro, no montar sesion como valida
-- Esto mejora consistencia y reduce estados falsos de autenticacion.
+- Ya se implemento lectura del `exp` del JWT.
+- Conviene mantener esta logica alineada con el formato real del token backend.
 
 ## 5. Seguir evitando HTML inseguro
 - Mantener la regla de no usar `dangerouslySetInnerHTML` salvo que sea absolutamente necesario.
@@ -140,8 +149,8 @@ Hoy el mayor riesgo no esta en la UI visible, sino en:
 
 ### Prioridad alta
 - quitar token del query string del websocket
-- agregar interceptor global para `401/403`
-- validar expiracion del token al iniciar la app
+- mover el websocket a autenticacion por header o cookie
+- confirmar contrato backend final de `401` vs `403`
 
 ### Prioridad media
 - revisar si `sessionStorage` puede migrarse a cookie segura
@@ -163,7 +172,6 @@ La base es buena en:
 
 Los siguientes saltos reales de seguridad estan en:
 - token
-- expiracion de sesion
 - websocket
 
-Si esos tres puntos se corrigen, la postura general del frontend sube bastante.
+Si esos puntos se corrigen, la postura general del frontend sube bastante.

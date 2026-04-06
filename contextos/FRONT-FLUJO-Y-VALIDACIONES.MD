@@ -50,6 +50,7 @@ Todos se manejan en minusculas.
 ### Login
 - Usa correo y contrasena.
 - Sanitiza entradas antes de enviar.
+- Usa helpers de `security.js` para validar contenido y correo.
 - Si la autenticacion es correcta:
   - guarda usuario en `sessionStorage`
   - guarda token
@@ -61,6 +62,15 @@ Todos se manejan en minusculas.
 - Limpia sesion local.
 - Elimina token.
 - Redirige a `/login` con navegacion SPA.
+
+### Sesion expirada o invalida
+- Si el token JWT ya expiro al abrir la app:
+  - el frontend limpia sesion local
+  - no monta al usuario como autenticado
+- Si una request protegida responde `401` o `403`:
+  - el frontend limpia sesion
+  - muestra `Tu sesion expiro`
+  - y obliga a volver a login
 
 ## Arquitectura funcional resumida
 
@@ -85,6 +95,7 @@ Todos se manejan en minusculas.
 ### Servicios
 - `api.js`
   - cliente axios y token
+  - interceptor global de autenticacion
 - `authService.js`
 - `ticketService.js`
 - `commentService.js`
@@ -309,6 +320,9 @@ Todos se manejan en minusculas.
 - Se conecta con SockJS + STOMP.
 - Endpoint actual:
   - `/api/ws`
+- Librerias usadas:
+  - `@stomp/stompjs`
+  - `sockjs-client`
 
 ### Suscripciones activas
 - globales:
@@ -372,6 +386,7 @@ Todos se manejan en minusculas.
 - validacion de correo
 - validacion de longitud
 - validacion condicional por rol o contexto
+- validacion local de expiracion JWT
 
 ### Formularios ya alineados
 - login

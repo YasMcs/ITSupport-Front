@@ -40,6 +40,18 @@ Encapsula acceso remoto y reglas de consumo:
 - servicios por modulo
 - `websocketService.js`
 
+### Librerias y herramientas visibles en la arquitectura
+- `axios`
+  - cliente HTTP e interceptores globales
+- `react-router-dom`
+  - ruteo, proteccion de vistas y navegacion SPA
+- `sonner`
+  - toasts y feedback global
+- `@stomp/stompjs`
+  - cliente STOMP para eventos en tiempo real
+- `sockjs-client`
+  - transporte websocket compatible con backend
+
 ### `src/utils`
 Transformaciones, formato, seguridad, feedback y metricas.
 
@@ -57,6 +69,7 @@ Transformaciones, formato, seguridad, feedback y metricas.
 - las paginas consumen servicios
 - los servicios concentran endpoints
 - el cliente axios centraliza token
+- los interceptores centralizan reaccion a sesion invalida
 
 ### 2. Componentes reutilizables bien enfocados
 - `Button`, `Table`, `Select`, `Badge`, `FormField` y `FilterBar` ya sostienen gran parte de la consistencia visual
@@ -70,6 +83,7 @@ Transformaciones, formato, seguridad, feedback y metricas.
 ### 4. Contextos con responsabilidad concreta
 - `AuthContext` para sesion
 - `WebSocketContext` para actividad en tiempo real y bandeja ligera
+- `AuthContext` ya valida expiracion local del token al iniciar
 
 ### 5. Lenguaje visual compartido
 - cards glass
@@ -92,6 +106,7 @@ Transformaciones, formato, seguridad, feedback y metricas.
 - mensajes no tecnicos
 - rutas protegidas
 - token centralizado
+- reaccion global ante `401/403`
 
 ### Integracion gradual
 - la app ya no depende de mocks para el flujo principal
