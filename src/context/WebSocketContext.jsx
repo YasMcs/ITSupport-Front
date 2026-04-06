@@ -47,7 +47,7 @@ function handleSocketToast(event, user) {
 
   if (destination === "/topic/tickets/nuevo") {
     toast.info("Nuevo ticket", {
-      description: `Se registro ${ticketLabel}.`,
+      description: `Hay un ticket nuevo por atender en la bandeja: ${ticketLabel}.`,
       id: `ws:new:${payload?.id || payload?.ticketId || payload?.titulo || Math.random()}`,
     });
     return;
