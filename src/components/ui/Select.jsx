@@ -4,12 +4,7 @@ export function Select({ value, onChange, options, placeholder, className = "", 
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
 
-  const normalizedOptions = useMemo(() => {
-    const baseOptions = Array.isArray(options) ? options : [];
-    if (!placeholder) return baseOptions;
-
-    return [{ value: "", label: placeholder }, ...baseOptions];
-  }, [options, placeholder]);
+  const normalizedOptions = useMemo(() => (Array.isArray(options) ? options : []), [options]);
 
   const selectedOption = normalizedOptions.find((option) => String(option.value) === String(value));
   const selectedLabel = selectedOption?.label ?? placeholder ?? "Seleccionar";
@@ -67,6 +62,14 @@ export function Select({ value, onChange, options, placeholder, className = "", 
 
       {open && !disabled && (
         <div className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-50 overflow-hidden rounded-2xl border border-dark-purple-700/90 bg-[#171126]/95 shadow-[0_18px_45px_rgba(9,6,23,0.35)] backdrop-blur-xl">
+          {placeholder && (
+            <div className="border-b border-white/[0.05] px-4 py-3">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-text-muted">
+                {placeholder}
+              </p>
+            </div>
+          )}
+
           <div className="max-h-64 overflow-y-auto py-2">
             {normalizedOptions.map((option) => {
               const isSelected = String(option.value) === String(value);
