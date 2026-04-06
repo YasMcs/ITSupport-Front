@@ -160,7 +160,8 @@ export function AreasPage() {
           hasActiveFilters={hasActiveFilters}
           showFilters={showFilters}
           onToggleFilters={() => setShowFilters(!showFilters)}
-          hideStatus={true}
+          hideStatus={false}
+          sucursalOptions={[...new Set(areas.map((area) => area.nombreSucursal).filter(Boolean))]}
         />
 
       {loading ? (

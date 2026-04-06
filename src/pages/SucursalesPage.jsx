@@ -160,7 +160,7 @@ export function SucursalesPage() {
           hasActiveFilters={hasActiveFilters}
           showFilters={showFilters}
           onToggleFilters={() => setShowFilters(!showFilters)}
-          hideStatus={true}
+          hideStatus={false}
         />
 
       {loading ? (
