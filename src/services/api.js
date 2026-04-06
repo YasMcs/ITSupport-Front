@@ -3,6 +3,7 @@ import axios from "axios";
 const DEFAULT_API_URL = "https://exquisite-creativity-production.up.railway.app/api";
 const API_URL = import.meta.env.VITE_API_URL ?? DEFAULT_API_URL;
 const TOKEN_KEY = "itsupport.auth.token";
+const authFailureListeners = new Set();
 
 export const api = axios.create({
   baseURL: API_URL,
@@ -21,6 +22,28 @@ api.interceptors.request.use((config) => {
 
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error?.response?.status;
+    const requestUrl = String(error?.config?.url || "");
+    const isPublicAuthRoute =
+      requestUrl === "/auth/login" ||
+      requestUrl === "/usuarios/registro";
+
+    if (status === 401 && !isPublicAuthRoute) {
+      authFailureListeners.forEach((listener) =>
+        listener({
+          status,
+          url: requestUrl,
+        })
+      );
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export function extractData(response) {
   const payload = response?.data;
@@ -48,4 +71,11 @@ export function clearAuthToken() {
 
 export function getAuthToken() {
   return window.sessionStorage.getItem(TOKEN_KEY);
+}
+
+export function subscribeToAuthFailures(listener) {
+  authFailureListeners.add(listener);
+  return () => {
+    authFailureListeners.delete(listener);
+  };
 }

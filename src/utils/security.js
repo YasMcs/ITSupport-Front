@@ -107,3 +107,27 @@ export function maskSecret(secret = "") {
 
   return `masked_${trimmed.length}_chars`;
 }
+
+export function parseJwtPayload(token) {
+  if (!token || typeof token !== "string") return null;
+
+  const parts = token.split(".");
+  if (parts.length < 2) return null;
+
+  try {
+    const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const normalized = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=");
+    const decoded = window.atob(normalized);
+    return JSON.parse(decoded);
+  } catch {
+    return null;
+  }
+}
+
+export function isTokenExpired(token, skewSeconds = 30) {
+  const payload = parseJwtPayload(token);
+  if (!payload?.exp) return false;
+
+  const nowInSeconds = Math.floor(Date.now() / 1000);
+  return Number(payload.exp) <= nowInSeconds + skewSeconds;
+}
