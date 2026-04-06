@@ -150,19 +150,32 @@ export function SucursalesPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-4">
-        <FilterBar
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          onClearFilters={clearFilters}
-          hasActiveFilters={hasActiveFilters}
-          showFilters={showFilters}
-          onToggleFilters={() => setShowFilters(!showFilters)}
-          hideStatus={true}
-        />
-        <div className="flex items-center gap-3 lg:flex-1 lg:justify-end">
-          <Button onClick={handleNuevaSucursal}>+ Nueva Sucursal</Button>
+      <FilterBar
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        onClearFilters={clearFilters}
+        hasActiveFilters={hasActiveFilters}
+        showFilters={showFilters}
+        onToggleFilters={() => setShowFilters(!showFilters)}
+        hideStatus={true}
+      />
+
+      <div className="flex items-center gap-4 mb-6">
+        <div className="relative flex-1 max-w-md">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg className="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Buscar sucursal..."
+            className="w-full bg-dark-purple-800 border border-dark-purple-700 text-text-primary rounded-xl pl-10 pr-4 py-2.5 text-sm placeholder:text-text-muted/50 focus:outline-none focus:ring-1 focus:ring-purple-electric focus:border-purple-electric transition-all"
+          />
         </div>
+        <Button onClick={handleNuevaSucursal}>+ Nueva Sucursal</Button>
       </div>
 
       {loading ? (
