@@ -417,7 +417,6 @@ Todos se manejan en minusculas.
 - mensajes visibles mas consistentes
 
 ### Puntos de mantenimiento
-- existen archivos heredados del arranque visual y mocks que ya no son parte del flujo principal
 - `TicketContext` hoy tiene uso bajo frente al flujo real por servicios
 - la documentacion vieja de `utils/README.md` ya no refleja del todo el estado actual del proyecto
 

@@ -96,6 +96,7 @@ Transformaciones, formato, seguridad, feedback y metricas.
 ### Integracion gradual
 - la app ya no depende de mocks para el flujo principal
 - WebSockets se agregaron sin romper el resto de la arquitectura
+- ya se removieron restos de arranque que no tenian referencias activas
 
 ## Puntos que conviene cuidar o limpiar
 
@@ -106,22 +107,14 @@ Recomendacion:
 - decidir si se fortalece como store real
 - o si se elimina para no mantener contexto con uso marginal
 
-### 2. Quedan archivos heredados del inicio visual
-Ejemplos claros:
-- [`KanbanPage.jsx`](c:/Users/yasbe/Downloads/ITSupport/src/pages/KanbanPage.jsx)
-- [`TicketCard.jsx`](c:/Users/yasbe/Downloads/ITSupport/src/components/tickets/TicketCard.jsx)
-- archivos mock en `src/utils`
-
-No es grave, pero ya se sienten mas como legado que como flujo activo.
-
-### 3. Documentacion utilitaria vieja
+### 2. Documentacion utilitaria vieja
 [`README.md`](c:/Users/yasbe/Downloads/ITSupport/src/utils/README.md) sigue describiendo dummies y roles antiguos.
 
 Recomendacion:
 - actualizarla
 - o retirarla si ya no aporta
 
-### 4. Conviene seguir cuidando el limite entre pagina y componente
+### 3. Conviene seguir cuidando el limite entre pagina y componente
 `TicketsPage.jsx` ya concentra bastante logica de vista.
 
 No esta mal, pero si sigue creciendo convendria extraer:
@@ -132,7 +125,6 @@ No esta mal, pero si sigue creciendo convendria extraer:
 ## Recomendacion de mantenimiento
 
 ### Corto plazo
-- limpiar archivos legacy no usados
 - revisar `TicketContext`
 - actualizar documentacion vieja de `utils`
 
@@ -148,4 +140,4 @@ La arquitectura actual ya se ve bastante mas madura que una app de maqueta inici
 - los roles estan bien aterrizados
 - el proyecto ya tiene una base mantenible
 
-La principal mejora pendiente no es rehacer la arquitectura, sino limpiar restos del arranque y seguir modularizando las vistas mas grandes.
+La principal mejora pendiente no es rehacer la arquitectura, sino seguir modularizando las vistas mas grandes y decidir si `TicketContext` todavia aporta valor real.
