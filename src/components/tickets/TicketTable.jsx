@@ -36,7 +36,10 @@ export function TicketTable({ tickets, columnas = [] }) {
     <Table
       columns={columns}
       data={tickets}
-      onRowClick={(ticket) => navigate(`/tickets/${ticket.id}`, { state: { ticket } })}
+      onRowClick={(ticket) => {
+        const encoded = encodeId(ticket.id);
+        if (encoded) navigate(`/tickets/${encoded}`, { state: { ticket } });
+      }}
     />
   );
 }
@@ -75,7 +78,7 @@ function columnaKeysToColumns(columnas, tickets = []) {
             label: "Acciones",
             render: (id) => (
               <Link
-                to={`/tickets/${id}`}
+                to={`/tickets/${encodeId(id) || id}`}
                 state={{ ticket: ticketsById.get(String(id)) }}
                 data-row-action="true"
                 className="text-purple-electric hover:text-purple-electric-hover font-medium transition-colors duration-200"

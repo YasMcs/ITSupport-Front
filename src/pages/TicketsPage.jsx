@@ -570,7 +570,10 @@ export function TicketsPage() {
                     {visibleManagerTickets.map((ticket) => (
                       <article
                         key={ticket.id}
-                        onClick={() => navigate(`/tickets/${encodeId(ticket.id)}`, { state: { ticket } })}
+                        onClick={() => {
+                          const encoded = encodeId(ticket.id);
+                          if (encoded) navigate(`/tickets/${encoded}`, { state: { ticket } });
+                        }}
                         className="group cursor-pointer rounded-2xl bg-dark-purple-900/30 p-5 backdrop-blur-sm transition-all duration-200 hover:bg-dark-purple-900/40"
                         >
                         <div className="flex items-start justify-between gap-3">
