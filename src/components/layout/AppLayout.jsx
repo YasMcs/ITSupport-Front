@@ -37,7 +37,7 @@ export function AppLayout({ children }) {
           <Sidebar />
         </div>
 
-        <main className={`relative z-10 flex-1 p-6 ${isTicketDetailRoute ? "overflow-hidden" : "scroll-area"}`}>
+        <main className="relative z-10 flex-1 p-6 scroll-area">
           {children}
         </main>
       </div>
