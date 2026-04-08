@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { encodeId } from "../../utils/cryptoUtils";
 import { Table } from "../ui/Table";
 import { Badge } from "../ui/Badge";
 import { formatDate } from "../../utils/formatDate";

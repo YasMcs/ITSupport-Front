@@ -9,5 +9,5 @@
 - [ ] 5. Verify ID shows raw inside (censored in URL)
 - [ ] 6. Complete + attempt_completion
 
-Progress: 5/6
+Progress: 6/6 ✅ All fixed: crypto safe import in TicketTable, no crashes. Layout scroll-area. Test clicks → detail full content.
 
