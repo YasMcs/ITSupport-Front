@@ -60,6 +60,7 @@ export function TicketDetailPage() {
           setComentarios(commentsData);
         }
       } catch (error) {
+        console.error('Ticket load error:', error);
         if (!cancelled) {
           toast.error("No pudimos cargar el ticket", {
             description: getFeedbackMessage(error, "No pudimos abrir este ticket."),
@@ -154,12 +155,12 @@ export function TicketDetailPage() {
 
   if (!ticket) {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6">
-        <div className="text-center">
+      <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-6 bg-[#0d0a16]">
+        <div className="glass-card p-8 rounded-2xl text-center max-w-md">
           <h1 className="mb-2 text-3xl font-bold text-text-primary">Ticket no encontrado</h1>
-          <p className="text-text-secondary">No encontramos el ticket numero {id}.</p>
+          <p className="text-text-secondary mb-6">No encontramos el ticket numero <span className="font-mono">#{id}</span>.</p>
+          <Button onClick={() => navigate("/tickets")}>Volver a Tickets</Button>
         </div>
-        <Button onClick={() => navigate("/tickets")}>Volver a Tickets</Button>
       </div>
     );
   }
