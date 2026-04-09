@@ -19,15 +19,21 @@ import { TICKET_STATUS } from "../constants/ticketStatus";
 
 export function TicketDetailPage() {
   const { id: encodedId } = useParams();
-  const id = decodeId(encodedId);
-  useEffect(() => {
-    if (id === null) {
-      toast.error("ID de ticket inválido");
-      navigate("/tickets", { replace: true });
-    }
-  }, [id, navigate, toast]);
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
+  const id = decodeId(encodedId || '');
+  
+  if (id === null) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-6 bg-[#0d0a16]">
+        <div className="glass-card p-8 rounded-2xl text-center max-w-md">
+          <h1 className="text-3xl font-bold text-text-primary">ID inválido</h1>
+          <p className="text-text-secondary mt-4">El ID del ticket no es válido.</p>
+          <Button onClick={() => navigate("/tickets")}>Volver a tickets</Button>
+        </div>
+      </div>
+    );
+  }
   const { user, role } = useAuth();
   const { subscribeToTicketComments } = useWebSocket();
   const [ticket, setTicket] = useState(() => location.state?.ticket ?? null);
