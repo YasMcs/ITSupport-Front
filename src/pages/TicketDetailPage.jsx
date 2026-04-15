@@ -154,7 +154,7 @@ export function TicketDetailPage() {
 
   if (loading) {
     return (
-    <div className="mx-auto max-w-7xl space-y-6 p-6">
+    <div className="mx-auto flex h-full min-h-0 max-w-7xl flex-col">
         <div className="flex min-h-[60vh] items-center justify-center">
           <LoadingState
             title="Cargando ticket"
@@ -268,8 +268,8 @@ export function TicketDetailPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 p-6">
-      <div className="space-y-3 pb-3">
+    <div className="mx-auto flex h-full min-h-0 max-w-7xl flex-col gap-6">
+      <div className="shrink-0 space-y-3 pb-3">
       <div className="flex w-full items-start gap-3">
         <div className="flex items-start gap-3">
           <button
@@ -291,7 +291,7 @@ export function TicketDetailPage() {
       </div>
       </div>
 
-      <div className="grid flex-1 grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.4fr)_minmax(360px,0.6fr)] xl:items-start">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.4fr)_minmax(360px,0.6fr)] xl:items-stretch">
         <div className="scroll-area min-h-0 space-y-6 pr-2">
           <div className="rounded-3xl bg-white/[0.03] p-6 shadow-[0_18px_45px_rgba(9,6,23,0.16)]">
             <h3 className="mb-4 text-lg font-semibold text-text-primary">Descripcion del fallo</h3>
@@ -343,7 +343,7 @@ export function TicketDetailPage() {
         </div>
 
         <aside className="min-h-0 xl:h-full">
-          <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-[2rem] bg-white/[0.045] px-4 py-3 shadow-[0_24px_70px_rgba(9,6,23,0.22)] backdrop-blur-md xl:h-full">
+          <div className="flex h-full min-h-0 max-h-full flex-col overflow-hidden rounded-[2rem] bg-white/[0.045] px-4 py-3 shadow-[0_24px_70px_rgba(9,6,23,0.22)] backdrop-blur-md xl:h-full">
             <div className="pb-2">
               <div>
                 <h3 className="text-base font-semibold text-text-primary">Comentarios</h3>
