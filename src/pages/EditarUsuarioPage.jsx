@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { decodeId } from "../utils/cryptoUtils";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { UsuarioForm } from "../components/usuarios/UsuarioForm";
 import { areaService } from "../services/areaService";
 import { userService } from "../services/userService";
@@ -17,6 +18,13 @@ export function EditarUsuarioPage() {
 
   useEffect(() => {
     let cancelled = false;
+
+    // Guardia: Validar que el ID sea válido
+    if (!id || id === "null" || id === "undefined") {
+      toast.error("El ID del usuario no es válido o ha expirado.");
+      navigate("/usuarios");
+      return;
+    }
 
     async function loadData() {
       try {

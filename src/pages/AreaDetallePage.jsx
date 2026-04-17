@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { decodeId } from "../utils/cryptoUtils";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { AreaForm } from "../components/areas/AreaForm";
 import { areaService } from "../services/areaService";
 import { sucursalService } from "../services/sucursalService";
@@ -17,6 +18,13 @@ export function AreaDetallePage() {
 
   useEffect(() => {
     let cancelled = false;
+
+    // Guardia: Validar que el ID sea válido
+    if (!id || id === "null" || id === "undefined") {
+      toast.error("El ID del área no es válido o ha expirado.");
+      navigate("/areas");
+      return;
+    }
 
     async function loadData() {
       try {

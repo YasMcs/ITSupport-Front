@@ -32,7 +32,14 @@ api.interceptors.response.use(
       requestUrl === "/auth/login" ||
       requestUrl === "/usuarios/registro";
 
-    if ((status === 401 || status === 403) && !isPublicAuthRoute) {
+    // 403 Forbidden: Puede ser parámetro inválido (ej: null ID), solo advertencia
+    if (status === 403) {
+      console.warn(`[API] 403 Forbidden - ${requestUrl}. Posible parámetro inválido (ej: ID nulo).`);
+      return Promise.reject(error);
+    }
+
+    // 401 Unauthorized: Autenticación fallida, limpiar sesión
+    if (status === 401 && !isPublicAuthRoute) {
       authFailureListeners.forEach((listener) =>
         listener({
           status,

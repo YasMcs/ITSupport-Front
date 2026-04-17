@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { decodeId } from "../utils/cryptoUtils";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { SucursalForm } from "../components/sucursales/SucursalForm";
 import { sucursalService } from "../services/sucursalService";
 import { getFeedbackMessage } from "../utils/feedback";
@@ -15,6 +16,13 @@ export function SucursalDetallePage() {
 
   useEffect(() => {
     let cancelled = false;
+
+    // Guardia: Validar que el ID sea válido
+    if (!id || id === "null" || id === "undefined") {
+      toast.error("El ID de la sucursal no es válido o ha expirado.");
+      navigate("/sucursales");
+      return;
+    }
 
     async function loadSucursal() {
       try {

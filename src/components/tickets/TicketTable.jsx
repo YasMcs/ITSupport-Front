@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { encodeId } from "../../utils/cryptoUtils";
 import { Table } from "../ui/Table";
 import { Badge } from "../ui/Badge";
@@ -38,6 +39,10 @@ export function TicketTable({ tickets, columnas = [] }) {
       columns={columns}
       data={tickets}
       onRowClick={(ticket) => {
+        if (!ticket?.id) {
+          toast.error("No se puede ver: ID inválido");
+          return;
+        }
         const encoded = encodeId(ticket.id);
         if (encoded) navigate(`/tickets/${encoded}`, { state: { ticket } });
       }}

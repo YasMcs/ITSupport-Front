@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { CheckCircle2, Pencil, XCircle } from "lucide-react";
+import { encodeId } from "../../utils/cryptoUtils";
 import { Table } from "../ui/Table";
 import { Badge } from "../ui/Badge";
 
@@ -45,7 +47,13 @@ export function SucursalTable({ sucursales, onEditar, onToggleEstado, onVer }) {
         return (
           <div className="flex items-center gap-2">
             <button
-              onClick={() => navigate(`/sucursales/editar/${row.id}`)}
+              onClick={() => {
+                if (!row?.id) {
+                  toast.error("No se puede editar: ID inválido");
+                  return;
+                }
+                navigate(`/sucursales/editar/${encodeId(row.id)}`);
+              }}
               data-row-action="true"
               className="p-2 text-text-secondary hover:text-purple-electric hover:bg-dark-purple-700 rounded-lg transition-colors duration-200"
               title="Editar"
@@ -53,7 +61,13 @@ export function SucursalTable({ sucursales, onEditar, onToggleEstado, onVer }) {
               <Pencil className="h-4 w-4" strokeWidth={2} />
             </button>
             <button
-              onClick={() => onToggleEstado && onToggleEstado(row.id)}
+              onClick={() => {
+                if (!row?.id) {
+                  toast.error("No se puede cambiar estado: ID inválido");
+                  return;
+                }
+                onToggleEstado && onToggleEstado(row.id);
+              }}
               data-row-action="true"
               className={`p-2 rounded-lg transition-colors duration-200 ${
                 isActive
@@ -74,7 +88,17 @@ export function SucursalTable({ sucursales, onEditar, onToggleEstado, onVer }) {
     <Table
       columns={COLUMNS}
       data={sucursales}
-      onRowClick={(row) => (onVer ? onVer(row.id) : navigate(`/sucursales/${row.id}`))}
+      onRowClick={(row) => {
+        if (!row?.id) {
+          toast.error("No se puede ver: ID inválido");
+          return;
+        }
+        if (onVer) {
+          onVer(row.id);
+        } else {
+          navigate(`/sucursales/${encodeId(row.id)}`);
+        }
+      }}
     />
   );
 }

@@ -1,4 +1,5 @@
 import { CheckCircle2, Pencil, XCircle } from "lucide-react";
+import { toast } from "sonner";
 import { Table } from "../ui/Table";
 import { Badge } from "../ui/Badge";
 
@@ -30,7 +31,13 @@ export function AreaTable({ areas, onEditar, onToggleEstado, onVer }) {
         return (
           <div className="flex items-center gap-2">
             <button
-              onClick={() => onEditar && onEditar(row.id)}
+              onClick={() => {
+                if (!row?.id) {
+                  toast.error("No se puede editar: ID inválido");
+                  return;
+                }
+                onEditar && onEditar(row.id);
+              }}
               data-row-action="true"
               className="p-2 text-text-secondary hover:text-purple-electric hover:bg-dark-purple-700 rounded-lg transition-colors"
               title="Editar"
@@ -38,7 +45,13 @@ export function AreaTable({ areas, onEditar, onToggleEstado, onVer }) {
               <Pencil className="h-4 w-4" strokeWidth={2} />
             </button>
             <button
-              onClick={() => onToggleEstado && onToggleEstado(row.id)}
+              onClick={() => {
+                if (!row?.id) {
+                  toast.error("No se puede cambiar estado: ID inválido");
+                  return;
+                }
+                onToggleEstado && onToggleEstado(row.id);
+              }}
               data-row-action="true"
               className={`p-2 rounded-lg transition-colors ${
                 isActive
@@ -55,5 +68,11 @@ export function AreaTable({ areas, onEditar, onToggleEstado, onVer }) {
     },
   ];
 
-  return <Table columns={COLUMNS} data={areas} onRowClick={(row) => onVer && onVer(row.id)} />;
+  return <Table columns={COLUMNS} data={areas} onRowClick={(row) => {
+    if (!row?.id) {
+      toast.error("No se puede ver: ID inválido");
+      return;
+    }
+    onVer && onVer(row.id);
+  }} />;
 }
